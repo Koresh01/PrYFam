@@ -24,32 +24,35 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     // Координаты для расчёта направления свайпа:
     float baseX = 0;        float baseY = 0;        // Опорные координаты
 
-    // Создаём объект класса tree:
-    Tree family = new Tree("root");
 
+    // Создаём объект класса tree:
+    Tree family;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Создаём объект класса tree:
+        family = new Tree(init_btn());
+
         // Добавляем в корневой эл-т дерева "family" 2ух потомков:
-        Tree child_1 = new Tree("child1");
-        Tree child_2 = new Tree("child2");
+        Tree child_1 = new Tree(init_btn());
+        Tree child_2 = new Tree(init_btn());
         // Скармливаем:
         family.addChild(child_1);
         family.addChild(child_2);
 
 
-        // Добавляем 1ому потомку 2ух детей:
-        Tree child_11 = new Tree("child11");
-        Tree child_12 = new Tree("child12");
-        // Скармливаем:
-        child_1.addChild(child_11);
-        child_1.addChild(child_12);
+//        // Добавляем 1ому потомку 2ух детей:
+//        Tree child_11 = new Tree(init_btn());
+//        Tree child_12 = new Tree(init_btn());
+//        // Скармливаем:
+//        child_1.addChild(child_11);
+//        child_1.addChild(child_12);
 
 
-        // Проверяем
+        // Подсчитываем:
         family.dfs(family, 0, 0);
         // ----------------------------------------------------------------------------
 
@@ -121,8 +124,22 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         l += dx;
         h += dy;
 
-        // Обновление координат кнопок(stepX, stepY задают смещения дочерним нодам):
-        family.dfs(family, 0, 0);
+        // Обновление координат кнопок:
+
+        // Подсчитываем:
+        family.dfs(family, l, h);
+        // Обновляем
+        updTree(family);
         return true;
     }
+
+    void updTree(Tree tr) {
+        update_btn(tr.btn, tr.x, tr.y);
+        for (int i = 0; i < tr.chldTree.size(); i++) {
+            updTree(tr.chldTree.get(i));
+        }
+
+    }
 }
+
+

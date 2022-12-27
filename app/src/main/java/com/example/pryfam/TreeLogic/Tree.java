@@ -15,58 +15,35 @@ import java.util.List;
 
 // Класс Дерева.
 public class Tree {
-    private int uniq_ID = 0;
-    private int x;
-    private int y;
+    // Глобальные координаты ноды:
+    public int x = 0;
+    public int y = 0;
+    public ImageButton btn;
 
-    private String data;
+    // Список деревьев-детей:
+    public List<Tree> chldTree;
 
-
-
-
-    public List<Tree> children;
-    ArrayList<ImageButton> nodes = new ArrayList<>();
-
-
-
-
-    public Tree(String data) {
-        this.data = data;
-
-        this.children = new ArrayList<>();
-        nodes.add(init_btn());
+    public Tree(ImageButton btn) {
+        this.btn = btn;
+        this.chldTree = new ArrayList<>();
     }
 
     public void addChild(Tree child) {
-        this.children.add(child);
-        this.nodes.add(init_btn());
+        this.chldTree.add(child);
         return;
     }
 
     public void dfs(Tree cur, int newX, int newY) {
         this.x = newX; this.y = newY;
 
-        for (int i = 0; i < children.size(); i++) {
-            if (i < children.size() / 2) {
-                int stepX = -200/((cur.children.size()/2) - i);
-                dfs(cur.children.get(i), this.x + stepX, this.y+80);
+        for (int i = 0; i < cur.chldTree.size(); i++) {
+            int stepX;
+            if (i == 0) {
+                stepX = -10;
             }
-            else {
-                int stepX = 200/((cur.children.size()/2) - i);
-                dfs(cur.children.get(i), this.x + stepX, this.y+80);
-            }
-            update_btn(nodes.get(i), this.x, this.y);
+            else {stepX = 10;}
+
+            dfs(cur.chldTree.get(i), this.x + stepX, this.y+10);
         }
-        Log.d("F", String.valueOf("Node: " + cur.data));
     }
-
-    public int GetChildsNumber() {
-        return this.children.size();
-    }
-
-
-
 }
-
-// Использование образца:
-//Tree<String> tree = new Tree<String>(null, "root");
