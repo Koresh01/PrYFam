@@ -33,34 +33,26 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Создаём объект класса tree:
-        family = new Tree(init_btn());
-
-        // Добавляем в корневой эл-т дерева "family" 2ух потомков:
-        Tree child_1 = new Tree(init_btn());
-        Tree child_2 = new Tree(init_btn());
-        // Скармливаем:
-        family.addChild(child_1);
-        family.addChild(child_2);
-
-
-//        // Добавляем 1ому потомку 2ух детей:
-//        Tree child_11 = new Tree(init_btn());
-//        Tree child_12 = new Tree(init_btn());
-//        // Скармливаем:
-//        child_1.addChild(child_11);
-//        child_1.addChild(child_12);
-
-
-        // Подсчитываем:
-        family.dfs(family, 0, 0);
-        // ----------------------------------------------------------------------------
-
-
-
         // Вешаем OnTouchListener на весь layout:
         View view = findViewById(R.id.FrameLayout); // Находим его по id.
         view.setOnTouchListener(this);              // Присваиваем его.
+
+        // ----------------------------------------------------------------------------
+        Tree family = new Tree("root", view, this);
+
+        family.addChild("root", new Tree("nop", view, this));
+        family.addChild("root", new Tree("nop", view, this));
+        family.addChild("root", new Tree("nop", view, this));
+
+        family.addChild("root1", new Tree("nop", view, this));
+        family.addChild("root1", new Tree("nop", view, this));
+        family.addChild("root1", new Tree("nop", view, this));
+
+        family.addChild("root11", new Tree("nop", view, this));
+        family.addChild("root11", new Tree("nop", view, this));
+        family.addChild("root11", new Tree("nop", view, this));
+
+        family.dfs(family);
     }
 
     // Функция создающая кнопку:
@@ -127,18 +119,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         // Обновление координат кнопок:
 
         // Подсчитываем:
-        family.dfs(family, l, h);
-        // Обновляем
-        updTree(family);
+
         return true;
-    }
-
-    void updTree(Tree tr) {
-        update_btn(tr.btn, tr.x, tr.y);
-        for (int i = 0; i < tr.chldTree.size(); i++) {
-            updTree(tr.chldTree.get(i));
-        }
-
     }
 }
 
