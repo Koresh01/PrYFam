@@ -7,21 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.pryfam.MainActivity;
 import com.example.pryfam.R;
-
 import java.util.ArrayList;
+
+
 
 // Класс Дерева.
 public class Tree {
     private Node node;  // Хранит сокровенные данные этой ноды.
+
     // -----------------------------------------------------------
     ArrayList<Tree> children;   // Хранит детей.
+    // -----------------------------------------------------------
+
+
+    //
     private View view;
     private Context context;
+    //
 
-    public Tree(String key, View view, Context context) {
+    public Tree(String key, View view, Context context) {   // конструктор
         this.node = new Node();
         children = new ArrayList<Tree>();
 
@@ -32,8 +40,11 @@ public class Tree {
 
         // Создаём новую кнопку для новоиспечённого члена семьи:
         this.node.btn = init_btn();
+        this.node.btn.setOnClickListener(this::onClick);
         // ---------------------------
 
+        //
+        //
 
         // Устанавливаем uniqId нашей ноде:
         this.node.setKey(key);
@@ -74,11 +85,11 @@ public class Tree {
         return null;
     }
 
-    public void update_tree_vision(Tree cur, int l, int h) {
-        for (int i = 0; i < cur.children.size(); i++) {
-            update_tree_vision(cur.children.get(i), l+i*140, h+120);
+    public void update_tree_vision(Tree cur, int l, int h) { // Возвращает мнимую ширину поддерева.
+        int N = cur.children.size();
+        for (int i = 0; i < N; i++) {
+            update_tree_vision(cur.children.get(i), l,h);
         }
-        update_btn(cur.node.btn, l, h);
     }
 
     // Функция создающая кнопку:
@@ -94,6 +105,7 @@ public class Tree {
         parameters.topMargin = 20;   // Отступ от верхнего края.
         btn.setLayoutParams(parameters);    // Присваиваем новые параметры нашей кнопке.
         FrameLayoutGroup.addView(btn);  // Добавляем кнопку на layout.     /Этого не нужно делать в update_btn()!\
+//        btn.setOnClickListener(this::onClick);
 
         return btn; // Сейчас btn - локальная переменная с правильными параметрами. Её нужно присвоить в btn1, которая - глобальная!!!!!!
     }
@@ -107,5 +119,10 @@ public class Tree {
         btn.setLayoutParams(parameters);
 
         return btn;
+    }
+
+    // Обработсик нажатия на кнопку конкретной той ноды, в которой находимся.
+    public void onClick(View v) {
+        Toast.makeText(context, this.node.key, Toast.LENGTH_SHORT).show();
     }
 }

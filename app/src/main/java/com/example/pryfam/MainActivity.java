@@ -45,12 +45,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         family.addChild("root", new Tree("nop", view, this));
 
         family.addChild("root1", new Tree("nop", view, this));
-        family.addChild("root1", new Tree("nop", view, this));
-        family.addChild("root1", new Tree("nop", view, this));
 
         family.addChild("root11", new Tree("nop", view, this));
         family.addChild("root11", new Tree("nop", view, this));
-        family.addChild("root11", new Tree("nop", view, this));
+
+        family.addChild("root1", new Tree("nop", view, this));
+
+
 
         family.dfs(family);
     }
@@ -117,7 +118,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         h += dy;
 
         // Обновление координат кнопок:
-        family.update_tree_vision(family, l, h);
+        family.update_tree_vision(family,l,h);
         // Подсчитываем:
 
         return true;
