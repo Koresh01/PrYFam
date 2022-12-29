@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         view.setOnTouchListener(this);              // Присваиваем его.
 
         // ----------------------------------------------------------------------------
-        Tree family = new Tree("root", view, this);
+        family = new Tree("root", view, this);
 
         family.addChild("root", new Tree("nop", view, this));
         family.addChild("root", new Tree("nop", view, this));
@@ -117,7 +117,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         h += dy;
 
         // Обновление координат кнопок:
-
+        family.update_tree_vision(family, l, h);
         // Подсчитываем:
 
         return true;

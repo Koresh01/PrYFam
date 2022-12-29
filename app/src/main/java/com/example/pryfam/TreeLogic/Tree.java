@@ -15,17 +15,11 @@ import java.util.ArrayList;
 
 // Класс Дерева.
 public class Tree {
-    private Node node;  // Хранит данные этой ноды.
+    private Node node;  // Хранит сокровенные данные этой ноды.
+    // -----------------------------------------------------------
     ArrayList<Tree> children;   // Хранит детей.
-    // ---------------------------
     private View view;
     private Context context;
-    //
-
-    // Локальные координаты этой ноды:
-
-    // -----------------------
-    ImageButton btn;
 
     public Tree(String key, View view, Context context) {
         this.node = new Node();
@@ -37,7 +31,7 @@ public class Tree {
         // ---------------------------
 
         // Создаём новую кнопку для новоиспечённого члена семьи:
-        init_btn();
+        this.node.btn = init_btn();
         // ---------------------------
 
 
@@ -80,6 +74,13 @@ public class Tree {
         return null;
     }
 
+    public void update_tree_vision(Tree cur, int l, int h) {
+        for (int i = 0; i < cur.children.size(); i++) {
+            update_tree_vision(cur.children.get(i), l+i*140, h+120);
+        }
+        update_btn(cur.node.btn, l, h);
+    }
+
     // Функция создающая кнопку:
     public ImageButton init_btn() {
         ImageButton btn = new ImageButton(context); // Создаём объект новой кнопки.      /Этого не нужно делать в update_btn()!\
@@ -89,11 +90,22 @@ public class Tree {
         btn.setId(View.generateViewId());   // УКАЗЫВАЕМ КНОПКЕ ID, ПРОГРАММНО! С УМОМ УКАЗЫВАЙ ID, ЕСЛИ ХОЧЕШЬ ПО ИТОГУ КОРРЕКТНЫЙ ОБРАБОТЧИК НАЖАТИЙ
         FrameLayout.LayoutParams parameters = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);   // Задаём новые параметры для layout.
         // Во FrameLayout Marign-ы вычисляются от левого верхнего УГЛА ЭКРАНА!!! Кнопки могут накладываться друг на друга без проблем.
-        parameters.leftMargin = l;  // Левый отступ.
-        parameters.topMargin = h;   // Отступ от верхнего края.
+        parameters.leftMargin = 20;  // Левый отступ.
+        parameters.topMargin = 20;   // Отступ от верхнего края.
         btn.setLayoutParams(parameters);    // Присваиваем новые параметры нашей кнопке.
         FrameLayoutGroup.addView(btn);  // Добавляем кнопку на layout.     /Этого не нужно делать в update_btn()!\
 
         return btn; // Сейчас btn - локальная переменная с правильными параметрами. Её нужно присвоить в btn1, которая - глобальная!!!!!!
+    }
+
+    // Функция обновляющая кнопку, в зависимости от координат root node, а именно int l, int h:
+    public ImageButton update_btn(ImageButton btn, int x, int y) {
+        ViewGroup FrameLayoutGroup = (ViewGroup) view.findViewById(R.id.FrameLayout);
+        FrameLayout.LayoutParams parameters = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        parameters.leftMargin = x;
+        parameters.topMargin = y;
+        btn.setLayoutParams(parameters);
+
+        return btn;
     }
 }
