@@ -45,11 +45,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         family.addChild("root", new Tree("nop", view, this));
 
         family.addChild("root1", new Tree("nop", view, this));
-
-        family.addChild("root11", new Tree("nop", view, this));
-        family.addChild("root11", new Tree("nop", view, this));
-
         family.addChild("root1", new Tree("nop", view, this));
+        family.addChild("root1", new Tree("nop", view, this));
+
+        family.addChild("root2", new Tree("nop", view, this));
+        family.addChild("root2", new Tree("nop", view, this));
+        family.addChild("root2", new Tree("nop", view, this));
+
 
 
 

@@ -43,9 +43,6 @@ public class Tree {
         this.node.btn.setOnClickListener(this::onClick);
         // ---------------------------
 
-        //
-        //
-
         // Устанавливаем uniqId нашей ноде:
         this.node.setKey(key);
     }
@@ -77,7 +74,7 @@ public class Tree {
         return null;
     }
 
-    public Tree dfs(Tree cur) {  // find member by key
+    public Tree dfs(Tree cur) {  // standart dfs.
         for (int i = 0; i < cur.children.size(); i++) {
             dfs(cur.children.get(i));
         }
@@ -85,11 +82,18 @@ public class Tree {
         return null;
     }
 
-    public void update_tree_vision(Tree cur, int l, int h) { // Возвращает мнимую ширину поддерева.
+    public int update_tree_vision(Tree cur, int l, int h) { // Возвращает мнимую ширину поддерева.
         int N = cur.children.size();
-        for (int i = 0; i < N; i++) {
-            update_tree_vision(cur.children.get(i), l,h);
+
+        int dx = 160;
+        int dy = 160;
+        if (N >= 1) {
+            for (int i = 0; i < N; i++) {
+                l = update_tree_vision(cur.children.get(i), l-dx, h+dy);
+            }
         }
+        update_btn(cur.node.btn, l, h);
+        return l;
     }
 
     // Функция создающая кнопку:
@@ -124,5 +128,10 @@ public class Tree {
     // Обработсик нажатия на кнопку конкретной той ноды, в которой находимся.
     public void onClick(View v) {
         Toast.makeText(context, this.node.key, Toast.LENGTH_SHORT).show();
+    }
+
+    // ------------------------------------------------------------------------------------------------------
+    int boolToInt(Boolean b) {
+        return b.compareTo(false);
     }
 }
