@@ -87,13 +87,17 @@ public class Tree {
 
         int dx = 160;
         int dy = 160;
+
         for (int i = 0; i < N; i++) {
+
             if (i != 0) {
                 l = update_tree_vision(cur.children.get(i), l-dx, h+dy);
+                l += dx/2;
             }
             else {
                 l = update_tree_vision(cur.children.get(i), l, h+dy);
             }
+
         }
         update_btn(cur.node.btn, l, h);
         return l;
