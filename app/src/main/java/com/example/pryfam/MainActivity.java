@@ -18,7 +18,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
 
     // Координаты root node:
-    int l = 0;  // левый отступ
+    int l = 700;  // левый отступ
     int h = 0;  // верхний отступ
 
     // Координаты для расчёта направления свайпа:
@@ -40,20 +40,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         // ----------------------------------------------------------------------------
         family = new Tree("root", view, this);
 
-        family.addChild("root", new Tree("nop", view, this));
-        family.addChild("root", new Tree("nop", view, this));
-        family.addChild("root", new Tree("nop", view, this));
-
-        family.addChild("root1", new Tree("nop", view, this));
-        family.addChild("root1", new Tree("nop", view, this));
-        family.addChild("root1", new Tree("nop", view, this));
-
-        family.addChild("root2", new Tree("nop", view, this));
-        family.addChild("root2", new Tree("nop", view, this));
-        family.addChild("root2", new Tree("nop", view, this));
-
-
-
+        family.addChild_by_key("root", new Tree("nop", view, this));
+        family.addChild_by_key("root", new Tree("nop", view, this));
 
         family.dfs(family);
     }

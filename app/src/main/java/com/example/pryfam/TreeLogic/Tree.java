@@ -47,7 +47,7 @@ public class Tree {
         this.node.setKey(key);
     }
 
-    public void addChild(String key_of, Tree new_member) {
+    public void addChild_by_key(String key_of, Tree new_member) {
         // Найдем узел с указанным ключом:
         Tree target = find_M_dfs(key_of, this);
         if (target != null) {
@@ -87,9 +87,12 @@ public class Tree {
 
         int dx = 160;
         int dy = 160;
-        if (N >= 1) {
-            for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) {
+            if (i != 0) {
                 l = update_tree_vision(cur.children.get(i), l-dx, h+dy);
+            }
+            else {
+                l = update_tree_vision(cur.children.get(i), l, h+dy);
             }
         }
         update_btn(cur.node.btn, l, h);
@@ -105,8 +108,8 @@ public class Tree {
         btn.setId(View.generateViewId());   // УКАЗЫВАЕМ КНОПКЕ ID, ПРОГРАММНО! С УМОМ УКАЗЫВАЙ ID, ЕСЛИ ХОЧЕШЬ ПО ИТОГУ КОРРЕКТНЫЙ ОБРАБОТЧИК НАЖАТИЙ
         FrameLayout.LayoutParams parameters = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);   // Задаём новые параметры для layout.
         // Во FrameLayout Marign-ы вычисляются от левого верхнего УГЛА ЭКРАНА!!! Кнопки могут накладываться друг на друга без проблем.
-        parameters.leftMargin = 20;  // Левый отступ.
-        parameters.topMargin = 20;   // Отступ от верхнего края.
+        parameters.leftMargin = -200;  // Левый отступ.
+        parameters.topMargin = -100;   // Отступ от верхнего края.
         btn.setLayoutParams(parameters);    // Присваиваем новые параметры нашей кнопке.
         FrameLayoutGroup.addView(btn);  // Добавляем кнопку на layout.     /Этого не нужно делать в update_btn()!\
 //        btn.setOnClickListener(this::onClick);
@@ -128,10 +131,8 @@ public class Tree {
     // Обработсик нажатия на кнопку конкретной той ноды, в которой находимся.
     public void onClick(View v) {
         Toast.makeText(context, this.node.key, Toast.LENGTH_SHORT).show();
+        this.addChild_by_key(this.node.key, new Tree("nop", view, context));
     }
 
     // ------------------------------------------------------------------------------------------------------
-    int boolToInt(Boolean b) {
-        return b.compareTo(false);
-    }
 }
