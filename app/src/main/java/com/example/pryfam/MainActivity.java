@@ -2,20 +2,22 @@ package com.example.pryfam;
 
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+
 import com.example.pryfam.TreeLogic.Tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends Activity implements View.OnTouchListener {
-
 
     // Координаты root node:
     int l = 700;  // левый отступ
@@ -28,22 +30,59 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     // Создаём объект класса tree:
     Tree family;
 
+    // Пытаемся создать canvas на заднем плане:
+    ImageView imageView;
+    //
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Получаем размеры экрана:
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        //
+
         // Вешаем OnTouchListener на весь layout:
         View view = findViewById(R.id.FrameLayout); // Находим его по id.
         view.setOnTouchListener(this);              // Присваиваем его.
-
         // ----------------------------------------------------------------------------
         family = new Tree("root", view, this);
 
         family.addChild_by_key("root", new Tree("nop", view, this));
         family.addChild_by_key("root", new Tree("nop", view, this));
 
+
         family.dfs(family);
+        // ----------------------------------------------------------------------------
+
+        // Пытаемся создать canvas на заднем плане:
+        imageView = findViewById(R.id.imageView);
+
+        Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+
+
+        // Создаём перо:
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+
+        // Создаём канвас, т.к. только он может рисовать на нашем bitmap(оновом изображении):
+        Canvas canvas = new Canvas(bitmap);
+
+        // отрисовать на битмапе круг:
+        canvas.drawCircle(50,50,25,paint);
+
+        // Попытка сделать метод clear:
+        canvas.drawRect(0, 0, width, height, clear_paint);
+
+        imageView.setImageBitmap(bitmap);
+        //
     }
 
     // Функция создающая кнопку:
@@ -110,6 +149,10 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         // Обновление координат кнопок:
         family.update_tree_vision(family,l,h);
         // Подсчитываем:
+
+
+
+
 
         return true;
     }
