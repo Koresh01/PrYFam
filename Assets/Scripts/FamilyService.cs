@@ -61,7 +61,24 @@ namespace PrYFam.Assets.Scripts
             // А значит дети Member from - это ещё и дети Member to;
             // to.children = from.children
 
-            AddBidirectionalRelationship(from, to, relationship);
+            // обработка неликвидных ситуаций
+            switch (relationship)
+            {
+                case Relationship.ToHalf:
+                    HandleToHalf(from, to);
+                    break;
+                case Relationship.ToParent:
+                    HandleToParent(from, to);
+                    break;
+                case Relationship.ToChild:
+                    HandleToChild(from, to);
+                    break;
+                default:
+                    Debug.LogWarning("Неизвестное отношение: " + relationship);
+                    break;
+            }
+
+
         }
         #endregion
         #region relationships
@@ -140,6 +157,8 @@ namespace PrYFam.Assets.Scripts
                 Debug.Log($"{entry.From?.name} -> {entry.To?.name}: {entry.Relationship}");
             }
         }
+
+
         public bool hasNoChildren(Member current)
         {
             return GetRelatedMembers(current, Relationship.ToChild).Count == 0 ? true : false;
@@ -156,6 +175,80 @@ namespace PrYFam.Assets.Scripts
         {
             return GetRelatedMembers(current, Relationship.ToHalf).Count > 0 ? true : false;
         }
+
+
+        /// <summary> Проверяет можно ли добавить жену. </summary>
+        private bool CanAddHalf(Member from, Member to)
+        {
+            if (hasHalf(from))
+            {
+                Debug.Log("Нельзя добавлять больше одной жены.");
+                return false;
+            }
+            return true;
+        }
+        /// <summary> Проверяет можно ли добавить ещё родителя. </summary>
+        private bool CanAddParent(Member from, Member to)
+        {
+            if (GetRelatedMembers(from, Relationship.ToParent).Count >= 2)
+            {
+                Debug.Log("Нельзя добавлять больше двух родителей.");
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Обрабатывает добавление супруга (жены или мужа) для указанного члена семьи. 
+        /// Если у члена семьи уже есть супруг, то добавление не выполняется. 
+        /// Также обновляет связи между супругом и детьми.
+        /// </summary>
+        private void HandleToHalf(Member from, Member to)
+        {
+            if (!CanAddHalf(from, to)) return;
+            AddBidirectionalRelationship(from, to, Relationship.ToHalf);    // прямую связь 100% добавляем
+
+            // нюансы:
+            foreach (var child in GetRelatedMembers(from, Relationship.ToChild))
+            {
+                AddBidirectionalRelationship(child, to, Relationship.ToParent);
+            }
+        }
+        /// <summary>
+        /// Обрабатывает добавление родителя для указанного члена семьи. 
+        /// Если у члена семьи уже есть два родителя, то добавление не выполняется. 
+        /// Также устанавливает связь между новым родителем и уже существующим вторым родителем как "супруги".
+        /// </summary>
+        private void HandleToParent(Member from, Member to)
+        {
+            if (!CanAddParent(from, to)) return;
+            AddBidirectionalRelationship(from, to, Relationship.ToParent);    // прямую связь 100% добавляем
+
+            // нюансы:
+            foreach (var parent in GetRelatedMembers(from, Relationship.ToParent))
+            {
+                if (parent != to)
+                {
+                    AddBidirectionalRelationship(parent, to, Relationship.ToHalf);
+                }
+            }
+        }
+        /// <summary>
+        /// Обрабатывает добавление ребёнка для указанного члена семьи. 
+        /// Устанавливает связь между добавляемым ребёнком и супругом члена семьи.
+        /// </summary>
+        private void HandleToChild(Member from, Member to)
+        {
+            AddBidirectionalRelationship(from, to, Relationship.ToChild);    // прямую связь 100% добавляем
+
+            // нюансы:
+            foreach (var half in GetRelatedMembers(from, Relationship.ToHalf))
+            {
+                AddBidirectionalRelationship(half, to, Relationship.ToChild);
+            }
+        }
+
+
         #endregion
     }
 }
