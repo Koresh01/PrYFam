@@ -65,8 +65,8 @@ namespace PrYFam.Assets.Scripts
         }
         #endregion
         #region relationships
-        
-        /// <summary> Устанавливает SMART-связь между двумя <Member> компонентами. Актуален когда префабы уже созданы, а связь ещё не установлена. </summary>
+
+        /// <summary> Устанавливает SMART-связь между двумя Member компонентами. Актуален когда префабы уже созданы, а связь ещё не установлена. </summary>
         private void AddRelationship(Member from, Member to, Relationship relationship)
         {
             Debug.LogFormat("Пытаемся от {0} добавить связь к {1}", from.name, to.name);
@@ -82,8 +82,10 @@ namespace PrYFam.Assets.Scripts
                 });
 
                 // При добавлении "жены" при наличии детей им надо сказать, что у них есть ещё 1 родитель.
-                if (relationship == Relationship.ToHalf) {
-                    foreach (var child in GetRelatedMembers(from, relationship)) {
+                if (relationship == Relationship.ToHalf)
+                {
+                    foreach (var child in GetRelatedMembers(from, Relationship.ToChild))
+                    {
                         AddRelationship(child, to, Relationship.ToParent);
                     }
                 }

@@ -470,7 +470,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 453356105399204820, guid: 319c4b0068374e34da998b7f4f055fe0, type: 3}
       propertyPath: m_Name
-      value: PersonCard
+      value: PersonCard (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2383648957394399020, guid: 319c4b0068374e34da998b7f4f055fe0, type: 3}
       propertyPath: m_Pivot.x
@@ -672,7 +672,7 @@ MonoBehaviour:
     Relationship: 0
   - From: {fileID: 1204568173}
     To: {fileID: 304667193}
-    Relationship: 3
+    Relationship: 2
 --- !u!114 &364671341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2735,7 +2735,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 453356105399204820, guid: 319c4b0068374e34da998b7f4f055fe0, type: 3}
       propertyPath: m_Name
-      value: PersonCard (1)
+      value: PersonCard (2)
       objectReference: {fileID: 0}
     - target: {fileID: 2383648957394399020, guid: 319c4b0068374e34da998b7f4f055fe0, type: 3}
       propertyPath: m_Pivot.x
