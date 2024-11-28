@@ -34,11 +34,15 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// Добавляет нового человека в семью и добавляет SMART-связь к нему.
         /// </summary>
-        public GameObject CreateMemberWithConnection(GameObject parent, Relationship relationship)
+        public void CreateMemberWithConnection(GameObject From, Relationship relationship)
         {
+            Member from = From.GetComponent<Member>();
+            if (!CanAddConnection(from, relationship)) return;
+            
             GameObject newMemberObj = createGameObject();
-            AddConnection(parent, newMemberObj, relationship);
-            return newMemberObj;
+            Member to = newMemberObj.GetComponent<Member>();
+
+            AddConnection(from, to, relationship);
         }
         /// <summary>
         /// Создаёт карточку префаба человека.
@@ -51,10 +55,9 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// Добавляет связь между игровыми объектами prefab-ами: [PersonCard] в семейное древо.
         /// </summary>
-        private void AddConnection(GameObject From, GameObject To, Relationship relationship = Relationship.None)
+        private void AddConnection(Member from, Member to, Relationship relationship = Relationship.None)
         {
-            Member from = From.GetComponent<Member>();
-            Member to = To.GetComponent<Member>();
+            
 
             // тут где то нужна проверка
             // типо если relationship == ToHalf => пользователь жедает добавить жену.
@@ -65,13 +68,13 @@ namespace PrYFam.Assets.Scripts
             switch (relationship)
             {
                 case Relationship.ToHalf:
-                    HandleToHalf(from, to);
+                    HandleToHalf(from, to);     // внутри и создание карточки происходит
                     break;
                 case Relationship.ToParent:
-                    HandleToParent(from, to);
+                    HandleToParent(from, to);   // внутри и создание карточки происходит
                     break;
                 case Relationship.ToChild:
-                    HandleToChild(from, to);
+                    HandleToChild(from, to);    // внутри и создание карточки происходит
                     break;
                 default:
                     Debug.LogWarning("Неизвестное отношение: " + relationship);
@@ -177,8 +180,23 @@ namespace PrYFam.Assets.Scripts
         }
 
 
+        /// <summary> Проверяет можно ли добавить взаимосвязь. </summary>
+        private bool CanAddConnection(Member from, Relationship relationship)
+        {
+            switch (relationship) {
+                case Relationship.ToHalf:
+                    if (!CanAddHalf(from)) return false;
+                    break;
+                case Relationship.ToParent:
+                    if (!CanAddParent(from)) return false;
+                    break;
+                case Relationship.ToChild:
+                    break;
+            }
+            return true;
+        }
         /// <summary> Проверяет можно ли добавить жену. </summary>
-        private bool CanAddHalf(Member from, Member to)
+        private bool CanAddHalf(Member from)
         {
             if (hasHalf(from))
             {
@@ -188,7 +206,7 @@ namespace PrYFam.Assets.Scripts
             return true;
         }
         /// <summary> Проверяет можно ли добавить ещё родителя. </summary>
-        private bool CanAddParent(Member from, Member to)
+        private bool CanAddParent(Member from)
         {
             if (GetRelatedMembers(from, Relationship.ToParent).Count >= 2)
             {
@@ -198,6 +216,7 @@ namespace PrYFam.Assets.Scripts
             return true;
         }
 
+
         /// <summary>
         /// Обрабатывает добавление супруга (жены или мужа) для указанного члена семьи. 
         /// Если у члена семьи уже есть супруг, то добавление не выполняется. 
@@ -205,7 +224,6 @@ namespace PrYFam.Assets.Scripts
         /// </summary>
         private void HandleToHalf(Member from, Member to)
         {
-            if (!CanAddHalf(from, to)) return;
             AddBidirectionalRelationship(from, to, Relationship.ToHalf);    // прямую связь 100% добавляем
 
             // нюансы:
@@ -221,7 +239,6 @@ namespace PrYFam.Assets.Scripts
         /// </summary>
         private void HandleToParent(Member from, Member to)
         {
-            if (!CanAddParent(from, to)) return;
             AddBidirectionalRelationship(from, to, Relationship.ToParent);    // прямую связь 100% добавляем
 
             // нюансы:
