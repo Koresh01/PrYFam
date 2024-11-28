@@ -61,38 +61,29 @@ namespace PrYFam.Assets.Scripts
             // А значит дети Member from - это ещё и дети Member to;
             // to.children = from.children
 
-            AddRelationship(from, to, relationship);
+            AddBidirectionalRelationship(from, to, relationship);
         }
         #endregion
         #region relationships
 
-        /// <summary> Устанавливает SMART-связь между двумя Member компонентами. Актуален когда префабы уже созданы, а связь ещё не установлена. </summary>
-        private void AddRelationship(Member from, Member to, Relationship relationship)
+        /// <summary> Добавляет двунаправленную связь между членами. </summary>
+        private void AddBidirectionalRelationship(Member from, Member to, Relationship relationship)
         {
             Debug.LogFormat("Пытаемся от {0} добавить связь к {1}", from.name, to.name);
+
             // Проверяем, есть ли уже такая связь
             if (!RelationshipExists(from, to))
             {
-                // Добавляем прямую связь
-                familyData.relationships.Add(new MembersConnection
-                {
-                    From = from,
-                    To = to,
-                    Relationship = relationship
-                });
-
-                // При добавлении "жены" при наличии детей им надо сказать, что у них есть ещё 1 родитель.
-                if (relationship == Relationship.ToHalf)
-                {
-                    foreach (var child in GetRelatedMembers(from, Relationship.ToChild))
-                    {
-                        AddRelationship(child, to, Relationship.ToParent);
-                    }
-                }
-
-                // Добавляем обратную связь для двунаправленности
                 if (to != null)
                 {
+                    // Добавляем прямую связь:
+                    familyData.relationships.Add(new MembersConnection
+                    {
+                        From = from,
+                        To = to,
+                        Relationship = relationship
+                    });
+                    // Добавляем обратную связь:
                     familyData.relationships.Add(new MembersConnection
                     {
                         From = to,
@@ -129,6 +120,7 @@ namespace PrYFam.Assets.Scripts
             // Удаляем обратную связь
             familyData.relationships.RemoveAll(entry => entry.From == to && entry.To == from);
         }
+        /// <summary> Получает обратную связь между членами </summary>
         private Relationship GetReverseRelationship(Relationship relationship)
         {
             return relationship switch
