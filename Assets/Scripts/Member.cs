@@ -10,7 +10,7 @@ namespace PrYFam.Assets.Scripts
     /// </summary>
     public class Member : MonoBehaviour
     {
-        public string name;
+        public string Name;
         public string surname;
         public Sprite sprite;
     }

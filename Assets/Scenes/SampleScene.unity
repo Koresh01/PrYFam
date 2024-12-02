@@ -3133,7 +3133,6 @@ GameObject:
   - component: {fileID: 1401908922}
   - component: {fileID: 1401908924}
   - component: {fileID: 1401908923}
-  - component: {fileID: 1401908925}
   m_Layer: 5
   m_Name: Panel (file btn functionality)
   m_TagString: Untagged
@@ -3202,18 +3201,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401908921}
   m_CullTransparentMesh: 1
---- !u!114 &1401908925
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1401908921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a4599dcf34370f43b6d96a583c15290, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1412485629
 GameObject:
   m_ObjectHideFlags: 0
@@ -4424,7 +4411,6 @@ GameObject:
   - component: {fileID: 2041267400}
   - component: {fileID: 2041267402}
   - component: {fileID: 2041267401}
-  - component: {fileID: 2041267403}
   m_Layer: 5
   m_Name: Panel (person quick find)
   m_TagString: Untagged
@@ -4495,18 +4481,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041267399}
   m_CullTransparentMesh: 1
---- !u!114 &2041267403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2041267399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af82c82461351b947b6b2bd20b171248, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2134517366
 GameObject:
   m_ObjectHideFlags: 0

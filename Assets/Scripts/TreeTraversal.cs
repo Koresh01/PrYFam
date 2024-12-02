@@ -16,7 +16,6 @@ namespace PrYFam.Assets.Scripts
         [Header("Отступы:")]
         [SerializeField] float horizontalSpacing;
         [SerializeField] float verticalSpacing;
-        [SerializeField] float halfCardOffset;
 
         [Header("Время за которое карточки встают в свои позиции:")]
         [SerializeField] float duration;
@@ -36,8 +35,7 @@ namespace PrYFam.Assets.Scripts
                 familyService,
                 basePosition,
                 horizontalSpacing,
-                verticalSpacing,
-                halfCardOffset
+                verticalSpacing
             );
 
             // 3.
