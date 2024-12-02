@@ -27,33 +27,35 @@ namespace PrYFam.Assets.Scripts
         private Vector2 basePosition;
         private float horizontalSpacing, verticalSpacing;
         private Dictionary<Member, Vector2> coordinates;
+        private float offset;   // это отступы в древе.
 
         /// <summary>
         /// Инициализирует стартовые параметры для переотрисовки.
         /// </summary>
-        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing)
+        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float offset)
         {
             this.root = root;
             this.familyService = familyService;
             this.basePosition = basePosition;
             this.horizontalSpacing = horizontalSpacing;
             this.verticalSpacing = verticalSpacing;
+            this.offset = offset;
 
             this.coordinates = new Dictionary<Member, Vector2>();
         }
-        
+
         /// <summary>
         /// Перессчитывает координаты карточек.
         /// </summary>
-        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing)
+        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float offset)
         {
-            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing);
+            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, offset);
             Calculate();
             return coordinates;
         }
-        
-        
-        
+
+
+
 
         /// <summary>
         /// Вычисляет координаты вершин, но только тех, В КОТОРЫЕ ПОПАДАЕТ ПРИ ОБХОДЕ
@@ -62,7 +64,11 @@ namespace PrYFam.Assets.Scripts
         {
             // Вычисляем координаты для двух направлений
             CalculateNodeCoordinatesDirectionatly(root, basePosition.x, basePosition.y, Direction.Down);
-            CalculateNodeCoordinatesDirectionatly(root, basePosition.x, basePosition.y, Direction.Up);
+
+            if (familyService.hasHalf(root))
+                CalculateNodeCoordinatesDirectionatly(root, basePosition.x - offset, basePosition.y, Direction.Up);
+            if (!familyService.hasHalf(root))
+                CalculateNodeCoordinatesDirectionatly(root, basePosition.x, basePosition.y, Direction.Up);
         }
 
         /// <summary>
@@ -73,8 +79,25 @@ namespace PrYFam.Assets.Scripts
             if (current == null)
                 return;
 
-            coordinates[current] = new Vector2(x, y);
-            
+            // ----------------- Отрисовка ----------------------
+            if (direction == Direction.Down)
+            {
+                if (!familyService.hasHalf(current))
+                {
+                    coordinates[current] = new Vector2(x, y);
+                }
+                if (familyService.hasHalf(current))
+                {
+                    coordinates[current] = new Vector2(x - offset, y);
+                    Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                    coordinates[half] = new Vector2(x + offset, y);
+                }
+            }
+            if (direction == Direction.Up)
+            {
+                coordinates[current] = new Vector2(x, y);
+            }
+            // --------------------------------------------------
 
             // Получаем связанных членов и их условные ширины
             List<Member> relatedMembers = direction == Direction.Down ? familyService.GetRelatedMembers(current, Relationship.ToChild) : familyService.GetRelatedMembers(current, Relationship.ToParent);
@@ -84,8 +107,8 @@ namespace PrYFam.Assets.Scripts
             foreach (var member in relatedMembers)
             {
                 subtreeWidths.Add(CalculateMnimWidth(member, direction));
-            } 
-                
+            }
+
 
             // -------------- Обрабатываем связанных членов и назначаем координаты --------------
             // Смещение по вертикали зависит от направления обхода
@@ -105,11 +128,11 @@ namespace PrYFam.Assets.Scripts
                 float newY = y + offsetY;
                 float newX = x + horizontalSpacing * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
                 // Рекурсивно назначаем координаты
-                CalculateNodeCoordinatesDirectionatly(related, newX , newY, direction);
+                CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
             }
             // ------------------------------------------------------------------------------------
         }
-        
+
 
         /// <summary>
         /// Вычисляет условную ширину подветви относительно указанного корня, идя вверх/вниз.
@@ -131,7 +154,19 @@ namespace PrYFam.Assets.Scripts
             foreach (var relatedMember in relatedMembers)
                 width += CalculateMnimWidth(relatedMember, direction);
 
-            return Math.Max(1, width);
+
+            if (direction == Direction.Down)
+            {
+                bool spoon = familyService.hasHalf(root);
+                return Math.Max(spoon ? 2 : 1, width);
+            }
+            if (direction == Direction.Up)
+            {
+                return Math.Max(1, width);
+            }
+            
+            // Обработка остальных случаев (например, неизвестного направления)
+            throw new ArgumentException($"Unknown direction: {direction}");
         }
     }
 }
