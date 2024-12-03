@@ -15,6 +15,9 @@ namespace PrYFam.Assets.Scripts
         [SerializeField] Button addChild;
         [SerializeField] Button addHalf;
         
+        [Header("Каёмка для активной рамки:")]
+        public GameObject BoundImage;
+        
         private void Awake() {
             // Префабам нельзя прокидывать сущьности со сцены.
             familyService = GameObject.FindAnyObjectByType<FamilyService>();

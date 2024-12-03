@@ -261,6 +261,7 @@ MonoBehaviour:
   addParent: {fileID: 4036045683233341399}
   addChild: {fileID: 7800719760914129400}
   addHalf: {fileID: 7256212973203675059}
+  BoundImage: {fileID: 5511915356355448116}
 --- !u!114 &3646899339574367868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd130105a199f05488ac26e0916a51c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: 
+  Name: 
   surname: 
   sprite: {fileID: 0}
 --- !u!1 &790175514438417498
@@ -892,8 +893,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -15.037, y: 113.15001}
-  m_SizeDelta: {x: 268.27, y: 30}
+  m_AnchoredPosition: {x: -15.3592, y: 114.21405}
+  m_SizeDelta: {x: 268.9148, y: 27.8719}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2629305154923443593
 CanvasRenderer:
@@ -923,8 +924,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1395,15 +1396,15 @@ RectTransform:
   m_GameObject: {fileID: 5511915356355448116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8663448, y: 0.8858231, z: 1.4832519}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8395243307241762463}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: 8.535296}
-  m_SizeDelta: {x: 583.7, y: 380.2114}
+  m_AnchoredPosition: {x: -2.4996, y: 18.6}
+  m_SizeDelta: {x: 514, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9144621023571354970
 CanvasRenderer:
@@ -1433,7 +1434,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -129555701, guid: 0f51b403aba8be446a6b7d8b88dfa92f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

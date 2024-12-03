@@ -688,7 +688,7 @@ MonoBehaviour:
   familyService: {fileID: 364671338}
   VerticalSpacing: 400
   HorizontalSpacing: 300
-  GlobalTreeCorrectionKoefficient: 1
+  GlobalTreeCorrectionKoefficient: 1.5
   duration: 0.5
 --- !u!1 &447253707
 GameObject:

@@ -50,6 +50,7 @@ namespace PrYFam.Assets.Scripts
         private GameObject createGameObject()
         {
             var go = Instantiate(personCardPrefab, cardsPlaceHolder);
+            go.SetActive(false);    // Отображаться они начнут после отрисовки.
             return go;
         }
         /// <summary>

@@ -54,20 +54,20 @@ namespace PrYFam.Assets.Scripts
             return coordinates;
         }
 
-
-
-
         /// <summary>
         /// Вычисляет координаты вершин, но только тех, В КОТОРЫЕ ПОПАДАЕТ ПРИ ОБХОДЕ
         /// </summary>
         private void Calculate()
         {
-            // Вычисляем координаты для двух направлений
-            CalculateNodeCoordinatesDirectionatly(root, basePosition.x, basePosition.y, Direction.Down);
-            
             bool hasHalf = familyService.hasHalf(root);
-            CalculateNodeCoordinatesDirectionatly(root, basePosition.x, basePosition.y, Direction.Up);
-            CalculateNodeCoordinatesDirectionatly(root, basePosition.x - (hasHalf ? horizontalSpacing / 2f : 0f), basePosition.y, Direction.Up);
+            float startY = basePosition.y;
+            float startX = basePosition.x;
+
+            // Вычисляем координаты для двух направлений
+            CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
+
+            startX = basePosition.x - (hasHalf ? horizontalSpacing / 2f : 0f);
+            CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
         }
 
         /// <summary>

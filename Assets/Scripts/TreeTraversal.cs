@@ -29,6 +29,7 @@ namespace PrYFam.Assets.Scripts
             Debug.Log("Перерисовка древа на основе FamilyData.");
             // 1.
             FadeCards();
+            FadeSelectedCardBound(root);
 
             // 2. Рассчет точных координат:
             coordinates = Algorithms.Singleton.ReCalculate(
@@ -49,7 +50,25 @@ namespace PrYFam.Assets.Scripts
         private void FadeCards() {
             List<GameObject> personCards = familyService.familyData.GetAllPersonCards();
             foreach (var card in personCards)
+            {
                 card.SetActive(false);
+            }
+                
+        }
+        /// <summary> Тушит все рамки и подсвечивает только над root. </summary>
+        private void FadeSelectedCardBound(Member root) {
+            List<GameObject> personCards = familyService.familyData.GetAllPersonCards();
+            foreach (GameObject card in personCards)
+            {
+                Member memeber = card.GetComponent<Member>();
+                CardView cardView = card.gameObject.GetComponent<CardView>();
+                
+                cardView.BoundImage.SetActive(false);
+
+                if (memeber == root)
+                    cardView.BoundImage.SetActive(true);
+            }
+                
         }
 
         /// <summary> Применяем позиции к RectTransform каждого члена </summary>
