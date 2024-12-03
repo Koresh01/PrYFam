@@ -57,11 +57,17 @@ namespace PrYFam.Assets.Scripts
             {
                 Member memeber = card.GetComponent<Member>();
                 CardView cardView = card.gameObject.GetComponent<CardView>();
-                
-                cardView.BoundImage.SetActive(false);
 
                 if (memeber == root)
-                    cardView.BoundImage.SetActive(true);
+                {
+                    cardView.ActiveBoundImage.SetActive(true);
+                    cardView.DefaultBoundImage.SetActive(false);
+                }
+                if (memeber != root)
+                {
+                    cardView.ActiveBoundImage.SetActive(false);
+                    cardView.DefaultBoundImage.SetActive(true);
+                }
             }
                 
         }
