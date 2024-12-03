@@ -27,19 +27,19 @@ namespace PrYFam.Assets.Scripts
         private Vector2 basePosition;
         private float horizontalSpacing, verticalSpacing;
         private Dictionary<Member, Vector2> coordinates;
-        private float GlobalTreeCorrectionKoefficient;
+        private float GlobalTreeOffset; // –ассто€ние между 2ум€ карточками.
 
         /// <summary>
         /// »нициализирует стартовые параметры дл€ переотрисовки.
         /// </summary>
-        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeCorrectionKoefficient)
+        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
         {
             this.root = root;
             this.familyService = familyService;
             this.basePosition = basePosition;
             this.horizontalSpacing = horizontalSpacing;
             this.verticalSpacing = verticalSpacing;
-            this.GlobalTreeCorrectionKoefficient = GlobalTreeCorrectionKoefficient;
+            this.GlobalTreeOffset = GlobalTreeOffset;
 
             this.coordinates = new Dictionary<Member, Vector2>();
         }
@@ -47,9 +47,9 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// ѕерессчитывает координаты карточек.
         /// </summary>
-        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeCorrectionKoefficient)
+        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
         {
-            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, GlobalTreeCorrectionKoefficient);
+            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, GlobalTreeOffset);
             Calculate();
             return coordinates;
         }
@@ -66,7 +66,7 @@ namespace PrYFam.Assets.Scripts
             // ¬ычисл€ем координаты дл€ двух направлений
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
 
-            startX = basePosition.x - (hasHalf ? horizontalSpacing / 2f : 0f);
+            startX = basePosition.x - (hasHalf ? (horizontalSpacing + GlobalTreeOffset) / 2f : 0f);
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
         }
 
@@ -82,7 +82,7 @@ namespace PrYFam.Assets.Scripts
             if (direction == Direction.Down)
             {
                 // ¬ычислим рассто€ние между карточками супругов:
-                float offset = horizontalSpacing * GlobalTreeCorrectionKoefficient/2;
+                float offset = (horizontalSpacing + GlobalTreeOffset) / 2f;
                 if (!familyService.hasHalf(current))
                 {
                     coordinates[current] = new Vector2(x, y);
@@ -127,7 +127,7 @@ namespace PrYFam.Assets.Scripts
 
                 // воспроизводим формулу:
                 float newY = y + offsetY;
-                float newX = x + (horizontalSpacing*GlobalTreeCorrectionKoefficient) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+                float newX = x + (horizontalSpacing + GlobalTreeOffset) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
                 // –екурсивно назначаем координаты
                 CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
             }

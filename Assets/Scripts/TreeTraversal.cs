@@ -14,12 +14,9 @@ namespace PrYFam.Assets.Scripts
         [SerializeField] private FamilyService familyService;
 
         [Header("Отступы:")]
-        [SerializeField] float VerticalSpacing;
-        [SerializeField] float HorizontalSpacing;
-        [SerializeField, Range(1f, 2f)] float GlobalTreeCorrectionKoefficient;
-
-        [Header("Время за которое карточки встают в свои позиции:")]
-        [SerializeField] float duration;
+        public float VerticalSpacing;
+        public  float HorizontalSpacing;
+        [Range(0f, 400f)] public float GlobalTreeOffset;    // Расстояние между 2умя карточками.
 
         [Header("Точные координаты каждой карточки:")]
         [SerializeField] Dictionary<Member, Vector2> coordinates;
@@ -38,13 +35,11 @@ namespace PrYFam.Assets.Scripts
                 basePosition,
                 HorizontalSpacing,
                 VerticalSpacing,
-                GlobalTreeCorrectionKoefficient
+                GlobalTreeOffset
             );
 
             // 3.
             hardRepositionCards();  // - жестко
-            //StartCoroutine(SmoothRepositionCards()); // - мягко
-            
         }
         /// <summary> Получаем карточки всех персонажей и тушим их. </summary>
         private void FadeCards() {
@@ -85,41 +80,6 @@ namespace PrYFam.Assets.Scripts
                     rectTransform.anchoredPosition = coordinates[member];
                 }
             }
-        }
-
-        /// <summary Плавно меняет позиции всех карточек. </summary>
-        private IEnumerator SmoothRepositionCards()
-        {
-            // Для каждой карточки плавно меняем позицию
-            foreach (var member in coordinates.Keys)
-            {
-                var memberGO = member.gameObject;
-
-                // Высвечиваем карточку(раз нам удалось нашим направленынм DFS её посетить при перессчёте координат)
-                memberGO.SetActive(true);
-
-                if (memberGO.TryGetComponent<RectTransform>(out var rectTransform))
-                {
-                    Vector2 targetPosition = coordinates[member];
-                    yield return StartCoroutine(SmoothMove(rectTransform, targetPosition, duration)); // Плавное движение, 0.5 секунд для анимации
-                }
-            }
-        }
-        private IEnumerator SmoothMove(RectTransform rectTransform, Vector2 targetPosition, float duration)
-        {
-            Vector2 startPosition = rectTransform.anchoredPosition;
-            float elapsedTime = 0f;
-
-            while (elapsedTime < duration)
-            {
-                // Линейная интерполяция между стартовой и целевой позицией
-                rectTransform.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, elapsedTime / duration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            // Убедимся, что конечная позиция установлена точно
-            rectTransform.anchoredPosition = targetPosition;
         }
     }
 }
