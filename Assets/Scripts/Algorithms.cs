@@ -24,7 +24,6 @@ namespace PrYFam.Assets.Scripts
         }
         private Member root;
         private FamilyService familyService;
-        private LinesController lineController;
         private Vector2 basePosition;
         private float horizontalSpacing, verticalSpacing;
         private Dictionary<Member, Vector2> coordinates;
@@ -33,11 +32,10 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// »нициализирует стартовые параметры дл€ переотрисовки.
         /// </summary>
-        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset, LinesController linesController)
+        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
         {
             this.root = root;
             this.familyService = familyService;
-            this.lineController = linesController;
             this.basePosition = basePosition;
             this.horizontalSpacing = horizontalSpacing;
             this.verticalSpacing = verticalSpacing;
@@ -49,9 +47,9 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// ѕерессчитывает координаты карточек.
         /// </summary>
-        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset, LinesController linesController)
+        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
         {
-            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, GlobalTreeOffset, linesController);
+            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, GlobalTreeOffset);
             Calculate();
             return coordinates;
         }
@@ -61,11 +59,13 @@ namespace PrYFam.Assets.Scripts
         /// </summary>
         private void Calculate()
         {
+            bool hasHalf = familyService.hasHalf(root);
             float startY = basePosition.y;
             float startX = basePosition.x;
 
-            // ¬ычисл€ем координаты дл€ двух направлений
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
+
+            startX = basePosition.x - (hasHalf ? (horizontalSpacing + GlobalTreeOffset) / 2f : 0f);
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
         }
 
@@ -77,41 +77,35 @@ namespace PrYFam.Assets.Scripts
             if (current == null)
                 return;
 
-            // ----------------- ќтрисовка ----------------------
-            // ¬ычислим рассто€ние между карточками супругов:
-            float offset = horizontalSpacing/2f + GlobalTreeOffset + horizontalSpacing / 2f;
-            
-            coordinates[current] = new Vector2(x, y);
-            if (familyService.hasHalf(current))
+            if (direction == Direction.Down)
             {
-                Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
-                coordinates[half] = new Vector2(x + offset, y);
-
-                if (current != root)
+                float offset = (horizontalSpacing + GlobalTreeOffset) / 2f;
+                if (!familyService.hasHalf(current))
                 {
-                    coordinates[half] = new Vector2(x + offset/2f, y);
-                    coordinates[current] = coordinates[half] - new Vector2(offset, 0);
+                    coordinates[current] = new Vector2(x, y);
+                }
+                if (familyService.hasHalf(current))
+                {
+                    coordinates[current] = new Vector2(x - offset, y);
+                    Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                    coordinates[half] = new Vector2(x + offset, y);
                 }
             }
+            if (direction == Direction.Up)
+            {
+                coordinates[current] = new Vector2(x, y);
+            }
             
-            // --------------------------------------------------
-
-            // ѕолучаем св€занных членов и их условные ширины
             List<Member> relatedMembers = direction == Direction.Down ? familyService.GetRelatedMembers(current, Relationship.ToChild) : familyService.GetRelatedMembers(current, Relationship.ToParent);
-
-            // ѕолучаем условные ширинџ подветвей в направлении которых движемс€
             List<int> subtreeWidths = new List<int>();
             foreach (var member in relatedMembers)
             {
                 subtreeWidths.Add(CalculateMnimWidth(member, direction));
             }
 
-
-            // -------------- ќбрабатываем св€занных членов и назначаем координаты --------------
-            // —мещение по вертикали зависит от направлени€ обхода
             float offsetY = direction == Direction.Down ? -verticalSpacing : verticalSpacing;
 
-            // »тераци€ по св€занным членам
+            
             for (int i = 0; i < relatedMembers.Count; i++)
             {
                 Member related = relatedMembers[i];
@@ -121,33 +115,12 @@ namespace PrYFam.Assets.Scripts
                 for (int k = 0; k < i; k++)
                     cumulativeWidth += subtreeWidths[k];
 
-                // воспроизводим формулу:
-                float newY = y + offsetY;
-
                 
-                // --------- если есть жена то всех детей надо чуть правее начать рисовать ---------
-                float spaceForChilds = 0;
-                if (familyService.hasHalf(current))
-                    spaceForChilds = (horizontalSpacing + GlobalTreeOffset) / 2f;
-                // ---------------------------------------------------------------------------------
-
-
-                // --------- ≈сли не делать это смещение, то дети с женами как бы наезжают на детей что правее. ---------
-                float correction = 0;
-                if (familyService.hasHalf(current))
-                {
-                    if (current != root)
-                    {
-                        correction = -offset / 2f;
-                    }
-                }
-                // ------------------------------------------------------------------------------------------------------
-
-                float newX = x + correction + spaceForChilds + (horizontalSpacing + GlobalTreeOffset) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
-                // –екурсивно назначаем координаты
+                float newY = y + offsetY;
+                float newX = x + (horizontalSpacing + GlobalTreeOffset) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+                
                 CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
             }
-            // ------------------------------------------------------------------------------------
         }
 
 

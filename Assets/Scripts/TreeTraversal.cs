@@ -37,8 +37,7 @@ namespace PrYFam.Assets.Scripts
                 basePosition,
                 HorizontalSpacing,
                 VerticalSpacing,
-                GlobalTreeOffset,
-                linesController
+                GlobalTreeOffset
             );
 
             
@@ -60,13 +59,17 @@ namespace PrYFam.Assets.Scripts
                 Member to = pair.To;
                 Relationship relationship = pair.Relationship;
 
-                if (familyService.hasHalf(from))
+                if (coordinates.ContainsKey(from) &&  coordinates.ContainsKey(to))
                 {
-                    Member half = familyService.GetRelatedMembers(from, Relationship.ToHalf).FirstOrDefault();
-                    linesController.DrawLine(from.gameObject, to.gameObject);
+                    if (familyService.hasHalf(from))
+                    {
+                        Member half = familyService.GetRelatedMembers(from, Relationship.ToHalf).FirstOrDefault();
+                        linesController.DrawLine(from.gameObject, to.gameObject);
+                    }
+                    if (!familyService.hasHalf(from))
+                        linesController.DrawLine(from.gameObject, to.gameObject);
                 }
-                if (!familyService.hasHalf(from))
-                    linesController.DrawLine(from.gameObject, to.gameObject);
+                
             }
         }
         /// <summary> ѕолучаем карточки всех персонажей и тушим их. </summary>

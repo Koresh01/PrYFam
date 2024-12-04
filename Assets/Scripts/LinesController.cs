@@ -16,7 +16,7 @@ namespace PrYFam.Assets.Scripts
         }
         public void DrawLine(GameObject from, GameObject to)
         {
-            GameObject line = Instantiate(Resources.Load<GameObject>("Prefabs/LineHolder"), from.transform.position, Quaternion.identity, from.transform);
+            GameObject line = Instantiate(Resources.Load<GameObject>("Prefabs/LineHolder"), from.transform.position, Quaternion.identity, placeHolder);
             LineRenderer lr = line.GetComponent<LineRenderer>();
 
             //from.GetComponent<RectTransform>().anchoredPosition = new Vector2(2,2);
