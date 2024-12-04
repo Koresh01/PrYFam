@@ -24,6 +24,7 @@ namespace PrYFam.Assets.Scripts
         }
         private Member root;
         private FamilyService familyService;
+        private LinesController lineController;
         private Vector2 basePosition;
         private float horizontalSpacing, verticalSpacing;
         private Dictionary<Member, Vector2> coordinates;
@@ -32,10 +33,11 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// »нициализирует стартовые параметры дл€ переотрисовки.
         /// </summary>
-        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
+        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset, LinesController linesController)
         {
             this.root = root;
             this.familyService = familyService;
+            this.lineController = linesController;
             this.basePosition = basePosition;
             this.horizontalSpacing = horizontalSpacing;
             this.verticalSpacing = verticalSpacing;
@@ -47,9 +49,9 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// ѕерессчитывает координаты карточек.
         /// </summary>
-        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
+        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset, LinesController linesController)
         {
-            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, GlobalTreeOffset);
+            Initialize(root, familyService, basePosition, horizontalSpacing, verticalSpacing, GlobalTreeOffset, linesController);
             Calculate();
             return coordinates;
         }
@@ -59,14 +61,11 @@ namespace PrYFam.Assets.Scripts
         /// </summary>
         private void Calculate()
         {
-            bool hasHalf = familyService.hasHalf(root);
             float startY = basePosition.y;
             float startX = basePosition.x;
 
             // ¬ычисл€ем координаты дл€ двух направлений
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
-
-            startX = basePosition.x - (hasHalf ? (horizontalSpacing + GlobalTreeOffset) / 2f : 0f);
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
         }
 
@@ -79,25 +78,22 @@ namespace PrYFam.Assets.Scripts
                 return;
 
             // ----------------- ќтрисовка ----------------------
-            if (direction == Direction.Down)
+            // ¬ычислим рассто€ние между карточками супругов:
+            float offset = horizontalSpacing/2f + GlobalTreeOffset + horizontalSpacing / 2f;
+            
+            coordinates[current] = new Vector2(x, y);
+            if (familyService.hasHalf(current))
             {
-                // ¬ычислим рассто€ние между карточками супругов:
-                float offset = (horizontalSpacing + GlobalTreeOffset) / 2f;
-                if (!familyService.hasHalf(current))
+                Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                coordinates[half] = new Vector2(x + offset, y);
+
+                if (current != root)
                 {
-                    coordinates[current] = new Vector2(x, y);
-                }
-                if (familyService.hasHalf(current))
-                {
-                    coordinates[current] = new Vector2(x - offset, y);
-                    Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
-                    coordinates[half] = new Vector2(x + offset, y);
+                    coordinates[half] = new Vector2(x + offset/2f, y);
+                    coordinates[current] = coordinates[half] - new Vector2(offset, 0);
                 }
             }
-            if (direction == Direction.Up)
-            {
-                coordinates[current] = new Vector2(x, y);
-            }
+            
             // --------------------------------------------------
 
             // ѕолучаем св€занных членов и их условные ширины
@@ -127,7 +123,27 @@ namespace PrYFam.Assets.Scripts
 
                 // воспроизводим формулу:
                 float newY = y + offsetY;
-                float newX = x + (horizontalSpacing + GlobalTreeOffset) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+
+                
+                // --------- если есть жена то всех детей надо чуть правее начать рисовать ---------
+                float spaceForChilds = 0;
+                if (familyService.hasHalf(current))
+                    spaceForChilds = (horizontalSpacing + GlobalTreeOffset) / 2f;
+                // ---------------------------------------------------------------------------------
+
+
+                // --------- ≈сли не делать это смещение, то дети с женами как бы наезжают на детей что правее. ---------
+                float correction = 0;
+                if (familyService.hasHalf(current))
+                {
+                    if (current != root)
+                    {
+                        correction = -offset / 2f;
+                    }
+                }
+                // ------------------------------------------------------------------------------------------------------
+
+                float newX = x + correction + spaceForChilds + (horizontalSpacing + GlobalTreeOffset) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
                 // –екурсивно назначаем координаты
                 CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
             }
@@ -165,7 +181,7 @@ namespace PrYFam.Assets.Scripts
             {
                 return Math.Max(1, width);
             }
-            
+
             // ќбработка остальных случаев (например, неизвестного направлени€)
             throw new ArgumentException($"Unknown direction: {direction}");
         }

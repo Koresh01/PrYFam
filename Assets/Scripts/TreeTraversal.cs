@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 namespace PrYFam.Assets.Scripts
 {
@@ -12,6 +13,7 @@ namespace PrYFam.Assets.Scripts
     {
         [Header("Зависимости:")]
         [SerializeField] private FamilyService familyService;
+        [SerializeField] private LinesController linesController;
 
         [Header("Отступы:")]
         public float VerticalSpacing;
@@ -35,11 +37,37 @@ namespace PrYFam.Assets.Scripts
                 basePosition,
                 HorizontalSpacing,
                 VerticalSpacing,
-                GlobalTreeOffset
+                GlobalTreeOffset,
+                linesController
             );
+
+            
 
             // 3.
             hardRepositionCards();  // - жестко
+
+            // 4. Отрисовка линий
+            ReDrawLines();
+        }
+
+        /// <summary> Перерисовывает все линии между людьми. </summary>
+        private void ReDrawLines()
+        {
+            linesController.delAllLines();
+            foreach (var pair in familyService.familyData.relationships)
+            {
+                Member from = pair.From;
+                Member to = pair.To;
+                Relationship relationship = pair.Relationship;
+
+                if (familyService.hasHalf(from))
+                {
+                    Member half = familyService.GetRelatedMembers(from, Relationship.ToHalf).FirstOrDefault();
+                    linesController.DrawLine(from.gameObject, to.gameObject);
+                }
+                if (!familyService.hasHalf(from))
+                    linesController.DrawLine(from.gameObject, to.gameObject);
+            }
         }
         /// <summary> Получаем карточки всех персонажей и тушим их. </summary>
         private void FadeCards() {
