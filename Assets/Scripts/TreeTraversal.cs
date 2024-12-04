@@ -59,17 +59,21 @@ namespace PrYFam.Assets.Scripts
                 Member to = pair.To;
                 Relationship relationship = pair.Relationship;
 
-                if (coordinates.ContainsKey(from) &&  coordinates.ContainsKey(to))
-                {
+                if (!(coordinates.ContainsKey(from) && coordinates.ContainsKey(to))) continue;
+
+                if (relationship == Relationship.ToChild) {
                     if (familyService.hasHalf(from))
                     {
                         Member half = familyService.GetRelatedMembers(from, Relationship.ToHalf).FirstOrDefault();
-                        linesController.DrawLine(from.gameObject, to.gameObject);
+                        linesController.DrawMergedLine(from.gameObject, half.gameObject, to.gameObject);
                     }
                     if (!familyService.hasHalf(from))
-                        linesController.DrawLine(from.gameObject, to.gameObject);
+                    {
+                        linesController.DrawDirectLine(from.gameObject, to.gameObject);
+                    }
+
+
                 }
-                
             }
         }
         /// <summary> ѕолучаем карточки всех персонажей и тушим их. </summary>
