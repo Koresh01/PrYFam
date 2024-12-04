@@ -60,12 +60,14 @@ namespace PrYFam.Assets.Scripts
         private void Calculate()
         {
             bool hasHalf = familyService.hasHalf(root);
+
+            float correction = hasHalf ? (horizontalSpacing + GlobalTreeOffset) / 2f : 0;
             float startY = basePosition.y;
-            float startX = basePosition.x;
+            float startX = basePosition.x + correction;
 
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
 
-            startX = basePosition.x - (hasHalf ? (horizontalSpacing + GlobalTreeOffset) / 2f : 0f);
+            startX = basePosition.x + correction - (hasHalf ? (horizontalSpacing + GlobalTreeOffset) / 2f : 0f);
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
         }
 

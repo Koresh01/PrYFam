@@ -689,8 +689,8 @@ MonoBehaviour:
   familyService: {fileID: 364671338}
   linesController: {fileID: 364671342}
   VerticalSpacing: 550
-  HorizontalSpacing: 450
-  GlobalTreeOffset: 125
+  HorizontalSpacing: 350
+  GlobalTreeOffset: 30
 --- !u!114 &364671342
 MonoBehaviour:
   m_ObjectHideFlags: 0
