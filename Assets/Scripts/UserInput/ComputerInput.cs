@@ -37,7 +37,7 @@ namespace PrYFam
             float newZ = oldZpos + scroll * zoomSpeed;
 
             // Проверка границ зума
-            if (newZ > minZoom || newZ < maxZoom)
+            if (newZ < minZoom || newZ > maxZoom)
                 return;
 
             // Создаем новый вектор с обновленным значением z

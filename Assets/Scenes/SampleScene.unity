@@ -1013,9 +1013,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 963194227}
-  panSpeed: 0.5
+  panSpeed: 0.25
   zoomSpeed: 5
-  maxZoom: -10
+  maxZoom: -2
   minZoom: -80
   zoomThreshold: 0.000001
 --- !u!4 &585675906
@@ -1047,8 +1047,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 963194227}
   movementSpeed: 5
-  zoomSpeed: 5
-  maxZoom: -10
+  zoomSpeed: 8
+  maxZoom: -2
   minZoom: -80
 --- !u!1 &630842692
 GameObject:

@@ -5,7 +5,7 @@ namespace PrYFam.Assets.Scripts
     public class MobileInput : MonoBehaviour
     {
         public Camera mainCamera; // Камера, которую мы будем перемещать и масштабировать
-        public float panSpeed = 0.5f; // Скорость перемещения камеры
+        public float panSpeed = 0.25f; // Скорость перемещения камеры
         public float zoomSpeed = 0.1f; // Скорость зума 
         public float maxZoom = -10f; // Максимальное значение позиции камеры по оси Z (ближе)
         public float minZoom = -50f; // Минимальное значение позиции камеры по оси Z (дальше)
@@ -35,10 +35,23 @@ namespace PrYFam.Assets.Scripts
                     Vector2 currentPanPosition = touch.position;
                     Vector2 panDelta = currentPanPosition - lastPanPosition;
 
+                    // ------------- Корректируем размер -------------
+                    // Определяем расстояние до плоскости Canvas
+                    float referenceDistance = 2f; // Плоскость Canvas находится на расстоянии 2 от камеры
+                    float distanceFactor = Mathf.Abs(mainCamera.transform.position.z) / referenceDistance;
+
+                    // Масштабируем panDelta в зависимости от distanceFactor
+                    panDelta *= distanceFactor * panSpeed;
+                    // -------------
+
                     // Перемещаем камеру в направлении, противоположном свайпу
-                    mainCamera.transform.Translate(-panDelta.x * panSpeed * Time.deltaTime,
-                                                   -panDelta.y * panSpeed * Time.deltaTime,
-                                                   0, Space.World);
+                    mainCamera.transform.Translate(
+                        -panDelta.x * Time.deltaTime,
+                        -panDelta.y * Time.deltaTime,
+                        0,
+                        Space.World
+                    );
+
 
                     lastPanPosition = currentPanPosition;
                 }
