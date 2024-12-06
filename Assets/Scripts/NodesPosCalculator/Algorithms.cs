@@ -74,22 +74,37 @@ namespace PrYFam.Assets.Scripts
             }
             if (hasHalf)
             {
-                // »щем pivot[середины] дл€ карточек супругов:
-                Vector2 spouseCardsMidpoint = new Vector2(
-                    basePosition.x + CardWidthWithOffset / 2f,
-                    basePosition.y
-                );
+                // ќпределим на кого конкретно нажал пользователь. Ќа левую карточку или правую?
+                Vector2 clickedPos  = root.gameObject.GetComponent<RectTransform>().anchoredPosition;
+                Vector2 halfPos     = half.gameObject.GetComponent<RectTransform>().anchoredPosition;
 
-                // ќтрисовываем древо вниз, относительно midcenter.
-                CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint.x, spouseCardsMidpoint.y, Direction.Down);
-
-                // Ќо родители должны отрисовыватьс€ строго выше одного из супругов.
-                // ќтрисовываем древо вверх, отталкива€сь от карточки на которую нажал пользователь.
-                Vector2 clickedPos = new Vector2(
-                        spouseCardsMidpoint.x -= CardWidthWithOffset / 2f,
-                        spouseCardsMidpoint.y
+                if (clickedPos.x < halfPos.x)   // ¬есьма опасна€ проверка, неизвестно кака€ позици€ присваиваетс€ карточке жены при создании.
+                {
+                    SetTraversalStrategy(new LeftToRightTraversal());
+                    // »щем pivot[середины] дл€ карточек супругов:
+                    Vector2 spouseCardsMidpoint = new Vector2(
+                        basePosition.x + CardWidthWithOffset / 2f,
+                        basePosition.y
                     );
-                CalculateNodeCoordinatesDirectionatly(root, clickedPos.x, clickedPos.y, Direction.Up);
+
+                    // ќтрисовываем древо вниз, относительно midcenter.
+                    CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint.x, spouseCardsMidpoint.y, Direction.Down);
+                    CalculateNodeCoordinatesDirectionatly(root, clickedPos.x, clickedPos.y, Direction.Up);
+                }
+                if (clickedPos.x > halfPos.x)
+                {
+                    SetTraversalStrategy(new RightToLeftTraversal());
+                    
+                    // »щем pivot[середины] дл€ карточек супругов:
+                    Vector2 spouseCardsMidpoint = new Vector2(
+                        basePosition.x - CardWidthWithOffset / 2f,
+                        basePosition.y
+                    );
+
+                    // ќтрисовываем древо вниз, относительно midcenter.
+                    CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint.x, spouseCardsMidpoint.y, Direction.Down);
+                    CalculateNodeCoordinatesDirectionatly(root, clickedPos.x, clickedPos.y, Direction.Up);
+                }
             }
         }
 
@@ -110,9 +125,18 @@ namespace PrYFam.Assets.Scripts
                 }
                 if (familyService.hasHalf(current))
                 {
-                    coordinates[current] = new Vector2(x - offset, y);
-                    Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
-                    coordinates[half] = new Vector2(x + offset, y);
+                    if (traversalStrategy.IsLeftToRight)
+                    {
+                        coordinates[current] = new Vector2(x - offset, y);
+                        Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                        coordinates[half] = new Vector2(x + offset, y);
+                    }
+                    if (!traversalStrategy.IsLeftToRight)
+                    {
+                        coordinates[current] = new Vector2(x + offset, y);
+                        Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                        coordinates[half] = new Vector2(x - offset, y);
+                    }
                 }
             }
             if (direction == Direction.Up)
