@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 using Unity.VisualScripting;
+using PrYFam.Assets.Scripts.NodesPosCalculator;
 
 namespace PrYFam.Assets.Scripts
 {
@@ -27,6 +28,9 @@ namespace PrYFam.Assets.Scripts
         private Vector2 basePosition;
         private float CardWidthWithOffset, CardHeight;
         private Dictionary<Member, Vector2> coordinates;
+
+        private ITraversalStrategy traversalStrategy = new LeftToRightTraversal(); // По умолчанию слева направо
+
 
         /// <summary>
         /// Инициализирует стартовые параметры для переотрисовки.
@@ -57,16 +61,36 @@ namespace PrYFam.Assets.Scripts
         /// </summary>
         private void Calculate()
         {
-            bool hasHalf = familyService.hasHalf(root);
+            bool hasHalf = familyService.hasHalf(root); // Проверяем есть ли жена. [Подразумевается, что жена максимум одна]
+            Member half = hasHalf ? familyService.GetRelatedMembers(root, Relationship.ToHalf).FirstOrDefault() : null;
 
-            float correction = hasHalf ? CardWidthWithOffset / 2f : 0;
-            float startY = basePosition.y;
-            float startX = basePosition.x + correction;
+            if (!hasHalf)
+            {
+                float startY = basePosition.y;
+                float startX = basePosition.x;
 
-            CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
+                CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);    // Отрисовка древа вверх.
+                CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);      // Отрисовка древа вниз.
+            }
+            if (hasHalf)
+            {
+                // Ищем pivot[середины] для карточек супругов:
+                Vector2 spouseCardsMidpoint = new Vector2(
+                    basePosition.x + CardWidthWithOffset / 2f,
+                    basePosition.y
+                );
 
-            startX = basePosition.x + correction - (hasHalf ? CardWidthWithOffset / 2f : 0f);
-            CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
+                // Отрисовываем древо вниз, относительно midcenter.
+                CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint.x, spouseCardsMidpoint.y, Direction.Down);
+
+                // Но родители должны отрисовываться строго выше одного из супругов.
+                // Отрисовываем древо вверх, отталкиваясь от карточки на которую нажал пользователь.
+                Vector2 clickedPos = new Vector2(
+                        spouseCardsMidpoint.x -= CardWidthWithOffset / 2f,
+                        spouseCardsMidpoint.y
+                    );
+                CalculateNodeCoordinatesDirectionatly(root, clickedPos.x, clickedPos.y, Direction.Up);
+            }
         }
 
         /// <summary>
@@ -95,8 +119,14 @@ namespace PrYFam.Assets.Scripts
             {
                 coordinates[current] = new Vector2(x, y);
             }
-            
-            List<Member> relatedMembers = direction == Direction.Down ? familyService.GetRelatedMembers(current, Relationship.ToChild) : familyService.GetRelatedMembers(current, Relationship.ToParent);
+
+            // Используем паттерн "стратегия" для порядка обхода.
+            var relatedMembers = traversalStrategy.Traverse(
+                direction == Direction.Down
+                    ? familyService.GetRelatedMembers(current, Relationship.ToChild)
+                    : familyService.GetRelatedMembers(current, Relationship.ToParent)
+            ).ToList();
+
             List<int> subtreeWidths = new List<int>();
             foreach (var member in relatedMembers)
             {
@@ -105,20 +135,29 @@ namespace PrYFam.Assets.Scripts
 
             float offsetY = direction == Direction.Down ? -CardHeight : CardHeight;
 
-            
             for (int i = 0; i < relatedMembers.Count; i++)
             {
                 Member related = relatedMembers[i];
-
-
+                
+                // Подссчёт условной ширины подветвей, которые левее рассматриваемой:
                 float cumulativeWidth = 0;
                 for (int k = 0; k < i; k++)
                     cumulativeWidth += subtreeWidths[k];
 
-                
+
                 float newY = y + offsetY;
-                float newX = x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
-                
+                float newX = 0;
+                if (traversalStrategy.IsLeftToRight)    // ?
+                {
+                    newX = x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+                }
+                if (!traversalStrategy.IsLeftToRight) // а теперь идём справа налево
+                {  
+                    newX = x + CardWidthWithOffset * (subtreeWidths.Sum() / 2f - cumulativeWidth - subtreeWidths[i] / 2f);
+                }
+
+
+
                 CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
             }
         }
@@ -157,6 +196,15 @@ namespace PrYFam.Assets.Scripts
 
             // Обработка остальных случаев (например, неизвестного направления)
             throw new ArgumentException($"Unknown direction: {direction}");
+        }
+
+        /// <summary>
+        ///  Устанавливает интерфейс для горизонтальной направленности движения при вычислении координат карточек. То есть если было осуществлено нажатие на ПРАВУЮ карточку, то делаем отрисовку справа-налево, а если нажали на ЛЕВУЮ то отрисовываем слева-направо.
+        /// </summary>
+        /// <param name="strategy"> Экземпляр класса LeftToRightTraversal или RightToLeftTraversal. </param>
+        public void SetTraversalStrategy(ITraversalStrategy strategy)
+        {
+            traversalStrategy = strategy;
         }
     }
 }
