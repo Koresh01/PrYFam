@@ -7,13 +7,14 @@ namespace PrYFam
     public class ComputerInput : MonoBehaviour
     {
         [SerializeField] private Camera mainCamera;
+
+        [SerializeField] CommonInputSettings commonInputSettings;
+
         [Header("Скорость перемещения камеры по поверхности:")]
         public float movementSpeed = 5f;
 
         [Header("Отдаление/приближение колесом мыши:")]
         public float zoomSpeed = 5.0f;
-        public float maxZoom = -2f; // Максимальное значение позиции камеры по оси Z (ближе)
-        public float minZoom = -80f; // Минимальное значение позиции камеры по оси Z (дальше)
 
         void Update()
         {
@@ -36,6 +37,8 @@ namespace PrYFam
 
             float newZ = oldZpos + scroll * zoomSpeed;
 
+            float minZoom = commonInputSettings.minZoom;
+            float maxZoom = commonInputSettings.maxZoom;
             // Проверка границ зума
             if (newZ < minZoom || newZ > maxZoom)
                 return;

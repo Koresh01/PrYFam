@@ -5,11 +5,10 @@ namespace PrYFam.Assets.Scripts
     public class MobileInput : MonoBehaviour
     {
         public Camera mainCamera; // Камера, которую мы будем перемещать и масштабировать
-        //public float panSpeed = 0.25f; // Скорость перемещения камеры
-        public float zoomSpeed = 0.1f; // Скорость зума 
-        public float maxZoom = -10f; // Максимальное значение позиции камеры по оси Z (ближе)
-        public float minZoom = -50f; // Минимальное значение позиции камеры по оси Z (дальше)
-        public float zoomThreshold = 1f; // Минимальное изменение расстояния между пальцами для зума
+                                  //public float panSpeed = 0.25f; // Скорость перемещения камеры
+                                  //public float zoomSpeed = 0.1f; // Скорость зума 
+        [SerializeField] CommonInputSettings commonInputSettings;        
+       
 
         private Vector2 lastPanPosition; // Последняя позиция пальца для отслеживания перемещения
         private int panFingerId; // ID пальца, который используется для перемещения
@@ -61,29 +60,48 @@ namespace PrYFam.Assets.Scripts
                 if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
                 {
                     isZooming = true;
-                    lastTouchDistance = Vector2.Distance(touch1.position, touch2.position);
+                    // Инициалзируем рассточние между пальцами в начале выполнения жеста "Приближение/Отдаление":
+                    lastTouchDistance = Vector2.Distance(
+                        mainCamera.ScreenToWorldPoint(new Vector3(touch1.position.x, touch1.position.y, mainCamera.nearClipPlane)),
+                        mainCamera.ScreenToWorldPoint(new Vector3(touch2.position.x, touch2.position.y, mainCamera.nearClipPlane))
+                    );
                 }
                 else if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
                 {
                     if (isZooming)
                     {
-                        float currentTouchDistance = Vector2.Distance(touch1.position, touch2.position);
-                        float distanceDelta = currentTouchDistance - lastTouchDistance;
+                        // Узнаём новое рассточние между пальцами в момент, когда пальцы перемещаются:
+                        float currentTouchDistance = Vector2.Distance(
+                            mainCamera.ScreenToWorldPoint(new Vector3(touch1.position.x, touch1.position.y, mainCamera.nearClipPlane)),
+                            mainCamera.ScreenToWorldPoint(new Vector3(touch2.position.x, touch2.position.y, mainCamera.nearClipPlane))
+                        );
+                        
+                        // Разница между разницами этих самых расстояний:
+                        float worldDelta = currentTouchDistance - lastTouchDistance;    // это ооочень маленькая величина.
+                        worldDelta *= 70f;
 
-                        // Проверяем, достаточно ли большое изменение расстояния для зума
-                        if (Mathf.Abs(distanceDelta) > zoomThreshold)
+                        // Вычисляем смещение камеры по оси Z
+                        Vector3 zoomDelta = new Vector3(0, 0, worldDelta);
+
+                        // Применяем ограничение, преобразовав новую позицию камеры
+                        float newZ = mainCamera.transform.position.z + zoomDelta.z;
+                        float minZoom = commonInputSettings.minZoom;
+                        float maxZoom = commonInputSettings.maxZoom;
+
+                        // Если смещение выводит камеру за пределы зума, ограничиваем его
+                        if (newZ < minZoom)
                         {
-                            // Масштабируем камеру, перемещая её по оси Z
-                            float newZ = mainCamera.transform.position.z + distanceDelta * zoomSpeed * Time.deltaTime;
-                            newZ = Mathf.Clamp(newZ, minZoom, maxZoom); // Ограничиваем Z в заданных пределах. Внимание!!! Эта функция принимает сначала значение поменьше, а затем побольше. В нашем случае minZoom = - 2; maxZoom = -80, canvas.Z = 0;
-                            
-                            
-                            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x,
-                                                                         mainCamera.transform.position.y,
-                                                                         newZ);
-
-                            lastTouchDistance = currentTouchDistance;   // обновляем расстояние
+                            zoomDelta.z = minZoom - mainCamera.transform.position.z;
                         }
+                        else if (newZ > maxZoom)
+                        {
+                            zoomDelta.z = maxZoom - mainCamera.transform.position.z;
+                        }
+
+                        // Перемещаем камеру с учетом ограничений
+                        mainCamera.transform.Translate(zoomDelta, Space.World);
+
+                        lastTouchDistance = currentTouchDistance;   // обновляем расстояние
                     }
                 }
                 else if (touch1.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Canceled ||
