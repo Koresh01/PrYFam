@@ -27,8 +27,8 @@ namespace PrYFam.Assets.Scripts
 
         private void Awake()
         {
-            CardHeight = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.x;
-            CardWidth = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.y;
+            CardHeight = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.y;
+            CardWidth = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.x;
 
             CardWidth += GlobalTreeOffset;
             CardHeight += GlobalTreeOffset;
