@@ -29,6 +29,9 @@ namespace PrYFam.Assets.Scripts
         {
             CardHeight = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.x;
             CardWidth = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.y;
+
+            CardWidth += GlobalTreeOffset;
+            CardHeight += GlobalTreeOffset;
         }
 
         public void ReDrawTree(Member root, Vector2 basePosition)
@@ -44,11 +47,8 @@ namespace PrYFam.Assets.Scripts
                 familyService,
                 basePosition,
                 CardWidth,
-                CardHeight,
-                GlobalTreeOffset
+                CardHeight
             );
-
-            
 
             // 3.
             hardRepositionCards();  // - жестко

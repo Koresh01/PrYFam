@@ -30,8 +30,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1305623210234261904}
   - {fileID: 6414903489418118690}
+  - {fileID: 1305623210234261904}
   - {fileID: 1807883807357238707}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -902,7 +902,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1305623210234261904}
   m_Layer: 5
-  m_Name: Images
+  m_Name: Environment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

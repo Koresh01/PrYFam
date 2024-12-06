@@ -25,21 +25,19 @@ namespace PrYFam.Assets.Scripts
         private Member root;
         private FamilyService familyService;
         private Vector2 basePosition;
-        private float CardWidth, CardHeight;
+        private float CardWidthWithOffset, CardHeight;
         private Dictionary<Member, Vector2> coordinates;
-        private float GlobalTreeOffset; // –ассто€ние между 2ум€ карточками.
 
         /// <summary>
         /// »нициализирует стартовые параметры дл€ переотрисовки.
         /// </summary>
-        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing, float GlobalTreeOffset)
+        private void Initialize(Member root, FamilyService familyService, Vector2 basePosition, float horizontalSpacing, float verticalSpacing)
         {
             this.root = root;
             this.familyService = familyService;
             this.basePosition = basePosition;
-            this.CardWidth = horizontalSpacing;
+            this.CardWidthWithOffset = horizontalSpacing;
             this.CardHeight = verticalSpacing;
-            this.GlobalTreeOffset = GlobalTreeOffset;
 
             this.coordinates = new Dictionary<Member, Vector2>();
         }
@@ -47,9 +45,9 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// ѕерессчитывает координаты карточек.
         /// </summary>
-        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float CardWidth, float CardHeight, float GlobalTreeOffset)
+        public Dictionary<Member, Vector2> ReCalculate(Member root, FamilyService familyService, Vector2 basePosition, float CardWidth, float CardHeight)
         {
-            Initialize(root, familyService, basePosition, CardWidth, CardHeight, GlobalTreeOffset);
+            Initialize(root, familyService, basePosition, CardWidth, CardHeight);
             Calculate();
             return coordinates;
         }
@@ -61,13 +59,13 @@ namespace PrYFam.Assets.Scripts
         {
             bool hasHalf = familyService.hasHalf(root);
 
-            float correction = hasHalf ? (CardWidth + GlobalTreeOffset) / 2f : 0;
+            float correction = hasHalf ? CardWidthWithOffset / 2f : 0;
             float startY = basePosition.y;
             float startX = basePosition.x + correction;
 
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);
 
-            startX = basePosition.x + correction - (hasHalf ? (CardWidth + GlobalTreeOffset) / 2f : 0f);
+            startX = basePosition.x + correction - (hasHalf ? CardWidthWithOffset / 2f : 0f);
             CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);
         }
 
@@ -81,7 +79,7 @@ namespace PrYFam.Assets.Scripts
 
             if (direction == Direction.Down)
             {
-                float offset = (CardWidth + GlobalTreeOffset) / 2f;
+                float offset = CardWidthWithOffset / 2f;
                 if (!familyService.hasHalf(current))
                 {
                     coordinates[current] = new Vector2(x, y);
@@ -119,7 +117,7 @@ namespace PrYFam.Assets.Scripts
 
                 
                 float newY = y + offsetY;
-                float newX = x + (CardWidth + GlobalTreeOffset) * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+                float newX = x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
                 
                 CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
             }

@@ -567,7 +567,7 @@ MonoBehaviour:
   linesController: {fileID: 364671342}
   CardHeight: 0
   CardWidth: 0
-  GlobalTreeOffset: 30
+  GlobalTreeOffset: 122
 --- !u!114 &364671342
 MonoBehaviour:
   m_ObjectHideFlags: 0
