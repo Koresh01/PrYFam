@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using System.ComponentModel;
 
 namespace PrYFam.Assets.Scripts
 {
@@ -16,12 +17,19 @@ namespace PrYFam.Assets.Scripts
         [SerializeField] private LinesController linesController;
 
         [Header("Отступы:")]
-        public float VerticalSpacing;
-        public  float HorizontalSpacing;
+        public float CardHeight;
+        public float CardWidth;
         [Range(0f, 400f)] public float GlobalTreeOffset;    // Расстояние между 2умя карточками.
 
         [Header("Точные координаты каждой карточки:")]
         [SerializeField] Dictionary<Member, Vector2> coordinates;
+
+
+        private void Awake()
+        {
+            CardHeight = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.x;
+            CardWidth = familyService.personCardPrefab.GetComponent<RectTransform>().sizeDelta.y;
+        }
 
         public void ReDrawTree(Member root, Vector2 basePosition)
         {
@@ -35,8 +43,8 @@ namespace PrYFam.Assets.Scripts
                 root,
                 familyService,
                 basePosition,
-                HorizontalSpacing,
-                VerticalSpacing,
+                CardWidth,
+                CardHeight,
                 GlobalTreeOffset
             );
 

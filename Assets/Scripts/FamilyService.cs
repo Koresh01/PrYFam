@@ -12,7 +12,7 @@ namespace PrYFam.Assets.Scripts
     /// </summary>
     public class FamilyService : MonoBehaviour
     {
-        [SerializeField] GameObject personCardPrefab;
+        public GameObject personCardPrefab;
         [SerializeField] Transform cardsPlaceHolder;
         [Header("Зависимости:")]
         public FamilyData familyData;

@@ -550,13 +550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f13c9f6a0857584d9b2b0e18ff90d82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  relationships:
-  - From: {fileID: 0}
-    To: {fileID: 0}
-    Relationship: 0
-  - From: {fileID: 0}
-    To: {fileID: 0}
-    Relationship: 2
+  relationships: []
 --- !u!114 &364671341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,8 +565,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   familyService: {fileID: 364671338}
   linesController: {fileID: 364671342}
-  VerticalSpacing: 550
-  HorizontalSpacing: 350
+  CardHeight: 0
+  CardWidth: 0
   GlobalTreeOffset: 30
 --- !u!114 &364671342
 MonoBehaviour:
