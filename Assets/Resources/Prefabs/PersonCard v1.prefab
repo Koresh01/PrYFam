@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 8844235613919088770}
   - component: {fileID: 3646899339574367868}
   m_Layer: 5
-  m_Name: PersonCard
+  m_Name: PersonCard v1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

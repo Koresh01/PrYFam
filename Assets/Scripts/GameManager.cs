@@ -9,16 +9,22 @@ namespace PrYFam.Assets.Scripts
         [SerializeField] private TreeTraversal treeTraversal;
         void Start()
         {
-            //CreateFamilyTree();
+            CreateFamilyTree();
         }
 
         public void CreateFamilyTree()
         {
-            /*
-            GameObject go1 = familyService.newMember();
-            GameObject go2 = familyService.newMember();
-            familyService.AddConnection(go1, go2, Relationship.ToChild);
-            */
+            GameObject go1 = familyService.createMemberGameObject();
+            GameObject go2 = familyService.createMemberGameObject();
+
+            Member from = go1.GetComponent<Member>();
+            Member to = go2.GetComponent<Member>();
+
+
+            familyService.AddConnection(from, to, Relationship.ToChild);
+            treeTraversal.ReDrawTree(from, new Vector2(0,0));
+
+
             Debug.Log("Family tree was created.");
         }
 

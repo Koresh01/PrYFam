@@ -39,7 +39,7 @@ namespace PrYFam.Assets.Scripts
             Member from = From.GetComponent<Member>();
             if (!CanAddConnection(from, relationship)) return;
             
-            GameObject newMemberObj = createGameObject();
+            GameObject newMemberObj = createMemberGameObject();
             Member to = newMemberObj.GetComponent<Member>();
 
             AddConnection(from, to, relationship);
@@ -47,7 +47,7 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// Создаёт карточку префаба человека.
         /// </summary>
-        private GameObject createGameObject()
+        public GameObject createMemberGameObject()
         {
             var go = Instantiate(personCardPrefab, cardsPlaceHolder);
             go.SetActive(false);    // Отображаться они начнут после отрисовки.
@@ -56,15 +56,8 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// Добавляет связь между игровыми объектами prefab-ами: [PersonCard] в семейное древо.
         /// </summary>
-        private void AddConnection(Member from, Member to, Relationship relationship = Relationship.None)
+        public void AddConnection(Member from, Member to, Relationship relationship = Relationship.None)
         {
-            
-
-            // тут где то нужна проверка
-            // типо если relationship == ToHalf => пользователь жедает добавить жену.
-            // А значит дети Member from - это ещё и дети Member to;
-            // to.children = from.children
-
             // обработка неликвидных ситуаций
             switch (relationship)
             {
