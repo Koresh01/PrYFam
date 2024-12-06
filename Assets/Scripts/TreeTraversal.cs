@@ -36,7 +36,6 @@ namespace PrYFam.Assets.Scripts
 
         public void ReDrawTree(Member root, Vector2 basePosition)
         {
-            Debug.Log("Перерисовка древа на основе FamilyData.");
             // 1.
             FadeCards();
             FadeSelectedCardBound(root);

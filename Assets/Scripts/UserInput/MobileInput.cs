@@ -5,7 +5,7 @@ namespace PrYFam.Assets.Scripts
     public class MobileInput : MonoBehaviour
     {
         public Camera mainCamera; // Камера, которую мы будем перемещать и масштабировать
-        public float panSpeed = 0.25f; // Скорость перемещения камеры
+        //public float panSpeed = 0.25f; // Скорость перемещения камеры
         public float zoomSpeed = 0.1f; // Скорость зума 
         public float maxZoom = -10f; // Максимальное значение позиции камеры по оси Z (ближе)
         public float minZoom = -50f; // Минимальное значение позиции камеры по оси Z (дальше)
@@ -33,25 +33,18 @@ namespace PrYFam.Assets.Scripts
                 else if (touch.phase == TouchPhase.Moved && isPanning) // Перемещение пальца
                 {
                     Vector2 currentPanPosition = touch.position;
+
+                    // Разница в пикселях на экране
                     Vector2 panDelta = currentPanPosition - lastPanPosition;
 
-                    // ------------- Корректируем размер -------------
-                    // Определяем расстояние до плоскости Canvas
-                    float referenceDistance = 2f; // Плоскость Canvas находится на расстоянии 2 от камеры
-                    float distanceFactor = Mathf.Abs(mainCamera.transform.position.z) / referenceDistance;
+                    // Переводим разницу в мировые координаты
+                    Vector3 worldDelta = mainCamera.ScreenToWorldPoint(new Vector3(currentPanPosition.x, currentPanPosition.y, mainCamera.nearClipPlane)) -
+                                         mainCamera.ScreenToWorldPoint(new Vector3(lastPanPosition.x, lastPanPosition.y, mainCamera.nearClipPlane));
 
-                    // Масштабируем panDelta в зависимости от distanceFactor
-                    panDelta *= distanceFactor * panSpeed;
-                    // -------------
+                    worldDelta *= 70f;
 
-                    // Перемещаем камеру в направлении, противоположном свайпу
-                    mainCamera.transform.Translate(
-                        -panDelta.x * Time.deltaTime,
-                        -panDelta.y * Time.deltaTime,
-                        0,
-                        Space.World
-                    );
-
+                    // Перемещаем камеру
+                    mainCamera.transform.Translate(-worldDelta.x, -worldDelta.y, 0, Space.World);
 
                     lastPanPosition = currentPanPosition;
                 }
