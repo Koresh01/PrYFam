@@ -64,13 +64,14 @@ namespace PrYFam.Assets.Scripts
             bool hasHalf = familyService.hasHalf(root); // Проверяем есть ли жена. [Подразумевается, что жена максимум одна]
             Member half = hasHalf ? familyService.GetRelatedMembers(root, Relationship.ToHalf).FirstOrDefault() : null;
 
+            
+
             if (!hasHalf)
             {
-                float startY = basePosition.y;
-                float startX = basePosition.x;
+                Vector2 startPosition = basePosition;
 
-                CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Down);    // Отрисовка древа вверх.
-                CalculateNodeCoordinatesDirectionatly(root, startX, startY, Direction.Up);      // Отрисовка древа вниз.
+                CalculateNodeCoordinatesDirectionatly(root, startPosition, Direction.Down);    // Отрисовка древа вверх.
+                CalculateNodeCoordinatesDirectionatly(root, startPosition, Direction.Up);      // Отрисовка древа вниз.
             }
             if (hasHalf)
             {
@@ -88,8 +89,8 @@ namespace PrYFam.Assets.Scripts
                     );
 
                     // Отрисовываем древо вниз, относительно midcenter.
-                    CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint.x, spouseCardsMidpoint.y, Direction.Down);
-                    CalculateNodeCoordinatesDirectionatly(root, clickedPos.x, clickedPos.y, Direction.Up);
+                    CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint, Direction.Down);
+                    CalculateNodeCoordinatesDirectionatly(root, clickedPos, Direction.Up);
                 }
                 if (clickedPos.x > halfPos.x)
                 {
@@ -102,16 +103,20 @@ namespace PrYFam.Assets.Scripts
                     );
 
                     // Отрисовываем древо вниз, относительно midcenter.
-                    CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint.x, spouseCardsMidpoint.y, Direction.Down);
-                    CalculateNodeCoordinatesDirectionatly(root, clickedPos.x, clickedPos.y, Direction.Up);
+                    CalculateNodeCoordinatesDirectionatly(root, spouseCardsMidpoint, Direction.Down);
+                    CalculateNodeCoordinatesDirectionatly(root, clickedPos, Direction.Up);
                 }
             }
         }
 
+
         /// <summary>
-        /// Рекурсивно назначает координаты узлам дерева, идя в заданном направлении: вверх или вниз.
+        /// Рекурсивно назначает координаты узлам дерева, идя в заданном направлении: вверх или вниз. 
         /// </summary>
-        private void CalculateNodeCoordinatesDirectionatly(Member current, float x, float y, Direction direction)
+        /// <param name="current"> Член семьи относительно которого производим обход древа. </param>
+        /// <param name="branchMidpoint"> Позиция середины этой подветви. </param>
+        /// <param name="direction"> Вертикальное направление обхода.</param>
+        private void CalculateNodeCoordinatesDirectionatly(Member current, Vector2 branchMidpoint, Direction direction)
         {
             if (current == null)
                 return;
@@ -121,30 +126,30 @@ namespace PrYFam.Assets.Scripts
                 float offset = CardWidthWithOffset / 2f;
                 if (!familyService.hasHalf(current))
                 {
-                    coordinates[current] = new Vector2(x, y);
+                    coordinates[current] = branchMidpoint;
                 }
                 if (familyService.hasHalf(current))
                 {
                     if (traversalStrategy.IsLeftToRight)
                     {
-                        coordinates[current] = new Vector2(x - offset, y);
+                        coordinates[current]    = branchMidpoint - new Vector2(offset, 0);
                         Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
-                        coordinates[half] = new Vector2(x + offset, y);
+                        coordinates[half]       = branchMidpoint + new Vector2(offset, 0);
                     }
                     if (!traversalStrategy.IsLeftToRight)
                     {
-                        coordinates[current] = new Vector2(x + offset, y);
+                        coordinates[current]    = branchMidpoint + new Vector2(offset, 0);
                         Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
-                        coordinates[half] = new Vector2(x - offset, y);
+                        coordinates[half]       = branchMidpoint - new Vector2(offset, 0);
                     }
                 }
             }
             if (direction == Direction.Up)
             {
-                coordinates[current] = new Vector2(x, y);
+                coordinates[current] = branchMidpoint;
             }
 
-            // Используем паттерн "стратегия" для порядка обхода.
+            // Используем паттерн "стратегия" для порядка обхода. На самом деле порядок всегда один и тот же... Мы там в обычом порядке возвращаем relatedMembers.
             var relatedMembers = traversalStrategy.Traverse(
                 direction == Direction.Down
                     ? familyService.GetRelatedMembers(current, Relationship.ToChild)
@@ -169,20 +174,20 @@ namespace PrYFam.Assets.Scripts
                     cumulativeWidth += subtreeWidths[k];
 
 
-                float newY = y + offsetY;
+                float newY = branchMidpoint.y + offsetY;
                 float newX = 0;
-                if (traversalStrategy.IsLeftToRight)    // ?
+                if (traversalStrategy.IsLeftToRight)    // Значит было нажатие на левую карточку супругов.
                 {
-                    newX = x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+                    newX = branchMidpoint.x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
                 }
-                if (!traversalStrategy.IsLeftToRight) // а теперь идём справа налево
+                if (!traversalStrategy.IsLeftToRight)   // Значит было нажатие на правую карточку супругов.
                 {  
-                    newX = x + CardWidthWithOffset * (subtreeWidths.Sum() / 2f - cumulativeWidth - subtreeWidths[i] / 2f);
+                    newX = branchMidpoint.x + CardWidthWithOffset * (subtreeWidths.Sum() / 2f - cumulativeWidth - subtreeWidths[i] / 2f);
                 }
 
 
-
-                CalculateNodeCoordinatesDirectionatly(related, newX, newY, direction);
+                Vector2 nextMidPoint = new Vector2(newX, newY);
+                CalculateNodeCoordinatesDirectionatly(related, nextMidPoint, direction);
             }
         }
 
