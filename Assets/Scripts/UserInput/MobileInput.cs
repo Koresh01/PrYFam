@@ -97,8 +97,13 @@ namespace PrYFam.Assets.Scripts
             {
                 if (isZooming)
                 {
-                    float currentTouchDistance = CalculateTouchDistance(touch1.position, touch2.position);
+                    float currentTouchDistance = CalculateTouchDistance(touch1.position, touch2.position);  // Обратите внимание: 10 пикселей на экране и 10 единиц в игровом мире — это разные масштабы.
                     float delta = currentTouchDistance - lastTouchDistance;
+
+                    // Преобразуем разницу расстояния в экранных координатах в условное изменение масштаба в мировых координатах.
+                    // Обратите внимание: 10 пикселей на экране и 10 единиц в игровом мире — это разные масштабы.
+                    // Константа 10f определяет, насколько сильно пиксельные изменения влияют на изменение масштаба.
+                    delta /= 18f;
 
                     // Настраиваем зум
                     ApplyZoom(delta);
@@ -125,17 +130,7 @@ namespace PrYFam.Assets.Scripts
         }
 
         /// <summary>
-        /// Получает множитель x(z) на основе позиции камеры.
-        /// </summary>
-        /// <param name="z">Текущее значение z камеры</param>
-        /// <returns>Значение множителя</returns>
-        private float GetZoomMultiplier(float z)
-        {
-            return zoomMultiplierCurve.Evaluate(z);
-        }
-
-        /// <summary>
-        /// Вычисляет разницу между двумя точками в мировых координатах.
+        /// Вычисляет разницу(которая может быть и отрицательной) между двумя точками в мировых координатах.
         /// </summary>
         private Vector3 CalculateWorldDelta(Vector2 startScreenPos, Vector2 endScreenPos)
         {
@@ -145,8 +140,11 @@ namespace PrYFam.Assets.Scripts
         }
 
         /// <summary>
-        /// Вычисляет расстояние между двумя точками на экране.
+        /// Вычисляет расстояние(только положительное значение) между двумя точками на экране.
         /// </summary>
+        /// <returns>
+        /// Значение в пикселях.
+        /// </returns>
         private float CalculateTouchDistance(Vector2 pos1, Vector2 pos2)
         {
             return Vector2.Distance(pos1, pos2);
@@ -184,7 +182,16 @@ namespace PrYFam.Assets.Scripts
 
             return curve;
         }
-
+        
+        /// <summary>
+        /// Получает множитель x(z) на основе позиции камеры.
+        /// </summary>
+        /// <param name="z">Текущее значение z камеры</param>
+        /// <returns>Значение множителя</returns>
+        private float GetZoomMultiplier(float z)
+        {
+            return zoomMultiplierCurve.Evaluate(z);
+        }
         #endregion
     }
 }
