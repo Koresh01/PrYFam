@@ -7,13 +7,12 @@ namespace PrYFam.Assets.Scripts
     /// </summary>
     public class MobileInput : MonoBehaviour
     {
-        [Header("Настройки камеры")]
-        [Tooltip("Основная камера, которой управляет скрипт")]
-        public Camera mainCamera;
-
         [Tooltip("Общие настройки ввода")]
         [SerializeField]
         private CommonInputSettings commonInputSettings;
+
+        [Tooltip("Основная камера, которой управляет скрипт")]
+        private Camera mainCamera;
 
         [Header("График множителя")]
         [Tooltip("График зависимости множителя x от позиции камеры z")]
@@ -28,15 +27,9 @@ namespace PrYFam.Assets.Scripts
 
         private void Start()
         {
-            float leftZoomX = commonInputSettings.maxZoom;
-            float rightZoomX = commonInputSettings.minZoom;
-
-            // Создаём линейную зависимость для множителя multiplier.
-
-            // Коэффициент 3f определяет насколько сильнее будет умножаться разница между пальцами.
-            float maxValue = rightZoomX * 3f;
-            float minValue = leftZoomX * 3f;
-            zoomMultiplierCurve = CreateLinearZoomCurve(leftZoomX, rightZoomX, minValue, maxValue);
+            mainCamera = commonInputSettings.mainCamera;
+            InitGraphic();
+            
         }
 
         void Update()
@@ -52,6 +45,7 @@ namespace PrYFam.Assets.Scripts
         }
 
         #region input
+        
         /// <summary>
         /// Обрабатывает жест перемещения камеры.
         /// </summary>
@@ -153,8 +147,29 @@ namespace PrYFam.Assets.Scripts
         {
             return Vector2.Distance(pos1, pos2);
         }
+
         #endregion
+
+
+
         #region touchMultiplier
+
+        /// <summary>
+        /// Создаёт график зависимости множителя свайпа от расстояния камеры ДО карточек.
+        /// </summary>
+        private void InitGraphic()
+        {
+            float leftZoomX = commonInputSettings.maxZoom;
+            float rightZoomX = commonInputSettings.minZoom;
+
+            // Создаём линейную зависимость для множителя multiplier.
+
+            // Коэффициент 3f определяет насколько сильнее будет умножаться разница между пальцами.
+            float maxValue = rightZoomX * 3f;
+            float minValue = leftZoomX * 3f;
+            zoomMultiplierCurve = CreateLinearZoomCurve(leftZoomX, rightZoomX, minValue, maxValue);
+        }
+
         /// <summary>
         /// Создаёт линейную зависимость для AnimationCurve между двумя точками.
         /// </summary>
@@ -197,6 +212,7 @@ namespace PrYFam.Assets.Scripts
         {
             return zoomMultiplierCurve.Evaluate(-z);    // т.к. позиция камеры по оси Z у нас отрицательная.
         }
+        
         #endregion
     }
 }
