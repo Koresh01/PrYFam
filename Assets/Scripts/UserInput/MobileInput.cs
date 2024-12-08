@@ -28,19 +28,15 @@ namespace PrYFam.Assets.Scripts
 
         private void Start()
         {
-            float maxZoom = commonInputSettings.maxZoom;
-            float minZoom = commonInputSettings.minZoom;
+            float leftZoomX = commonInputSettings.maxZoom;
+            float rightZoomX = commonInputSettings.minZoom;
 
-            // Создаём линейную зависимость
-            // Для minZoom = 2
-            // Для maxZoom = 50
-            //zoomMultiplierCurve = CreateLinearZoomCurve(minZoom, maxZoom, 250, 5);
-
+            // Создаём линейную зависимость для множителя multiplier.
 
             // Коэффициент 3f определяет насколько сильнее будет умножаться разница между пальцами.
-            float maxValue = minZoom * 3f;
-            float minValue = maxZoom * 3f;
-            zoomMultiplierCurve = CreateLinearZoomCurve(minZoom, maxZoom, maxValue, minValue);
+            float maxValue = rightZoomX * 3f;
+            float minValue = leftZoomX * 3f;
+            zoomMultiplierCurve = CreateLinearZoomCurve(leftZoomX, rightZoomX, minValue, maxValue);
         }
 
         void Update()
@@ -167,23 +163,23 @@ namespace PrYFam.Assets.Scripts
         /// <param name="maxValue">Значение функции при максимальном z.</param>
         /// <param name="minValue">Значение функции при минимальном z.</param>
         /// <returns>Линейная AnimationCurve между заданными точками.</returns>
-        private AnimationCurve CreateLinearZoomCurve(float minZoom, float maxZoom, float maxValue, float minValue)
+        private AnimationCurve CreateLinearZoomCurve(float leftZoomX, float rightZoomX, float minValue, float maxValue)
         {
             // Создаём новую AnimationCurve
             AnimationCurve curve = new AnimationCurve();
 
             // Добавляем ключи
-            Keyframe firstKey = new Keyframe(maxZoom, minValue);
-            Keyframe secondKey = new Keyframe(minZoom, maxValue);
+            Keyframe firstKey = new Keyframe(leftZoomX, minValue);
+            Keyframe secondKey = new Keyframe(rightZoomX, maxValue);
 
             // Вычисляем тангенсы для линейной зависимости
-            float tangent = (maxValue - minValue) / (minZoom - maxZoom);
+            float tangent = (maxValue - minValue) / (rightZoomX - leftZoomX);
 
 
-            firstKey.inTangent = tangent;           // Входной тангенс начальной точки
+            firstKey.inTangent = 0;           // Входной тангенс начальной точки
             firstKey.outTangent = tangent;          // Выходной тангенс начальной точки
             secondKey.inTangent = tangent;          // Входной тангенс конечной точки
-            secondKey.outTangent = tangent;         // Выходной тангенс конечной точки
+            secondKey.outTangent = 0;         // Выходной тангенс конечной точки
 
             // Добавляем ключи в график
             curve.AddKey(firstKey);
