@@ -32,7 +32,15 @@ namespace PrYFam.Assets.Scripts
             float minZoom = commonInputSettings.minZoom;
 
             // Создаём линейную зависимость
-            zoomMultiplierCurve = CreateLinearZoomCurve(minZoom, maxZoom, 250, 5);
+            // Для minZoom = 2
+            // Для maxZoom = 50
+            //zoomMultiplierCurve = CreateLinearZoomCurve(minZoom, maxZoom, 250, 5);
+
+
+            // Коэффициент 3f определяет насколько сильнее будет умножаться разница между пальцами.
+            float maxValue = minZoom * 3f;
+            float minValue = maxZoom * 3f;
+            zoomMultiplierCurve = CreateLinearZoomCurve(minZoom, maxZoom, maxValue, minValue);
         }
 
         void Update()
@@ -156,33 +164,34 @@ namespace PrYFam.Assets.Scripts
         /// </summary>
         /// <param name="minZoom">Минимальное значение z (например, самое далёкое положение камеры).</param>
         /// <param name="maxZoom">Максимальное значение z (например, самое близкое положение камеры).</param>
-        /// <param name="minValue">Значение функции при минимальном z.</param>
         /// <param name="maxValue">Значение функции при максимальном z.</param>
+        /// <param name="minValue">Значение функции при минимальном z.</param>
         /// <returns>Линейная AnimationCurve между заданными точками.</returns>
-        private AnimationCurve CreateLinearZoomCurve(float minZoom, float maxZoom, float minValue, float maxValue)
+        private AnimationCurve CreateLinearZoomCurve(float minZoom, float maxZoom, float maxValue, float minValue)
         {
             // Создаём новую AnimationCurve
             AnimationCurve curve = new AnimationCurve();
 
             // Добавляем ключи
-            Keyframe minKey = new Keyframe(minZoom, minValue);
-            Keyframe maxKey = new Keyframe(maxZoom, maxValue);
+            Keyframe firstKey = new Keyframe(maxZoom, minValue);
+            Keyframe secondKey = new Keyframe(minZoom, maxValue);
 
             // Вычисляем тангенсы для линейной зависимости
-            float tangent = (maxValue - minValue) / (maxZoom - minZoom);
+            float tangent = (maxValue - minValue) / (minZoom - maxZoom);
 
-            minKey.inTangent = 0;         // Входной тангенс начальной точки
-            minKey.outTangent = tangent; // Выходной тангенс начальной точки
-            maxKey.inTangent = tangent;  // Входной тангенс конечной точки
-            maxKey.outTangent = 0;       // Выходной тангенс конечной точки
+
+            firstKey.inTangent = tangent;     // Входной тангенс начальной точки
+            firstKey.outTangent = tangent;          // Выходной тангенс начальной точки
+            secondKey.inTangent = tangent;           // Входной тангенс конечной точки
+            secondKey.outTangent = tangent;    // Выходной тангенс конечной точки
 
             // Добавляем ключи в график
-            curve.AddKey(minKey);
-            curve.AddKey(maxKey);
+            curve.AddKey(firstKey);
+            curve.AddKey(secondKey);
 
             return curve;
         }
-        
+
         /// <summary>
         /// Получает множитель x(z) на основе позиции камеры.
         /// </summary>
@@ -190,7 +199,7 @@ namespace PrYFam.Assets.Scripts
         /// <returns>Значение множителя</returns>
         private float GetZoomMultiplier(float z)
         {
-            return zoomMultiplierCurve.Evaluate(z);
+            return zoomMultiplierCurve.Evaluate(-z);    // т.к. позиция камеры по оси Z у нас отрицательная.
         }
         #endregion
     }

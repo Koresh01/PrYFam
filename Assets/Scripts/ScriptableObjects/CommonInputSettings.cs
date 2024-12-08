@@ -6,12 +6,12 @@ namespace PrYFam
     public class CommonInputSettings : ScriptableObject
     {
         /// <summary>
-        /// ћаксимальное значение позиции камеры по оси Z (ближе)
-        /// </summary>
-        public float maxZoom = -10f;
-        /// <summary>
-        /// ћинимальное значение позиции камеры по оси Z (дальше)
+        /// «начение позиции камеры по оси Z (дальше от карточек)
         /// </summary>
         public float minZoom = -50f;
+        /// <summary>
+        /// «начение позиции камеры по оси Z (ближе к карточкам)
+        /// </summary>
+        public float maxZoom = -2f;
     }
 }
