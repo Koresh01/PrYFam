@@ -3,113 +3,140 @@
 namespace PrYFam.Assets.Scripts
 {
     /// <summary>
-    /// Скрипт для обработки жестов на мобильных устройствах, включая перемещение камеры и зум.
+    /// Скрипт для управления масштабированием камеры с использованием графика зависимости множителя x(z).
     /// </summary>
     public class MobileInput : MonoBehaviour
     {
-        [Header("Основные настройки")]
-        [Tooltip("Камера, которую необходимо перемещать и масштабировать")]
+        [Header("Настройки камеры")]
+        [Tooltip("Основная камера, которой управляет скрипт")]
         public Camera mainCamera;
 
-        [Tooltip("Общие настройки ввода (например, ограничения зума)")]
+        [Tooltip("Общие настройки ввода")]
         [SerializeField]
         private CommonInputSettings commonInputSettings;
 
-        private Vector2 lastPanPosition; // Последняя позиция пальца для отслеживания перемещения
-        private int panFingerId; // ID пальца, который используется для перемещения
-        private bool isPanning; // Флаг, чтобы отслеживать состояние перемещения
+        [Header("График множителя")]
+        [Tooltip("График зависимости множителя x от позиции камеры z")]
+        public AnimationCurve zoomMultiplierCurve;
 
-        private float lastTouchDistance; // Расстояние между пальцами для зума
-        private bool isZooming; // Флаг, чтобы отслеживать состояние зума
+        private Vector2 lastPanPosition;
+        private int panFingerId;
+        private bool isPanning;
+
+        private float lastTouchDistance;
+        private bool isZooming;
+
+        private void Start()
+        {
+            float maxZoom = commonInputSettings.maxZoom;
+            float minZoom = commonInputSettings.minZoom;
+
+            // Создаём линейную зависимость
+            zoomMultiplierCurve = CreateLinearZoomCurve(minZoom, maxZoom, 250, 5);
+        }
 
         void Update()
         {
-            if (Input.touchCount == 1) // Обработка перемещения
+            if (Input.touchCount == 1) // Перемещение
             {
                 HandlePanGesture();
             }
-            else if (Input.touchCount == 2) // Обработка зума
+            else if (Input.touchCount == 2) // Зум
             {
                 HandleZoomGesture();
             }
         }
 
+        #region input
         /// <summary>
-        /// Обрабатывает жест перемещения (один палец).
+        /// Обрабатывает жест перемещения камеры.
         /// </summary>
         private void HandlePanGesture()
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began) // Начало касания
+            if (touch.phase == TouchPhase.Began)
             {
                 isPanning = true;
                 panFingerId = touch.fingerId;
                 lastPanPosition = touch.position;
             }
-            else if (touch.phase == TouchPhase.Moved && isPanning) // Перемещение пальца
+            else if (touch.phase == TouchPhase.Moved && isPanning)
             {
                 Vector2 currentPanPosition = touch.position;
-
-                // Вычисляем разницу в мировых координатах
                 Vector3 worldDelta = CalculateWorldDelta(lastPanPosition, currentPanPosition);
 
-                // Настраиваем масштаб перемещения
-                worldDelta *= 70f;
+                // Применяем множитель x(z)
+                float multiplier = GetZoomMultiplier(mainCamera.transform.position.z);
+                Debug.Log(multiplier);
+                worldDelta *= multiplier;
 
-                // Перемещаем камеру
                 mainCamera.transform.Translate(-worldDelta.x, -worldDelta.y, 0, Space.World);
-
                 lastPanPosition = currentPanPosition;
             }
-            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) // Завершение касания
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
                 isPanning = false;
             }
         }
 
         /// <summary>
-        /// Обрабатывает жест масштабирования (два пальца).
+        /// Обрабатывает жест масштабирования камеры.
         /// </summary>
         private void HandleZoomGesture()
         {
             Touch touch1 = Input.GetTouch(0);
             Touch touch2 = Input.GetTouch(1);
 
-            if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began) // Начало зума
+            if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
             {
                 isZooming = true;
                 lastTouchDistance = CalculateTouchDistance(touch1.position, touch2.position);
             }
-            else if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved) // Перемещение пальцев
+            else if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
             {
                 if (isZooming)
                 {
                     float currentTouchDistance = CalculateTouchDistance(touch1.position, touch2.position);
-
-                    // Разница в расстоянии между пальцами
-                    float worldDelta = currentTouchDistance - lastTouchDistance;
-                    worldDelta *= 70f;
+                    float delta = currentTouchDistance - lastTouchDistance;
 
                     // Настраиваем зум
-                    ApplyZoom(worldDelta);
-
-                    lastTouchDistance = currentTouchDistance; // Обновляем расстояние
+                    ApplyZoom(delta);
+                    lastTouchDistance = currentTouchDistance;
                 }
             }
-            else if (touch1.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Canceled ||
-                     touch2.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Canceled) // Завершение зума
+            else if (touch1.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Canceled)
             {
                 isZooming = false;
             }
         }
 
         /// <summary>
-        /// Вычисляет разницу(которая может быть отрицательной) между двумя точками касания в мировых координатах.
+        /// Применяет зум с учётом ограничения на minZoom и maxZoom.
         /// </summary>
-        /// <param name="startScreenPos">Начальная позиция на экране</param>
-        /// <param name="endScreenPos">Конечная позиция на экране</param>
-        /// <returns>Разница в мировых координатах</returns>
+        /// <param name="zoomDelta">Смещение зума</param>
+        private void ApplyZoom(float zoomDelta)
+        {
+            Vector3 zoomVector = new Vector3(0, 0, zoomDelta);
+            float newZ = mainCamera.transform.position.z + zoomVector.z;
+
+            newZ = Mathf.Clamp(newZ, commonInputSettings.minZoom, commonInputSettings.maxZoom);
+            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, newZ);
+        }
+
+        /// <summary>
+        /// Получает множитель x(z) на основе позиции камеры.
+        /// </summary>
+        /// <param name="z">Текущее значение z камеры</param>
+        /// <returns>Значение множителя</returns>
+        private float GetZoomMultiplier(float z)
+        {
+            return zoomMultiplierCurve.Evaluate(z);
+        }
+
+        /// <summary>
+        /// Вычисляет разницу между двумя точками в мировых координатах.
+        /// </summary>
         private Vector3 CalculateWorldDelta(Vector2 startScreenPos, Vector2 endScreenPos)
         {
             Vector3 startWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(startScreenPos.x, startScreenPos.y, mainCamera.nearClipPlane));
@@ -118,42 +145,46 @@ namespace PrYFam.Assets.Scripts
         }
 
         /// <summary>
-        /// Вычисляет расстояние(которое всегда положительно) между двумя пальцами в мировых координатах.
+        /// Вычисляет расстояние между двумя точками на экране.
         /// </summary>
-        /// <param name="pos1">Позиция первого пальца</param>
-        /// <param name="pos2">Позиция второго пальца</param>
-        /// <returns>Расстояние между пальцами</returns>
         private float CalculateTouchDistance(Vector2 pos1, Vector2 pos2)
         {
-            Vector3 worldPos1 = mainCamera.ScreenToWorldPoint(new Vector3(pos1.x, pos1.y, mainCamera.nearClipPlane));
-            Vector3 worldPos2 = mainCamera.ScreenToWorldPoint(new Vector3(pos2.x, pos2.y, mainCamera.nearClipPlane));
-            return Vector3.Distance(worldPos1, worldPos2);
+            return Vector2.Distance(pos1, pos2);
         }
-
+        #endregion
+        #region touchMultiplier
         /// <summary>
-        /// Применяет зум с учетом ограничений на минимальное и максимальное приближение.
+        /// Создаёт линейную зависимость для AnimationCurve между двумя точками.
         /// </summary>
-        /// <param name="zoomDelta">Смещение зума</param>
-        private void ApplyZoom(float zoomDelta)
+        /// <param name="minZoom">Минимальное значение z (например, самое далёкое положение камеры).</param>
+        /// <param name="maxZoom">Максимальное значение z (например, самое близкое положение камеры).</param>
+        /// <param name="minValue">Значение функции при минимальном z.</param>
+        /// <param name="maxValue">Значение функции при максимальном z.</param>
+        /// <returns>Линейная AnimationCurve между заданными точками.</returns>
+        private AnimationCurve CreateLinearZoomCurve(float minZoom, float maxZoom, float minValue, float maxValue)
         {
-            Vector3 zoomVector = new Vector3(0, 0, zoomDelta);
+            // Создаём новую AnimationCurve
+            AnimationCurve curve = new AnimationCurve();
 
-            float newZ = mainCamera.transform.position.z + zoomVector.z;
-            float minZoom = commonInputSettings.minZoom;
-            float maxZoom = commonInputSettings.maxZoom;
+            // Добавляем ключи
+            Keyframe minKey = new Keyframe(minZoom, minValue);
+            Keyframe maxKey = new Keyframe(maxZoom, maxValue);
 
-            // Применяем ограничения
-            if (newZ < minZoom)
-            {
-                zoomVector.z = minZoom - mainCamera.transform.position.z;
-            }
-            else if (newZ > maxZoom)
-            {
-                zoomVector.z = maxZoom - mainCamera.transform.position.z;
-            }
+            // Вычисляем тангенсы для линейной зависимости
+            float tangent = (maxValue - minValue) / (maxZoom - minZoom);
 
-            // Перемещаем камеру
-            mainCamera.transform.Translate(zoomVector, Space.World);
+            minKey.inTangent = 0;         // Входной тангенс начальной точки
+            minKey.outTangent = tangent; // Выходной тангенс начальной точки
+            maxKey.inTangent = tangent;  // Входной тангенс конечной точки
+            maxKey.outTangent = 0;       // Выходной тангенс конечной точки
+
+            // Добавляем ключи в график
+            curve.AddKey(minKey);
+            curve.AddKey(maxKey);
+
+            return curve;
         }
+
+        #endregion
     }
 }
