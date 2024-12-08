@@ -180,10 +180,10 @@ namespace PrYFam.Assets.Scripts
             float tangent = (maxValue - minValue) / (minZoom - maxZoom);
 
 
-            firstKey.inTangent = tangent;     // Входной тангенс начальной точки
+            firstKey.inTangent = tangent;           // Входной тангенс начальной точки
             firstKey.outTangent = tangent;          // Выходной тангенс начальной точки
-            secondKey.inTangent = tangent;           // Входной тангенс конечной точки
-            secondKey.outTangent = tangent;    // Выходной тангенс конечной точки
+            secondKey.inTangent = tangent;          // Входной тангенс конечной точки
+            secondKey.outTangent = tangent;         // Выходной тангенс конечной точки
 
             // Добавляем ключи в график
             curve.AddKey(firstKey);

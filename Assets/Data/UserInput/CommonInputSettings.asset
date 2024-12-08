@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CommonInputSettings
   m_EditorClassIdentifier: 
   minZoom: 100
-  maxZoom: 2
+  maxZoom: 3

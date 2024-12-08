@@ -37,8 +37,8 @@ namespace PrYFam
 
             float newZ = oldZpos + scroll * zoomSpeed;
 
-            float minZoom = commonInputSettings.minZoom;
-            float maxZoom = commonInputSettings.maxZoom;
+            float minZoom = -commonInputSettings.minZoom;
+            float maxZoom = -commonInputSettings.maxZoom;
             // Проверка границ зума
             if (newZ < minZoom || newZ > maxZoom)
                 return;
