@@ -11,10 +11,6 @@ namespace PrYFam.Assets.Scripts.AdditionalExtensions
             // Получаем объект ScriptableObject
             CommonInputSettings settings = (CommonInputSettings)target;
 
-            // Отображаем поле для камеры
-            settings.mainCamera = (Camera)EditorGUILayout.ObjectField("Камера", settings.mainCamera, typeof(Camera), true);
-
-
             // Заголовок
             EditorGUILayout.LabelField("Настройки зума", EditorStyles.boldLabel);
 

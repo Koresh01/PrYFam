@@ -12,7 +12,7 @@ namespace PrYFam.Assets.Scripts
         private CommonInputSettings commonInputSettings;
 
         [Tooltip("Основная камера, которой управляет скрипт")]
-        private Camera mainCamera;
+        [SerializeField] private Camera mainCamera;
 
         [Header("График множителя")]
         [Tooltip("График зависимости множителя x от позиции камеры z")]
@@ -27,7 +27,6 @@ namespace PrYFam.Assets.Scripts
 
         private void Start()
         {
-            mainCamera = commonInputSettings.mainCamera;
             InitGraphic();
             
         }
@@ -123,7 +122,7 @@ namespace PrYFam.Assets.Scripts
             Vector3 zoomVector = new Vector3(0, 0, zoomDelta);
             float newZ = mainCamera.transform.position.z + zoomVector.z;
 
-            newZ = Mathf.Clamp(newZ, commonInputSettings.minZoom, commonInputSettings.maxZoom);
+            newZ = Mathf.Clamp(newZ, -commonInputSettings.minZoom, -commonInputSettings.maxZoom);
             mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, newZ);
         }
 

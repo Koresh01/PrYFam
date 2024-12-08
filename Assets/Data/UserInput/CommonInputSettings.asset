@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04af6046dc1a07443b292e8b9c41ef74, type: 3}
   m_Name: CommonInputSettings
   m_EditorClassIdentifier: 
-  minZoom: 100
-  maxZoom: 3
+  minZoom: 89
+  maxZoom: 2

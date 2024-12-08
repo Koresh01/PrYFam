@@ -969,6 +969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
+  mainCamera: {fileID: 963194227}
   zoomMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -1012,6 +1013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
+  mainCamera: {fileID: 963194227}
   movementSpeed: 5
   zoomStep: 5
 --- !u!1 &630842692

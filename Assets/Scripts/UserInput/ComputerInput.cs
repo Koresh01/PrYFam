@@ -17,7 +17,7 @@ namespace PrYFam
         /// Камера, которой управляет скрипт.
         /// </summary>
         [Tooltip("Основная камера, которой управляет скрипт")]
-        private Camera mainCamera;
+        [SerializeField] private Camera mainCamera;
 
         [Header("Настройки перемещения камеры")]
         [Tooltip("Скорость перемещения камеры по поверхности.")]
@@ -27,13 +27,6 @@ namespace PrYFam
         [Tooltip("Скорость приближения/отдаления колесом мыши.")]
         [SerializeField] private float zoomStep = 5.0f;
 
-        /// <summary>
-        /// Инициализация камеры из настроек.
-        /// </summary>
-        private void Start()
-        {
-            mainCamera = commonInputSettings.mainCamera;
-        }
 
         /// <summary>
         /// Обрабатывает ввод с клавиатуры и мыши каждый кадр.
