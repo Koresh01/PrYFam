@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using PrYFam.Assets.Scripts.UserInput;
+using System;
+using UnityEngine;
 
 namespace PrYFam.Assets.Scripts
 {
@@ -10,6 +12,12 @@ namespace PrYFam.Assets.Scripts
         [Tooltip("Общие настройки ввода")]
         [SerializeField]
         private CommonInputSettings commonInputSettings;
+
+        /// <summary>
+        /// Скрпит отвечающий за приближение/отдажение.
+        /// </summary>
+        [Header("Скрпит отвечающий за приближение/отдажение:")]
+        [SerializeField] private ZoomController zoomController;
 
         [Tooltip("Основная камера, которой управляет скрипт")]
         [SerializeField] private Camera mainCamera;
@@ -65,7 +73,6 @@ namespace PrYFam.Assets.Scripts
 
                 // Применяем множитель x(z)
                 float multiplier = GetZoomMultiplier(mainCamera.transform.position.z);
-                Debug.Log(multiplier);
                 worldDelta *= multiplier;
 
                 mainCamera.transform.Translate(-worldDelta.x, -worldDelta.y, 0, Space.World);
@@ -99,11 +106,11 @@ namespace PrYFam.Assets.Scripts
 
                     // Преобразуем разницу расстояния в экранных координатах в условное изменение масштаба в мировых координатах.
                     // Обратите внимание: 10 пикселей на экране и 10 единиц в игровом мире — это разные масштабы.
-                    // Константа 10f определяет, насколько сильно пиксельные изменения влияют на изменение масштаба.
+                    // Константа 18f определяет, насколько сильно пиксельные изменения влияют на изменение масштаба.
                     delta /= 18f;
 
                     // Настраиваем зум
-                    ApplyZoom(delta);
+                    zoomController.AdjustZoomByFloatValue(delta);
                     lastTouchDistance = currentTouchDistance;
                 }
             }
@@ -111,19 +118,6 @@ namespace PrYFam.Assets.Scripts
             {
                 isZooming = false;
             }
-        }
-
-        /// <summary>
-        /// Применяет зум с учётом ограничения на minZoom и maxZoom.
-        /// </summary>
-        /// <param name="zoomDelta">Смещение зума</param>
-        private void ApplyZoom(float zoomDelta)
-        {
-            Vector3 zoomVector = new Vector3(0, 0, zoomDelta);
-            float newZ = mainCamera.transform.position.z + zoomVector.z;
-
-            newZ = Mathf.Clamp(newZ, -commonInputSettings.minZoom, -commonInputSettings.maxZoom);
-            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, newZ);
         }
 
         /// <summary>

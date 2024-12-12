@@ -1,4 +1,5 @@
 using PrYFam.Assets.Scripts;
+using PrYFam.Assets.Scripts.UserInput;
 using UnityEngine;
 
 namespace PrYFam
@@ -11,7 +12,15 @@ namespace PrYFam
         /// <summary>
         /// Общие настройки ввода (например, ограничения зума).
         /// </summary>
+        [Header("Scriptable object общих настроек ввода")]
         [SerializeField] private CommonInputSettings commonInputSettings;
+
+
+        /// <summary>
+        /// Скрпит отвечающий за приближение/отдажение.
+        /// </summary>
+        [Header("Скрпит отвечающий за приближение/отдажение:")]
+        [SerializeField] private ZoomController zoomController;
 
         /// <summary>
         /// Камера, которой управляет скрипт.
@@ -22,10 +31,6 @@ namespace PrYFam
         [Header("Настройки перемещения камеры")]
         [Tooltip("Скорость перемещения камеры по поверхности.")]
         [SerializeField] private float movementSpeed = 5f;
-
-        [Header("Настройки масштабирования камеры")]
-        [Tooltip("Скорость приближения/отдаления колесом мыши.")]
-        [SerializeField] private float zoomStep = 5.0f;
 
 
         /// <summary>
@@ -58,31 +63,9 @@ namespace PrYFam
             float scroll = Input.GetAxis("Mouse ScrollWheel");
 
             if (scroll > 0f)
-                AdjustZoomByStep(+1); // Direction.AwayFromUs
+                zoomController.AdjustZoomByFloatValue(+1f); // Direction.AwayFromUs
             if (scroll < 0f)
-                AdjustZoomByStep(-1); // Direction.TowardsUs
-        }
-
-        /// <summary>
-        /// Пошагово изменяет уровень масштабирования камеры вдоль оси Z в указанном направлении.
-        /// </summary>
-        /// <param name="direction">Направление изменения масштаба (приближение или отдаление).</param>
-        public void AdjustZoomByStep(int zoomDirection)
-        {
-            //int zoomDirection = direction == Direction.AwayFromUs ? 1 : -1; // Определяем направление
-            float currentZ = mainCamera.transform.position.z;
-            float newZ = currentZ + zoomDirection * zoomStep;
-
-            float rightZoomX = -commonInputSettings.minZoom; // Ближайшая допустимая точка зума.
-            float leftZoomX = -commonInputSettings.maxZoom; // Дальнейшая допустимая точка зума.
-
-            // Ограничиваем зум в пределах допустимых значений
-            if (newZ > leftZoomX || newZ < rightZoomX)
-                return;
-
-            // Обновляем позицию камеры
-            Vector3 newPosition = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, newZ);
-            mainCamera.transform.position = newPosition;
+                zoomController.AdjustZoomByFloatValue(-1f); // Direction.TowardsUs
         }
 
     }
