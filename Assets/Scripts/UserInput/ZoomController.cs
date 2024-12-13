@@ -14,14 +14,12 @@ namespace PrYFam.Assets.Scripts.UserInput
         [Tooltip("Общие настройки ввода (например, ограничения зума).")]
         [SerializeField] private CommonInputSettings commonInputSettings;
 
-        [Header("Настройки масштабирования камеры")]
-        [Tooltip("Скорость приближения/отдаления колесом мыши.")]
-        [SerializeField] private float zoomStep = 5.0f;
-
 
         [Tooltip("Основная камера, которой управляет скрипт")]
         [SerializeField] private Camera mainCamera;
 
+        [Tooltip("Основная камера, которой управляет скрипт")]
+        [SerializeField] private SensetivityChart sensetivityChart;
 
         [Header("Слайдер, для zoom-а окна")]
         [Tooltip("Слайдер, для zoom-а окна")]
@@ -29,16 +27,7 @@ namespace PrYFam.Assets.Scripts.UserInput
 
         private void Start()
         {
-            if (zoomSlider == null)
-            {
-                Debug.LogError("Zoom Slider не привязан в инспекторе!");
-            }
-            else
-            {
-                Debug.Log("Zoom Slider привязан корректно.");
-            }
-
-
+            Debug.Log(zoomSlider == null ? "Zoom Slider не привязан в инспекторе!" : "Zoom Slider привязан корректно.");
         }
 
         /// <summary>
@@ -61,20 +50,31 @@ namespace PrYFam.Assets.Scripts.UserInput
         }
 
         /// <summary>
-        /// Изменяет уровень масштабирования камеры вдоль оси Z.
-        /// Значение корректируется в пределах заданных ограничений minZoom и maxZoom,
-        /// а значение слайдера обновляется для отображения текущего уровня масштаба.
+        /// Смещает камеру вдоль очи Z, учитывая расстояние от камеры до карточек.
         /// </summary>
-        /// <param name="zoomDelta">Значение изменения зума вдоль оси Z (может быть положительным или отрицательным).</param>
+        /// <param name="zoomDelta">Значение на которое происходит смещение.</param>
         public void AdjustZoomByFloatValue(float zoomDelta)
         {
-            // Вычисляем новое значение Z с учетом изменения
+            // Вычисляем текущее значение Z (без учета нового изменения).
             float currentZ = mainCamera.transform.position.z;
-            float newZ = currentZ + zoomDelta;
 
             // Ограничиваем новое значение Z в пределах допустимого диапазона
             float rightZ = -commonInputSettings.minZoom; // Ближайшая допустимая точка зума
             float leftZ = -commonInputSettings.maxZoom;  // Дальнейшая допустимая точка зума
+            
+
+            // Применяем множитель f(z):
+            float multiplier = sensetivityChart.GetZoomMultiplier(mainCamera.transform.position.z);
+            
+            // Константа 50f определяет наскольно сильно мы гасим чувсвительность жеста zoom щупанья пальцами экрана.
+            multiplier /= 50f;
+
+            // Вычисляем новое значение Z.
+            float newZ = currentZ + zoomDelta*multiplier;
+
+            // Debug.Log($"f(z): {multiplier}");
+
+            // Ограничиваем значение новой позиции
             newZ = Mathf.Clamp(newZ, rightZ, leftZ);
 
             // Обновляем позицию камеры

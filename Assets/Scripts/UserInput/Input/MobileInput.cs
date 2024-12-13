@@ -13,6 +13,9 @@ namespace PrYFam.Assets.Scripts
         [SerializeField]
         private CommonInputSettings commonInputSettings;
 
+        [Tooltip("Основная камера, которой управляет скрипт")]
+        [SerializeField] private Camera mainCamera;
+
         /// <summary>
         /// Скрпит отвечающий за приближение/отдажение.
         /// </summary>
@@ -20,11 +23,9 @@ namespace PrYFam.Assets.Scripts
         [SerializeField] private ZoomController zoomController;
 
         [Tooltip("Основная камера, которой управляет скрипт")]
-        [SerializeField] private Camera mainCamera;
+        [SerializeField] private SensetivityChart sensetivityChart;
 
-        [Header("График множителя")]
-        [Tooltip("График зависимости множителя x от позиции камеры z")]
-        public AnimationCurve zoomMultiplierCurve;
+
 
         private Vector2 lastPanPosition;
         private int panFingerId;
@@ -32,12 +33,6 @@ namespace PrYFam.Assets.Scripts
 
         private float lastTouchDistance;
         private bool isZooming;
-
-        private void Start()
-        {
-            InitGraphic();
-            
-        }
 
         void Update()
         {
@@ -51,7 +46,6 @@ namespace PrYFam.Assets.Scripts
             }
         }
 
-        #region input
         
         /// <summary>
         /// Обрабатывает жест перемещения камеры.
@@ -71,8 +65,8 @@ namespace PrYFam.Assets.Scripts
                 Vector2 currentPanPosition = touch.position;
                 Vector3 worldDelta = CalculateWorldDelta(lastPanPosition, currentPanPosition);
 
-                // Применяем множитель x(z)
-                float multiplier = GetZoomMultiplier(mainCamera.transform.position.z);
+                // Применяем множитель x(z):
+                float multiplier = sensetivityChart.GetZoomMultiplier(mainCamera.transform.position.z);
                 worldDelta *= multiplier;
 
                 mainCamera.transform.Translate(-worldDelta.x, -worldDelta.y, 0, Space.World);
@@ -140,72 +134,5 @@ namespace PrYFam.Assets.Scripts
         {
             return Vector2.Distance(pos1, pos2);
         }
-
-        #endregion
-
-
-
-        #region touchMultiplier
-
-        /// <summary>
-        /// Создаёт график зависимости множителя свайпа от расстояния камеры ДО карточек.
-        /// </summary>
-        private void InitGraphic()
-        {
-            float leftZoomX = commonInputSettings.maxZoom;
-            float rightZoomX = commonInputSettings.minZoom;
-
-            // Создаём линейную зависимость для множителя multiplier.
-
-            // Коэффициент 3f определяет насколько сильнее будет умножаться разница между пальцами.
-            float maxValue = rightZoomX * 3f;
-            float minValue = leftZoomX * 3f;
-            zoomMultiplierCurve = CreateLinearZoomCurve(leftZoomX, rightZoomX, minValue, maxValue);
-        }
-
-        /// <summary>
-        /// Создаёт линейную зависимость для AnimationCurve между двумя точками.
-        /// </summary>
-        /// <param name="minZoom">Минимальное значение z (например, самое далёкое положение камеры).</param>
-        /// <param name="maxZoom">Максимальное значение z (например, самое близкое положение камеры).</param>
-        /// <param name="maxValue">Значение функции при максимальном z.</param>
-        /// <param name="minValue">Значение функции при минимальном z.</param>
-        /// <returns>Линейная AnimationCurve между заданными точками.</returns>
-        private AnimationCurve CreateLinearZoomCurve(float leftZoomX, float rightZoomX, float minValue, float maxValue)
-        {
-            // Создаём новую AnimationCurve
-            AnimationCurve curve = new AnimationCurve();
-
-            // Добавляем ключи
-            Keyframe firstKey = new Keyframe(leftZoomX, minValue);
-            Keyframe secondKey = new Keyframe(rightZoomX, maxValue);
-
-            // Вычисляем тангенсы для линейной зависимости
-            float tangent = (maxValue - minValue) / (rightZoomX - leftZoomX);
-
-
-            firstKey.inTangent = 0;           // Входной тангенс начальной точки
-            firstKey.outTangent = tangent;          // Выходной тангенс начальной точки
-            secondKey.inTangent = tangent;          // Входной тангенс конечной точки
-            secondKey.outTangent = 0;         // Выходной тангенс конечной точки
-
-            // Добавляем ключи в график
-            curve.AddKey(firstKey);
-            curve.AddKey(secondKey);
-
-            return curve;
-        }
-
-        /// <summary>
-        /// Получает множитель x(z) на основе позиции камеры.
-        /// </summary>
-        /// <param name="z">Текущее значение z камеры</param>
-        /// <returns>Значение множителя</returns>
-        private float GetZoomMultiplier(float z)
-        {
-            return zoomMultiplierCurve.Evaluate(-z);    // т.к. позиция камеры по оси Z у нас отрицательная.
-        }
-        
-        #endregion
     }
 }

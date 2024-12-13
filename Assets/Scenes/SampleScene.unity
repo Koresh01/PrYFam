@@ -1053,6 +1053,7 @@ GameObject:
   - component: {fileID: 585675905}
   - component: {fileID: 585675907}
   - component: {fileID: 585675908}
+  - component: {fileID: 585675909}
   m_Layer: 0
   m_Name: InputSystem
   m_TagString: Untagged
@@ -1073,23 +1074,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
-  zoomController: {fileID: 585675908}
   mainCamera: {fileID: 963194227}
-  zoomMultiplierCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -50
-      value: 250
-      inSlope: -5.1041665
-      outSlope: -5.1041665
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  zoomController: {fileID: 585675908}
+  sensetivityChart: {fileID: 585675909}
 --- !u!4 &585675906
 Transform:
   m_ObjectHideFlags: 0
@@ -1134,9 +1121,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
-  zoomStep: 5
   mainCamera: {fileID: 963194227}
+  sensetivityChart: {fileID: 585675909}
   zoomSlider: {fileID: 7652833}
+--- !u!114 &585675909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585675904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87574206c51c84744a4372a29dc12f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
+  zoomMultiplierCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &630842692
 GameObject:
   m_ObjectHideFlags: 0
@@ -3641,7 +3647,7 @@ RectTransform:
   m_GameObject: {fileID: 1401908921}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3.1302, y: 3.1302, z: 3.1302}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 491157001}
@@ -3652,7 +3658,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 95.890015, y: -136.79004}
+  m_AnchoredPosition: {x: 402, y: -416}
   m_SizeDelta: {x: 191.89, y: 179.59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1401908923
