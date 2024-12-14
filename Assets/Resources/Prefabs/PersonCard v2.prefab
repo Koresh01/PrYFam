@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &409419301829415364
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5865407425632167765}
+  m_Layer: 5
+  m_Name: TextMeshPro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5865407425632167765
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409419301829415364}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2383648957394399020}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &453356105399204820
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +68,7 @@ RectTransform:
   - {fileID: 1305623210234261904}
   - {fileID: 6414903489418118690}
   - {fileID: 1807883807357238707}
+  - {fileID: 5865407425632167765}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -72,9 +108,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd130105a199f05488ac26e0916a51c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: 
-  surname: 
-  sprite: {fileID: 0}
+  FirstName: 
+  LastName: 
+  MiddleName: 
+  ProfilePicture: {fileID: 0}
+  PlaceOfBirth: 
+  PlaceOfDeath: 
+  Biography: 
 --- !u!1 &813250010764696194
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,8 +10,37 @@ namespace PrYFam.Assets.Scripts
     /// </summary>
     public class Member : MonoBehaviour
     {
-        public string Name;
-        public string surname;
-        public Sprite sprite;
+        [Header("Основная информация")]
+        [Tooltip("Имя человека")]
+        public string FirstName;
+
+        [Tooltip("Фамилия человека")]
+        public string LastName;
+
+        [Tooltip("Отчество человека")]
+        public string MiddleName;
+
+        [Tooltip("Фотография человека")]
+        public Sprite ProfilePicture;
+
+        [Space]
+        [Header("Дата и место рождения")]
+        [Tooltip("Дата рождения")]
+        public DateTime DateOfBirth;
+
+        [Tooltip("Место рождения")]
+        public string PlaceOfBirth;
+
+        [Space]
+        [Header("Дополнительная информация")]
+        [Tooltip("Дата смерти (оставьте пустым, если жив)")]
+        public DateTime? DateOfDeath;
+
+        [Tooltip("Место смерти (если применимо)")]
+        public string PlaceOfDeath;
+
+        [Tooltip("Краткая биография или описание")]
+        [TextArea]
+        public string Biography;
     }
 }
