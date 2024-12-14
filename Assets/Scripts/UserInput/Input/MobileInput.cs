@@ -1,6 +1,9 @@
 ﻿using PrYFam.Assets.Scripts.UserInput;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace PrYFam.Assets.Scripts
 {
@@ -25,6 +28,10 @@ namespace PrYFam.Assets.Scripts
         [Tooltip("Основная камера, которой управляет скрипт")]
         [SerializeField] private SensetivityChart sensetivityChart;
 
+        [Header("Область предназначенная для касаний:")]
+        [Tooltip("Область предназначенная для касаний:")]
+        [SerializeField] private RectTransform touchZone;
+
 
 
         private Vector2 lastPanPosition;
@@ -38,21 +45,43 @@ namespace PrYFam.Assets.Scripts
         {
             if (Input.touchCount == 1) // Перемещение
             {
-                HandlePanGesture();
+                Touch touch = Input.GetTouch(0);
+                // Проверяем, попадает ли касание на слой "touchplace"
+                if (IsOnTouchingArea(touch))
+                {
+                    HandlePanGesture(touch); // Передаем касание в обработчик перемещения
+                }
             }
             else if (Input.touchCount == 2) // Зум
             {
-                HandleZoomGesture();
+                Touch touch1 = Input.GetTouch(0);
+                Touch touch2 = Input.GetTouch(1);
+
+                if (IsOnTouchingArea(touch1) && IsOnTouchingArea(touch2))
+                {
+                    HandleZoomGesture(touch1, touch2); // Передаем касание в обработчик перемещения
+                }
             }
         }
 
-        
+        /// <summary>
+        /// Проверка, попадает ли касание на заданный RectTransform.
+        /// </summary>
+        bool IsOnTouchingArea(Touch touch)
+        {
+            // Преобразуем позицию касания из экранных координат в мировые
+            Vector2 touchPosition = touch.position;
+
+            // Проверяем, находится ли точка внутри RectTransform
+            return RectTransformUtility.RectangleContainsScreenPoint(touchZone, touchPosition, mainCamera);
+        }
+
         /// <summary>
         /// Обрабатывает жест перемещения камеры.
         /// </summary>
-        private void HandlePanGesture()
+        private void HandlePanGesture(Touch touch)
         {
-            Touch touch = Input.GetTouch(0);
+            //Touch touch = Input.GetTouch(0);
 
             if (touch.phase == TouchPhase.Began)
             {
@@ -81,11 +110,8 @@ namespace PrYFam.Assets.Scripts
         /// <summary>
         /// Обрабатывает жест масштабирования камеры.
         /// </summary>
-        private void HandleZoomGesture()
-        {
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
-
+        private void HandleZoomGesture(Touch touch1, Touch touch2)
+        {            
             if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
             {
                 isZooming = true;
