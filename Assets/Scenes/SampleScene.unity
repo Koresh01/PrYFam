@@ -2640,7 +2640,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1002.38995, y: -116.850006}
+  m_AnchoredPosition: {x: -1002.3899, y: -116.850006}
   m_SizeDelta: {x: 242.84998, y: 43.799988}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &632553184
@@ -2840,7 +2840,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &676191632
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5010,6 +5010,7 @@ GameObject:
   - component: {fileID: 906414252}
   - component: {fileID: 906414251}
   - component: {fileID: 906414250}
+  - component: {fileID: 906414254}
   m_Layer: 5
   m_Name: Canvas UI
   m_TagString: Untagged
@@ -5106,6 +5107,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &906414254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906414249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1770b15564ce244a9b729e6def8e06d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mobileInput: {fileID: 585675905}
+  computerInput: {fileID: 585675907}
+  detailedPanel: {fileID: 676191631}
 --- !u!1 &912276354
 GameObject:
   m_ObjectHideFlags: 0
@@ -8613,7 +8629,7 @@ GameObject:
   - component: {fileID: 1707480143}
   - component: {fileID: 1707480142}
   m_Layer: 5
-  m_Name: "Button (Legacy) (\u0441\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C)"
+  m_Name: "Button (\u0441\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
