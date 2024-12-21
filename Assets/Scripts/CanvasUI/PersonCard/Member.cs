@@ -20,10 +20,11 @@ namespace PrYFam
         [Tooltip("Отчество человека")]
         public string MiddleName;
 
+        [Space]
+
         [Tooltip("Фотография человека")]
         public Sprite ProfilePicture;
 
-        [Space]
         [Header("Дата и место рождения")]
         [Tooltip("Дата рождения")]
         public DateTime DateOfBirth;
@@ -32,6 +33,7 @@ namespace PrYFam
         public string PlaceOfBirth;
 
         [Space]
+        
         [Header("Дополнительная информация")]
         [Tooltip("Дата смерти (оставьте пустым, если жив)")]
         public DateTime? DateOfDeath;
