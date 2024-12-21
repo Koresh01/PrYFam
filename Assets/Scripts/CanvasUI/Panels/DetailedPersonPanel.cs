@@ -36,6 +36,13 @@ namespace PrYFam
         [Tooltip("Поле ввода отчества.")]
         [SerializeField] private TMP_InputField middleNameInputField;
 
+
+
+
+        [Header("Изображения:")]
+        [Tooltip("Аватар члена семьи.")]
+        [SerializeField] Image image;
+
         private void OnEnable()
         {
             // Инициализация панели при включении
@@ -67,6 +74,9 @@ namespace PrYFam
                 firstNameInputField.text = root.FirstName;
                 lastNameInputField.text = root.LastName;
                 middleNameInputField.text = root.MiddleName;
+
+
+                image.sprite = root.ProfilePicture;
             }
             else
             {
@@ -102,6 +112,9 @@ namespace PrYFam
                 root.FirstName = firstNameInputField.text;
                 root.LastName = lastNameInputField.text;
                 root.MiddleName = middleNameInputField.text;
+
+
+                root.ProfilePicture = image.sprite;
 
                 // Закрываем панель
                 OnCloseButtonClick();

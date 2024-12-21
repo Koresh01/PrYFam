@@ -77,7 +77,7 @@ MonoBehaviour:
   FirstName: 
   LastName: 
   MiddleName: 
-  ProfilePicture: {fileID: 0}
+  ProfilePicture: {fileID: 21300000, guid: 74181115babe96644aee3b937b9641f6, type: 3}
   PlaceOfBirth: 
   PlaceOfDeath: 
   Biography: 
