@@ -1,11 +1,11 @@
-﻿using PrYFam.Assets.Scripts.UserInput;
+﻿using PrYFam;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     /// <summary>
     /// Скрипт для управления масштабированием камеры с использованием графика зависимости множителя x(z).

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; // Подключаем пространство имен для работы с UI
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     /// <summary>
     /// Скрипт для плавного изменения цвета UI-компонента Image с использованием градиента.

@@ -1,4 +1,4 @@
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     public enum Relationship
     {

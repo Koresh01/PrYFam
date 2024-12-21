@@ -5,7 +5,7 @@ using System.Collections;
 using System.Linq;
 using System.ComponentModel;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     /// <summary>
     /// Устанавливает ноды в правильные координаты. Это главный скрипт отвечающий за отрисовку.

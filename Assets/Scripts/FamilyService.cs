@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     /// <summary>
     /// —ервис дл€ работы с данными семейного древа.

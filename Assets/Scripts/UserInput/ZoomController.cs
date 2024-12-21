@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PrYFam.Assets.Scripts.UserInput
+namespace PrYFam
 {
     class ZoomController : MonoBehaviour
     {

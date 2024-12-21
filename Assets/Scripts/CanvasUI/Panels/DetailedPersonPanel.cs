@@ -1,39 +1,115 @@
-﻿using Unity.VisualScripting;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PrYFam.Assets.Scripts.CanvasUI.Panels
+namespace PrYFam
 {
     /// <summary>
-    /// Скрпит который висит на панели детальной информации о члене семьи.
-    /// Он реализует логику всех кнопочек на этой панели.
-    /// Восновном он вызывает методы из canvas view.
+    /// Скрипт для панели детальной информации о члене семьи.
+    /// Реализует логику работы кнопок и заполнение текстовых полей данными.
+    /// Вызывает методы из CanvasView для управления отображением панели.
     /// </summary>
-    class DetailedPersonPanel : MonoBehaviour
+    public class DetailedPersonPanel : MonoBehaviour
     {
-        [Header("Ссылка на canvasView")]
-        [SerializeField] CanvasView canvasView;
+        [Header("Ссылки на внешние компоненты")]
+        [Tooltip("Основной объект управления CanvasView.")]
+        [SerializeField] private CanvasView canvasView;
 
-        [Header("Кнопка закрытия панели детальной информации о члене семьи.")]
-        [Tooltip("Крестик на панели детальной информации о человеке.")]
-        [SerializeField] Button closeDetailedPanel;
 
-        void OnEnable()
+
+        [Header("Кнопки:")]
+        [Tooltip("Кнопка для закрытия панели детальной информации.")]
+        [SerializeField] private Button closeButton;
+        [Tooltip("Кнопка для сохранения информации о конкретном члене семьи.")]
+        [SerializeField] private Button saveButton;
+
+
+
+
+        [Header("Текстовые поля")]
+        [Tooltip("Поле ввода имени.")]
+        [SerializeField] private TMP_InputField firstNameInputField;
+
+        [Tooltip("Поле ввода фамилии.")]
+        [SerializeField] private TMP_InputField lastNameInputField;
+
+        [Tooltip("Поле ввода отчества.")]
+        [SerializeField] private TMP_InputField middleNameInputField;
+
+        private void OnEnable()
         {
-            // обращается к root(активному) Member.
-            // static :) Algorithms.singleton.root - это наш активный член семьи.
-            // Берет данные из скрипта Member
-            // Вводит их во все textboxes.
+            // Инициализация панели при включении
+            InitializePanel();
 
-            closeDetailedPanel.onClick.AddListener(() =>
-            {
-                canvasView.HideDetailedPersonPanel();
-            });
+            // Добавление обработчика на кнопку закрытия
+            closeButton.onClick.AddListener(OnCloseButtonClick);
+
+            // Добавление обработчика на кнопку сохранения
+            saveButton.onClick.AddListener(OnSaveButtonClick);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
-            closeDetailedPanel.onClick.RemoveAllListeners();
+            // Удаление всех обработчиков кнопки закрытия при отключении
+            closeButton.onClick.RemoveListener(OnCloseButtonClick);
+        }
+
+        /// <summary>
+        /// Инициализирует текстовые поля данными текущего пользователя.
+        /// </summary>
+        private void InitializePanel()
+        {
+            Member root = Algorithms.Singleton.root;
+
+            if (root != null)
+            {
+                // Устанавливаем сохранённые значения
+                firstNameInputField.text = root.FirstName;
+                lastNameInputField.text = root.LastName;
+                middleNameInputField.text = root.MiddleName;
+            }
+            else
+            {
+                Debug.LogWarning("Данные о члене семьи не найдены!");
+            }
+        }
+
+        /// <summary>
+        /// Обработчик нажатия кнопки закрытия панели.
+        /// </summary>
+        private void OnCloseButtonClick()
+        {
+            if (canvasView != null)
+            {
+                canvasView.HideDetailedPersonPanel();
+            }
+            else
+            {
+                Debug.LogError("CanvasView не назначен в инспекторе!");
+            }
+        }
+
+        /// <summary>
+        /// Обработчик нажатия кнопки сохранения данных панели.
+        /// </summary>
+        private void OnSaveButtonClick()
+        {
+            Member root = Algorithms.Singleton.root;
+
+            if (root != null)
+            {
+                // Сохраняем новые значения
+                root.FirstName = firstNameInputField.text;
+                root.LastName = lastNameInputField.text;
+                root.MiddleName = middleNameInputField.text;
+
+                // Закрываем панель
+                OnCloseButtonClick();
+            }
+            else
+            {
+                Debug.LogWarning("Данные о члене семьи не найдены!");
+            }
         }
     }
 }

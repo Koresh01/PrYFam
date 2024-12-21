@@ -3,9 +3,9 @@ using UnityEngine;
 using System.Linq;
 using System;
 using Unity.VisualScripting;
-using PrYFam.Assets.Scripts.NodesPosCalculator;
+using PrYFam;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     /// <summary>
     /// Класс для выполнения алгоритмов работы с семейным деревом.
@@ -16,14 +16,20 @@ namespace PrYFam.Assets.Scripts
 
         /// <summary>
         /// Геттер для получения единственного экземпляра класса.
-        /// Создает экземпляр при первом обращении.
+        /// Создаёт экземпляр при первом обращении и сохраняет его в _singleton.
         /// </summary>
         public static Algorithms Singleton
         {
-            get => _singleton == null ? new Algorithms() : _singleton;
-            private set => _singleton = value; // Закрытый сеттер для внутреннего использования
+            get
+            {
+                if (_singleton == null)
+                {
+                    _singleton = new Algorithms();
+                }
+                return _singleton;
+            }
         }
-        private Member root;
+        public Member root;
         private FamilyService familyService;
         private Vector2 basePosition;
         private float CardWidthWithOffset, CardHeight;
@@ -31,6 +37,11 @@ namespace PrYFam.Assets.Scripts
 
         private ITraversalStrategy traversalStrategy = new LeftToRightTraversal(); // По умолчанию слева направо
 
+
+        /// <summary>
+        /// Закрытый конструктор для предотвращения создания экземпляров вне класса
+        /// </summary>
+        private Algorithms() { }
 
         /// <summary>
         /// Инициализирует стартовые параметры для переотрисовки.

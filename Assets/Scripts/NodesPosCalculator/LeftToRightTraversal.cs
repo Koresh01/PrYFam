@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrYFam.Assets.Scripts.NodesPosCalculator
+namespace PrYFam
 {
     public class LeftToRightTraversal : ITraversalStrategy
     {

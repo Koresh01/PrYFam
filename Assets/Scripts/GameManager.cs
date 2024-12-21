@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     public class GameManager : MonoBehaviour
     {

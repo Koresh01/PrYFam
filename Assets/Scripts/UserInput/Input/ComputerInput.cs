@@ -1,5 +1,4 @@
-using PrYFam.Assets.Scripts;
-using PrYFam.Assets.Scripts.UserInput;
+using PrYFam;
 using UnityEngine;
 
 namespace PrYFam

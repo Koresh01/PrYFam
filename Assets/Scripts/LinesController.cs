@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     public class LinesController : MonoBehaviour
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace PrYFam.Assets.Scripts.UserInput
+namespace PrYFam
 {
     /// <summary>
     /// Скрпит, который хранит зависимость чувствительности от расстояния до карточек.

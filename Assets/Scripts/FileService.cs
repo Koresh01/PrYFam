@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PrYFam.Assets.Scripts
+namespace PrYFam
 {
     /// <summary>
     /// —ервис дл€ работы с файлами, св€занный с сохранением и загрузкой данных семейного древа.
