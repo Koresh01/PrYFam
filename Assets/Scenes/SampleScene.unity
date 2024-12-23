@@ -2924,6 +2924,7 @@ MonoBehaviour:
   firstNameInputField: {fileID: 1843007414}
   lastNameInputField: {fileID: 1826346831}
   middleNameInputField: {fileID: 1841994435}
+  image: {fileID: 1780900194}
 --- !u!1 &677253820
 GameObject:
   m_ObjectHideFlags: 0

@@ -116,6 +116,12 @@ namespace PrYFam
 
                 root.ProfilePicture = image.sprite;
 
+
+                // Находим карточку и обновляем спрайт
+                Transform faceSpriteTransform = root.transform.Find("Environment").Find("Image (Face Sprite)"); // вот тут надо что то вроде FindChildByName
+                Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
+                faceSpriteImage.sprite = root.ProfilePicture;
+
                 // Закрываем панель
                 OnCloseButtonClick();
             }
