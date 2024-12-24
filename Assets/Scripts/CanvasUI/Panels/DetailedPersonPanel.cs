@@ -26,7 +26,7 @@ namespace PrYFam
 
 
 
-        [Header("Текстовые поля")]
+        [Header("Текстовые поля ввода:")]
         [Tooltip("Поле ввода имени.")]
         [SerializeField] private TMP_InputField firstNameInputField;
 
@@ -36,6 +36,14 @@ namespace PrYFam
         [Tooltip("Поле ввода отчества.")]
         [SerializeField] private TMP_InputField middleNameInputField;
 
+        [Tooltip("Биография.")]
+        [SerializeField] private TMP_InputField biographyInputField;
+
+        [Tooltip("Годы жизни.")]
+        [SerializeField] private TMP_InputField dateOfBirthInputField;
+
+        [Tooltip("Место рождения.")]
+        [SerializeField] private TMP_InputField placeOfBirthInputField;
 
 
 
@@ -76,6 +84,10 @@ namespace PrYFam
                 middleNameInputField.text = root.MiddleName;
 
 
+                biographyInputField.text = root.Biography;
+                dateOfBirthInputField.text = root.DateOfBirth;
+                placeOfBirthInputField.text = root.PlaceOfBirth;
+
                 image.sprite = root.ProfilePicture;
             }
             else
@@ -113,6 +125,9 @@ namespace PrYFam
                 root.LastName = lastNameInputField.text;
                 root.MiddleName = middleNameInputField.text;
 
+                root.Biography = biographyInputField.text;
+                root.DateOfBirth = dateOfBirthInputField.text;
+                root.PlaceOfBirth = placeOfBirthInputField.text;
 
                 root.ProfilePicture = image.sprite;
 
