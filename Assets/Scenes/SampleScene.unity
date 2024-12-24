@@ -5955,7 +5955,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 25.999985, y: -7.9999576}
+  m_AnchoredPosition: {x: 25.999985, y: -7.999958}
   m_SizeDelta: {x: -20, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &397965518469829672
@@ -6858,6 +6858,9 @@ MonoBehaviour:
   firstNameInputField: {fileID: 7259173200525006827}
   lastNameInputField: {fileID: 2437321425308575270}
   middleNameInputField: {fileID: 8612534553455703790}
+  biographyInputField: {fileID: 3308438876463909035}
+  dateOfBirthInputField: {fileID: 189791648118037038}
+  placeOfBirthInputField: {fileID: 814163047437638024}
   image: {fileID: 4672376483722367617}
 --- !u!114 &2437321425308575270
 MonoBehaviour:
@@ -7376,7 +7379,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 25.999985, y: -7.9999576}
+  m_AnchoredPosition: {x: 25.999985, y: -7.999958}
   m_SizeDelta: {x: -20, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3306885027000092005
@@ -9093,7 +9096,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 25.999985, y: -7.9999576}
+  m_AnchoredPosition: {x: 25.999985, y: -7.999958}
   m_SizeDelta: {x: -20, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6632794210593951993
@@ -9180,7 +9183,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 25.999985, y: -7.9999576}
+  m_AnchoredPosition: {x: 25.999985, y: -7.999958}
   m_SizeDelta: {x: -20, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6961333681960476212
