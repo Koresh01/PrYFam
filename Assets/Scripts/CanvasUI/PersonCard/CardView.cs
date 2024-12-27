@@ -20,6 +20,8 @@ namespace PrYFam
         [SerializeField] Button addParent;
         [SerializeField] Button addChild;
         [SerializeField] Button addHalf;
+        [Tooltip("Кнопка удаления члена семьи.")]
+        [SerializeField] Button delete;
 
         [Tooltip("Кнопка включения панели детальной информации члена семьи.")]
         [SerializeField] Button showDetailedPanel;
@@ -73,6 +75,20 @@ namespace PrYFam
 
                 canvasView.ShowDetailedPersonPanel();
             });
+
+            // Удаление члена семьи:
+            delete.onClick.AddListener(() =>
+            {
+                Member cur = transform.GetComponent<Member>();
+
+
+                bool parents = familyService.hasParents(cur);
+                bool children = familyService.hasChildren(cur);
+                bool half = familyService.hasHalf(cur);
+
+                familyService.DeletePerson(cur);
+                Destroy(gameObject);
+            });
         }
 
         private void OnDisable() {
@@ -80,6 +96,8 @@ namespace PrYFam
             addChild.onClick.RemoveAllListeners();
             addParent.onClick.RemoveAllListeners();
             addHalf.onClick.RemoveAllListeners();
+
+            delete.onClick.RemoveAllListeners();
 
             showDetailedPanel.onClick.RemoveAllListeners();
         }

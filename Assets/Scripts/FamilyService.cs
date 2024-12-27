@@ -30,6 +30,8 @@ namespace PrYFam
                 .Select(e => e.To)
                 .ToList();
         }
+        
+        
         #region creating new person
         /// <summary>
         /// Добавляет нового человека в семью и добавляет SMART-связь к нему.
@@ -78,6 +80,9 @@ namespace PrYFam
 
         }
         #endregion
+        
+        
+        
         #region relationships
 
         /// <summary> Добавляет двунаправленную связь между членами. </summary>
@@ -126,6 +131,22 @@ namespace PrYFam
             // Если entry равен null, возвращаем null.
             return entry?.Relationship;
         }
+        
+
+        /// <summary>
+        /// Удаляет все вхождения переданного Member из FamilyData.
+        /// </summary>
+        /// <param name="person">персона для удаления</param>
+        public void DeletePerson(Member person)
+        {
+            // Удаляем связь ОТ PERSON
+            familyData.relationships.RemoveAll(entry => entry.From == person);
+            // Удаляем связь К PERSON
+            familyData.relationships.RemoveAll(entry => entry.To == person);
+        }
+        /// <summary>
+        /// Удаляет взаимосвязь из FamilyData.
+        /// </summary>
         public void RemoveRelationship(Member from, Member to)
         {
             // Удаляем прямую связь
@@ -134,7 +155,9 @@ namespace PrYFam
             // Удаляем обратную связь
             familyData.relationships.RemoveAll(entry => entry.From == to && entry.To == from);
         }
-        /// <summary> Получает обратную связь между членами </summary>
+        /// <summary>
+        /// Получает обратную связь между членами
+        /// </summary>
         private Relationship GetReverseRelationship(Relationship relationship)
         {
             return relationship switch
@@ -146,6 +169,8 @@ namespace PrYFam
             };
         }
         #endregion
+        
+        
         #region simplified interaction
         public void DebugRelationships()    // функция отладки
         {
@@ -156,13 +181,13 @@ namespace PrYFam
         }
 
 
-        public bool hasNoChildren(Member current)
+        public bool hasChildren(Member current)
         {
-            return GetRelatedMembers(current, Relationship.ToChild).Count == 0 ? true : false;
+            return GetRelatedMembers(current, Relationship.ToChild).Count == 0 ? false : true;
         }
-        public bool hasNoParents(Member current)
+        public bool hasParents(Member current)
         {
-            return GetRelatedMembers(current, Relationship.ToParent).Count == 0 ? true : false;
+            return GetRelatedMembers(current, Relationship.ToParent).Count == 0 ? false : true;
         }
         public bool hasAllParents(Member current)
         {
