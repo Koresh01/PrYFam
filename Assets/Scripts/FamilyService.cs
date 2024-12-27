@@ -147,7 +147,7 @@ namespace PrYFam
         /// <summary>
         /// Удаляет взаимосвязь из FamilyData.
         /// </summary>
-        public void RemoveRelationship(Member from, Member to)
+        private void RemoveRelationship(Member from, Member to)
         {
             // Удаляем прямую связь
             familyData.relationships.RemoveAll(entry => entry.From == from && entry.To == to);
@@ -180,6 +180,20 @@ namespace PrYFam
             }
         }
 
+        /// <summary>
+        /// Является ли член семьи крайним в древе.
+        /// </summary>
+        public bool IsLeaf(Member cur) {
+            if (hasParents(cur) && !hasChildren(cur) && !hasHalf(cur))
+                return true;
+            if (!hasParents(cur) && hasChildren(cur) && hasHalf(cur))
+                return true;
+            if (!hasParents(cur) && hasChildren(cur) && !hasHalf(cur) && GetRelatedMembers(cur, Relationship.ToChild).Count <= 1)
+                return true;
+
+            Debug.Log("Невозможно удалить без последствий целостности древа!!!");
+            return false;
+        }
 
         public bool hasChildren(Member current)
         {

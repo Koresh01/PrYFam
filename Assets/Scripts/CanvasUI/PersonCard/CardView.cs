@@ -29,50 +29,37 @@ namespace PrYFam
         [Header("Каёмка для активной рамки:")]
         public GameObject DefaultBoundImage;
         public GameObject ActiveBoundImage;
-        
-        private void Awake() {
+
+        private void Awake()
+        {
             // Префабам нельзя прокидывать сущьности со сцены.
             familyService = GameObject.FindAnyObjectByType<FamilyService>();
             treeTraversal = GameObject.FindAnyObjectByType<TreeTraversal>();
             canvasView = GameObject.FindAnyObjectByType<CanvasView>();
         }
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             enter.onClick.AddListener(() => {
-                Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
-                Member cur = transform.GetComponent<Member>();
-                treeTraversal.ReDrawTree(cur, curPos);
+                HandleTreeRedraw();
             });
             addParent.onClick.AddListener(() => {
                 familyService.CreateMemberWithConnection(transform.gameObject, Relationship.ToParent);
-
-                Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
-                Member cur = transform.GetComponent<Member>();
-                treeTraversal.ReDrawTree(cur, curPos);
+                HandleTreeRedraw();
             });
             addChild.onClick.AddListener(() => {
                 familyService.CreateMemberWithConnection(transform.gameObject, Relationship.ToChild);
-
-                Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
-                Member cur = transform.GetComponent<Member>();
-                treeTraversal.ReDrawTree(cur, curPos);
+                HandleTreeRedraw();
             });
             addHalf.onClick.AddListener(() => {
                 familyService.CreateMemberWithConnection(transform.gameObject, Relationship.ToHalf);
-
-                Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
-                Member cur = transform.GetComponent<Member>();
-                treeTraversal.ReDrawTree(cur, curPos);
+                HandleTreeRedraw();
             });
 
             // отобразить панель детальной информации
             showDetailedPanel.onClick.AddListener(() =>
             {
-                Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
-                Member cur = transform.GetComponent<Member>();
-                treeTraversal.ReDrawTree(cur, curPos);
-
-
+                HandleTreeRedraw();
                 canvasView.ShowDetailedPersonPanel();
             });
 
@@ -81,25 +68,38 @@ namespace PrYFam
             {
                 Member cur = transform.GetComponent<Member>();
 
-
-                bool parents = familyService.hasParents(cur);
-                bool children = familyService.hasChildren(cur);
-                bool half = familyService.hasHalf(cur);
-
-                familyService.DeletePerson(cur);
-                Destroy(gameObject);
+                // Если удаляемый член семьи является крайним(листовым)
+                if (familyService.IsLeaf(cur))
+                {
+                    familyService.DeletePerson(cur);
+                    Destroy(gameObject);
+                }
             });
         }
 
-        private void OnDisable() {
-            enter.onClick.RemoveAllListeners();
-            addChild.onClick.RemoveAllListeners();
-            addParent.onClick.RemoveAllListeners();
-            addHalf.onClick.RemoveAllListeners();
+        private void OnDisable()
+        {
+            RemoveAllListeners(enter, addChild, addParent, addHalf, delete, showDetailedPanel);
+        }
 
-            delete.onClick.RemoveAllListeners();
+        // Вспомогательный метод для обновления дерева
+        private void HandleTreeRedraw()
+        {
+            Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
+            Member cur = transform.GetComponent<Member>();
+            treeTraversal.ReDrawTree(cur, curPos);
+        }
 
-            showDetailedPanel.onClick.RemoveAllListeners();
+        // Удаление всех слушателей с кнопок
+        private void RemoveAllListeners(params Button[] buttons)
+        {
+            foreach (var button in buttons)
+            {
+                if (button != null)
+                {
+                    button.onClick.RemoveAllListeners();
+                }
+            }
         }
     }
 }
