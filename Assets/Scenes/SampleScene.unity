@@ -834,8 +834,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placeHolder: {fileID: 2078671768}
+  lineColor: {r: 0, g: 0, b: 0, a: 1}
+  lineThickness: 0.18
   lines: []
-  offset: 3.5
+  offset: 3.6
 --- !u!1 &447253707
 GameObject:
   m_ObjectHideFlags: 0

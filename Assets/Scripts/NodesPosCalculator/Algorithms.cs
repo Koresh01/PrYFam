@@ -73,7 +73,7 @@ namespace PrYFam
         private void Calculate()
         {
             bool hasHalf = familyService.hasHalf(root); // Проверяем есть ли жена. [Подразумевается, что жена максимум одна]
-            Member half = hasHalf ? familyService.GetRelatedMembers(root, Relationship.ToHalf).FirstOrDefault() : null;
+            Member half = hasHalf ? familyService.GetHalfMembers(root).FirstOrDefault() : null;
 
             
 
@@ -144,13 +144,13 @@ namespace PrYFam
                     if (traversalStrategy.IsLeftToRight)
                     {
                         coordinates[current]    = branchMidpoint - new Vector2(offset, 0);
-                        Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                        Member half = familyService.GetHalfMembers(current).FirstOrDefault();
                         coordinates[half]       = branchMidpoint + new Vector2(offset, 0);
                     }
                     if (!traversalStrategy.IsLeftToRight)
                     {
                         coordinates[current]    = branchMidpoint + new Vector2(offset, 0);
-                        Member half = familyService.GetRelatedMembers(current, Relationship.ToHalf).FirstOrDefault();
+                        Member half = familyService.GetHalfMembers(current).FirstOrDefault();
                         coordinates[half]       = branchMidpoint - new Vector2(offset, 0);
                     }
                 }
@@ -163,8 +163,8 @@ namespace PrYFam
             // Используем паттерн "стратегия" для порядка обхода. На самом деле порядок всегда один и тот же... Мы там в обычом порядке возвращаем relatedMembers.
             var relatedMembers = traversalStrategy.Traverse(
                 direction == Direction.Down
-                    ? familyService.GetRelatedMembers(current, Relationship.ToChild)
-                    : familyService.GetRelatedMembers(current, Relationship.ToParent)
+                    ? familyService.GetChildMembers(current)
+                    : familyService.GetParentMembers(current)
             ).ToList();
 
             List<int> subtreeWidths = new List<int>();
@@ -216,8 +216,8 @@ namespace PrYFam
 
             // Получение связанных членов в зависимости от направления обхода
             var relatedMembers = direction == Direction.Down
-                ? familyService.GetRelatedMembers(root, Relationship.ToChild)
-                : familyService.GetRelatedMembers(root, Relationship.ToParent);
+                ? familyService.GetChildMembers(root)
+                : familyService.GetParentMembers(root);
 
             // обход всех "детей".
             foreach (var relatedMember in relatedMembers)

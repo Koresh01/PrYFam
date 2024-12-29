@@ -71,15 +71,20 @@ namespace PrYFam
                 if (relationship == Relationship.ToChild) {
                     if (familyService.hasHalf(from))
                     {
-                        Member half = familyService.GetRelatedMembers(from, Relationship.ToHalf).FirstOrDefault();
+                        Member half = familyService.GetHalfMembers(from).FirstOrDefault();
                         linesController.DrawMergedLine(from.gameObject, half.gameObject, to.gameObject);
                     }
                     if (!familyService.hasHalf(from))
                     {
-                        linesController.DrawDirectLine(from.gameObject, to.gameObject);
+                        linesController.DrawPolyLine(from.gameObject, to.gameObject);
                     }
+                }
 
-
+                
+                // Заглушка чтоб у нас рисовалась линия к жене, если дети пока что НЕ ДОБАВЛЕНЫ.
+                if (relationship == Relationship.ToHalf && familyService.GetChildMembers(from).Count == 0)
+                {
+                    linesController.DrawLineToHalf(from.gameObject, to.gameObject);
                 }
             }
         }
