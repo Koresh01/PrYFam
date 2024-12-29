@@ -1,5 +1,5 @@
-using System;
-using System.Linq;  // для доступа к .Where в List<>
+п»їusing System;
+using System.Linq;  // РґР»СЏ РґРѕСЃС‚СѓРїР° Рє .Where РІ List<>
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,14 +7,14 @@ using UnityEngine.Events;
 namespace PrYFam
 {
     /// <summary>
-    /// Сервис для работы с данными семейного древа.
-    /// Предоставляет функциональность для создания, получения и установки семейных данных.
+    /// РЎРµСЂРІРёСЃ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґР°РЅРЅС‹РјРё СЃРµРјРµР№РЅРѕРіРѕ РґСЂРµРІР°.
+    /// РџСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕСЃС‚СЊ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ, РїРѕР»СѓС‡РµРЅРёСЏ Рё СѓСЃС‚Р°РЅРѕРІРєРё СЃРµРјРµР№РЅС‹С… РґР°РЅРЅС‹С….
     /// </summary>
     public class FamilyService : MonoBehaviour
     {
         public GameObject personCardPrefab;
         [SerializeField] Transform cardsPlaceHolder;
-        [Header("Зависимости:")]
+        [Header("Р—Р°РІРёСЃРёРјРѕСЃС‚Рё:")]
         public FamilyData familyData;
 
         
@@ -28,9 +28,9 @@ namespace PrYFam
 
 
         
-        #region Создание новой персоны
+        #region РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ РїРµСЂСЃРѕРЅС‹
         /// <summary>
-        /// Добавляет нового человека в семью и добавляет SMART-связь к нему.
+        /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІРѕРіРѕ С‡РµР»РѕРІРµРєР° РІ СЃРµРјСЊСЋ Рё РґРѕР±Р°РІР»СЏРµС‚ SMART-СЃРІСЏР·СЊ Рє РЅРµРјСѓ.
         /// </summary>
         public void AddNewMember(GameObject From, Relationship relationship)
         {
@@ -43,66 +43,96 @@ namespace PrYFam
             AddConnection(from, to, relationship);
         }
         /// <summary>
-        /// Создаёт карточку префаба человека.
+        /// РџСЂРѕРІРµСЂСЏРµС‚ РјРѕР¶РЅРѕ Р»Рё РґРѕР±Р°РІРёС‚СЊ РІР·Р°РёРјРѕСЃРІСЏР·СЊ.
+        /// </summary>
+        private bool CanAddConnection(Member from, Relationship relationship)
+        {
+            switch (relationship)
+            {
+                case Relationship.ToHalf:
+                    if (!CanAddHalf(from)) return false; // С‚РµРїРµСЂСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІР»СЏС‚СЊ СЃРєРѕР»СЊРєРѕ СѓРіРѕРґРЅРѕ half.
+                    break;
+                case Relationship.ToParent:
+                    if (!CanAddParent(from)) return false;
+                    break;
+                case Relationship.ToChild:
+                    break;
+            }
+            return true;
+        }
+        /// <summary>
+        /// РџСЂРѕРІРµСЂСЏРµС‚ РјРѕР¶РЅРѕ Р»Рё РґРѕР±Р°РІРёС‚СЊ Р¶РµРЅСѓ.
+        /// </summary>
+        private bool CanAddHalf(Member from)
+        {
+            if (hasHalf(from))
+            {
+                Debug.Log("Р’С‚РѕСЂСѓСЋ Р¶РµРЅСѓ РґРѕР±Р°РІРёС‚СЊ РЅРµР»СЊР·СЏ!");
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// РЎРѕР·РґР°С‘С‚ РєР°СЂС‚РѕС‡РєСѓ РїСЂРµС„Р°Р±Р° С‡РµР»РѕРІРµРєР°.
         /// </summary>
         public GameObject CreateCard()
         {
             var go = Instantiate(personCardPrefab, cardsPlaceHolder);
-            go.SetActive(false);    // Отображаться они начнут после отрисовки.
+            go.SetActive(false);    // РћС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РѕРЅРё РЅР°С‡РЅСѓС‚ РїРѕСЃР»Рµ РѕС‚СЂРёСЃРѕРІРєРё.
             return go;
         }
         /// <summary>
-        /// Добавляет новую связь в FamilyData.
+        /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІСѓСЋ СЃРІСЏР·СЊ РІ FamilyData.
         /// </summary>
         public void AddConnection(Member from, Member to, Relationship relationship = Relationship.None)
         {
-            // обработка неликвидных ситуаций
+            // РѕР±СЂР°Р±РѕС‚РєР° РЅРµР»РёРєРІРёРґРЅС‹С… СЃРёС‚СѓР°С†РёР№
             switch (relationship)
             {
                 case Relationship.ToHalf:
-                    HandleToHalf(from, to);     // внутри и создание карточки происходит
+                    HandleToHalf(from, to);     // РІРЅСѓС‚СЂРё Рё СЃРѕР·РґР°РЅРёРµ РєР°СЂС‚РѕС‡РєРё РїСЂРѕРёСЃС…РѕРґРёС‚
                     break;
                 case Relationship.ToParent:
-                    HandleToParent(from, to);   // внутри и создание карточки происходит
+                    HandleToParent(from, to);   // РІРЅСѓС‚СЂРё Рё СЃРѕР·РґР°РЅРёРµ РєР°СЂС‚РѕС‡РєРё РїСЂРѕРёСЃС…РѕРґРёС‚
                     break;
                 case Relationship.ToChild:
-                    HandleToChild(from, to);    // внутри и создание карточки происходит
+                    HandleToChild(from, to);    // РІРЅСѓС‚СЂРё Рё СЃРѕР·РґР°РЅРёРµ РєР°СЂС‚РѕС‡РєРё РїСЂРѕРёСЃС…РѕРґРёС‚
                     break;
                 default:
-                    Debug.LogWarning("Неизвестное отношение: " + relationship);
+                    Debug.LogWarning("РќРµРёР·РІРµСЃС‚РЅРѕРµ РѕС‚РЅРѕС€РµРЅРёРµ: " + relationship);
                     break;
             }
 
 
         }
         /// <summary>
-        /// Обрабатывает добавление супруга (жены или мужа) для указанного члена семьи. 
-        /// Если у члена семьи уже есть супруг, то добавление не выполняется. 
-        /// Также обновляет связи между супругом и детьми.
+        /// РћР±СЂР°Р±Р°С‚С‹РІР°РµС‚ РґРѕР±Р°РІР»РµРЅРёРµ СЃСѓРїСЂСѓРіР° (Р¶РµРЅС‹ РёР»Рё РјСѓР¶Р°) РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‡Р»РµРЅР° СЃРµРјСЊРё. 
+        /// Р•СЃР»Рё Сѓ С‡Р»РµРЅР° СЃРµРјСЊРё СѓР¶Рµ РµСЃС‚СЊ СЃСѓРїСЂСѓРі, С‚Рѕ РґРѕР±Р°РІР»РµРЅРёРµ РЅРµ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ. 
+        /// РўР°РєР¶Рµ РѕР±РЅРѕРІР»СЏРµС‚ СЃРІСЏР·Рё РјРµР¶РґСѓ СЃСѓРїСЂСѓРіРѕРј Рё РґРµС‚СЊРјРё.
         /// </summary>
         private void HandleToHalf(Member from, Member to)
         {
-            // Добавим двунаправленную связь в граф смежных вершин к "текущему член"у и его "второй половинке":
+            // Р”РѕР±Р°РІРёРј РґРІСѓРЅР°РїСЂР°РІР»РµРЅРЅСѓСЋ СЃРІСЏР·СЊ РІ РіСЂР°С„ СЃРјРµР¶РЅС‹С… РІРµСЂС€РёРЅ Рє "С‚РµРєСѓС‰РµРјСѓ С‡Р»РµРЅСѓ" Рё РµРіРѕ "РІС‚РѕСЂРѕР№ РїРѕР»РѕРІРёРЅРєРµ":
             AddBidirectionalRelationship(from, to, Relationship.ToHalf);
 
 
-            // Разберемся с уже имеющимися детьми:
+            // Р Р°Р·Р±РµСЂРµРјСЃСЏ СЃ СѓР¶Рµ РёРјРµСЋС‰РёРјРёСЃСЏ РґРµС‚СЊРјРё:
             foreach (var child in GetChildMembers(from))
             {
                 AddBidirectionalRelationship(child, to, Relationship.ToParent);
             }
-            Debug.Log("Теперь дети знают про своего второго родителя");
+            Debug.Log("РўРµРїРµСЂСЊ РґРµС‚Рё Р·РЅР°СЋС‚ РїСЂРѕ СЃРІРѕРµРіРѕ РІС‚РѕСЂРѕРіРѕ СЂРѕРґРёС‚РµР»СЏ");
         }
         /// <summary>
-        /// Обрабатывает добавление родителя для указанного члена семьи. 
-        /// Если у члена семьи уже есть два родителя, то добавление не выполняется. 
-        /// Также устанавливает связь между новым родителем и уже существующим вторым родителем как "супруги".
+        /// РћР±СЂР°Р±Р°С‚С‹РІР°РµС‚ РґРѕР±Р°РІР»РµРЅРёРµ СЂРѕРґРёС‚РµР»СЏ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‡Р»РµРЅР° СЃРµРјСЊРё. 
+        /// Р•СЃР»Рё Сѓ С‡Р»РµРЅР° СЃРµРјСЊРё СѓР¶Рµ РµСЃС‚СЊ РґРІР° СЂРѕРґРёС‚РµР»СЏ, С‚Рѕ РґРѕР±Р°РІР»РµРЅРёРµ РЅРµ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ. 
+        /// РўР°РєР¶Рµ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРІСЏР·СЊ РјРµР¶РґСѓ РЅРѕРІС‹Рј СЂРѕРґРёС‚РµР»РµРј Рё СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРј РІС‚РѕСЂС‹Рј СЂРѕРґРёС‚РµР»РµРј РєР°Рє "СЃСѓРїСЂСѓРіРё".
         /// </summary>
         private void HandleToParent(Member from, Member to)
         {
-            AddBidirectionalRelationship(from, to, Relationship.ToParent);    // прямую связь 100% добавляем
+            AddBidirectionalRelationship(from, to, Relationship.ToParent);    // РїСЂСЏРјСѓСЋ СЃРІСЏР·СЊ 100% РґРѕР±Р°РІР»СЏРµРј
 
-            // нюансы:
+            // РЅСЋР°РЅСЃС‹:
             foreach (var parent in GetParentMembers(from))
             {
                 if (parent != to)
@@ -112,14 +142,14 @@ namespace PrYFam
             }
         }
         /// <summary>
-        /// Обрабатывает добавление ребёнка для указанного члена семьи. 
-        /// Устанавливает связь между добавляемым ребёнком и супругом члена семьи.
+        /// РћР±СЂР°Р±Р°С‚С‹РІР°РµС‚ РґРѕР±Р°РІР»РµРЅРёРµ СЂРµР±С‘РЅРєР° РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‡Р»РµРЅР° СЃРµРјСЊРё. 
+        /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРІСЏР·СЊ РјРµР¶РґСѓ РґРѕР±Р°РІР»СЏРµРјС‹Рј СЂРµР±С‘РЅРєРѕРј Рё СЃСѓРїСЂСѓРіРѕРј С‡Р»РµРЅР° СЃРµРјСЊРё.
         /// </summary>
         private void HandleToChild(Member from, Member to)
         {
-            AddBidirectionalRelationship(from, to, Relationship.ToChild);    // прямую связь 100% добавляем
+            AddBidirectionalRelationship(from, to, Relationship.ToChild);    // РїСЂСЏРјСѓСЋ СЃРІСЏР·СЊ 100% РґРѕР±Р°РІР»СЏРµРј
 
-            // нюансы:
+            // РЅСЋР°РЅСЃС‹:
             foreach (var half in GetHalfMembers(from))
             {
                 AddBidirectionalRelationship(half, to, Relationship.ToChild);
@@ -137,27 +167,27 @@ namespace PrYFam
 
 
 
-        #region Работа с взаимосвязями
+        #region Р Р°Р±РѕС‚Р° СЃ РІР·Р°РёРјРѕСЃРІСЏР·СЏРјРё
         /// <summary>
-        /// Добавляет двунаправленную связь между членами.
+        /// Р”РѕР±Р°РІР»СЏРµС‚ РґРІСѓРЅР°РїСЂР°РІР»РµРЅРЅСѓСЋ СЃРІСЏР·СЊ РјРµР¶РґСѓ С‡Р»РµРЅР°РјРё.
         /// </summary>
         private void AddBidirectionalRelationship(Member from, Member to, Relationship relationship)
         {
-            Debug.LogFormat("Пытаемся от {0} добавить связь к {1}", from.name, to.name);
+            Debug.LogFormat("РџС‹С‚Р°РµРјСЃСЏ РѕС‚ {0} РґРѕР±Р°РІРёС‚СЊ СЃРІСЏР·СЊ Рє {1}", from.name, to.name);
 
-            // Проверяем, есть ли уже такая связь
+            // РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё СѓР¶Рµ С‚Р°РєР°СЏ СЃРІСЏР·СЊ
             if (!RelationshipExists(from, to))
             {
                 if (to != null)
                 {
-                    // Добавляем прямую связь:
+                    // Р”РѕР±Р°РІР»СЏРµРј РїСЂСЏРјСѓСЋ СЃРІСЏР·СЊ:
                     familyData.relationships.Add(new MembersConnection
                     {
                         From = from,
                         To = to,
                         Relationship = relationship
                     });
-                    // Добавляем обратную связь:
+                    // Р”РѕР±Р°РІР»СЏРµРј РѕР±СЂР°С‚РЅСѓСЋ СЃРІСЏР·СЊ:
                     familyData.relationships.Add(new MembersConnection
                     {
                         From = to,
@@ -167,7 +197,7 @@ namespace PrYFam
                 }
             }
         }
-        /// <summary> Проверяет, существует ли хотя бы один элемент в списке, удовлетворяющий этому предикату.. </summary>
+        /// <summary> РџСЂРѕРІРµСЂСЏРµС‚, СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРєРµ, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёР№ СЌС‚РѕРјСѓ РїСЂРµРґРёРєР°С‚Сѓ.. </summary>
         /// <returns>bool</returns>
         public bool RelationshipExists(Member from, Member to)
         {
@@ -175,41 +205,41 @@ namespace PrYFam
         }
         public Relationship? GetRelationship(Member from, Member to)
         {
-            // Используем метод Find, чтобы найти первый элемент в списке `relationships`,
-            // который соответствует условию: поле From равно from, а поле To равно to.
-            // Если элемент найден, он будет сохранён в переменной entry.
-            // Если элемент не найден, entry будет равен null.
+            // РСЃРїРѕР»СЊР·СѓРµРј РјРµС‚РѕРґ Find, С‡С‚РѕР±С‹ РЅР°Р№С‚Рё РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРєРµ `relationships`,
+            // РєРѕС‚РѕСЂС‹Р№ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ СѓСЃР»РѕРІРёСЋ: РїРѕР»Рµ From СЂР°РІРЅРѕ from, Р° РїРѕР»Рµ To СЂР°РІРЅРѕ to.
+            // Р•СЃР»Рё СЌР»РµРјРµРЅС‚ РЅР°Р№РґРµРЅ, РѕРЅ Р±СѓРґРµС‚ СЃРѕС…СЂР°РЅС‘РЅ РІ РїРµСЂРµРјРµРЅРЅРѕР№ entry.
+            // Р•СЃР»Рё СЌР»РµРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ, entry Р±СѓРґРµС‚ СЂР°РІРµРЅ null.
             var entry = familyData.relationships.Find(e => e.From == from && e.To == to);
 
-            // Используем оператор null-условной обработки (?.) для безопасного доступа.
-            // Если entry не равен null, возвращаем поле Relationship из найденного элемента.
-            // Если entry равен null, возвращаем null.
+            // РСЃРїРѕР»СЊР·СѓРµРј РѕРїРµСЂР°С‚РѕСЂ null-СѓСЃР»РѕРІРЅРѕР№ РѕР±СЂР°Р±РѕС‚РєРё (?.) РґР»СЏ Р±РµР·РѕРїР°СЃРЅРѕРіРѕ РґРѕСЃС‚СѓРїР°.
+            // Р•СЃР»Рё entry РЅРµ СЂР°РІРµРЅ null, РІРѕР·РІСЂР°С‰Р°РµРј РїРѕР»Рµ Relationship РёР· РЅР°Р№РґРµРЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°.
+            // Р•СЃР»Рё entry СЂР°РІРµРЅ null, РІРѕР·РІСЂР°С‰Р°РµРј null.
             return entry?.Relationship;
         }
         /// <summary>
-        /// Удаляет все вхождения переданного Member из FamilyData.
+        /// РЈРґР°Р»СЏРµС‚ РІСЃРµ РІС…РѕР¶РґРµРЅРёСЏ РїРµСЂРµРґР°РЅРЅРѕРіРѕ Member РёР· FamilyData.
         /// </summary>
-        /// <param name="person">персона для удаления</param>
+        /// <param name="person">РїРµСЂСЃРѕРЅР° РґР»СЏ СѓРґР°Р»РµРЅРёСЏ</param>
         public void DeletePerson(Member person)
         {
-            // Удаляем связь ОТ PERSON
+            // РЈРґР°Р»СЏРµРј СЃРІСЏР·СЊ РћРў PERSON
             familyData.relationships.RemoveAll(entry => entry.From == person);
-            // Удаляем связь К PERSON
+            // РЈРґР°Р»СЏРµРј СЃРІСЏР·СЊ Рљ PERSON
             familyData.relationships.RemoveAll(entry => entry.To == person);
         }
         /// <summary>
-        /// Удаляет взаимосвязь из FamilyData.
+        /// РЈРґР°Р»СЏРµС‚ РІР·Р°РёРјРѕСЃРІСЏР·СЊ РёР· FamilyData.
         /// </summary>
         private void RemoveRelationship(Member from, Member to)
         {
-            // Удаляем прямую связь
+            // РЈРґР°Р»СЏРµРј РїСЂСЏРјСѓСЋ СЃРІСЏР·СЊ
             familyData.relationships.RemoveAll(entry => entry.From == from && entry.To == to);
 
-            // Удаляем обратную связь
+            // РЈРґР°Р»СЏРµРј РѕР±СЂР°С‚РЅСѓСЋ СЃРІСЏР·СЊ
             familyData.relationships.RemoveAll(entry => entry.From == to && entry.To == from);
         }
         /// <summary>
-        /// Получает обратную связь между членами
+        /// РџРѕР»СѓС‡Р°РµС‚ РѕР±СЂР°С‚РЅСѓСЋ СЃРІСЏР·СЊ РјРµР¶РґСѓ С‡Р»РµРЅР°РјРё
         /// </summary>
         private Relationship GetReverseRelationship(Relationship relationship)
         {
@@ -218,7 +248,7 @@ namespace PrYFam
                 Relationship.ToParent => Relationship.ToChild,
                 Relationship.ToHalf => Relationship.ToHalf,
                 Relationship.ToChild => Relationship.ToParent,
-                _ => throw new ArgumentOutOfRangeException(nameof(relationship), "Неизвестное отношение"),
+                _ => throw new ArgumentOutOfRangeException(nameof(relationship), "РќРµРёР·РІРµСЃС‚РЅРѕРµ РѕС‚РЅРѕС€РµРЅРёРµ"),
             };
         }
         #endregion
@@ -229,37 +259,37 @@ namespace PrYFam
 
 
 
-        #region Получение прилежащих членов
+        #region РџРѕР»СѓС‡РµРЅРёРµ РїСЂРёР»РµР¶Р°С‰РёС… С‡Р»РµРЅРѕРІ
         /// <summary>
-        /// Возвращает список детей.
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РґРµС‚РµР№.
         /// </summary>
-        /// <param name="cur">Член семьи, у которого ищем детей.</param>
+        /// <param name="cur">Р§Р»РµРЅ СЃРµРјСЊРё, Сѓ РєРѕС‚РѕСЂРѕРіРѕ РёС‰РµРј РґРµС‚РµР№.</param>
         public List<Member> GetChildMembers(Member cur)
         {
             return GetRelatedMembers(cur, Relationship.ToChild);
         }
         /// <summary>
-        /// Возвращает список родителей.
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЂРѕРґРёС‚РµР»РµР№.
         /// </summary>
-        /// <param name="cur">Член семьи, у которого ищем детей.</param>
+        /// <param name="cur">Р§Р»РµРЅ СЃРµРјСЊРё, Сѓ РєРѕС‚РѕСЂРѕРіРѕ РёС‰РµРј РґРµС‚РµР№.</param>
         public List<Member> GetParentMembers(Member cur)
         {
             return GetRelatedMembers(cur, Relationship.ToParent);
         }
         /// <summary>
-        /// Возвращает список партнёров.
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїР°СЂС‚РЅС‘СЂРѕРІ.
         /// </summary>
-        /// <param name="cur">Член семьи, у которого ищем детей.</param>
+        /// <param name="cur">Р§Р»РµРЅ СЃРµРјСЊРё, Сѓ РєРѕС‚РѕСЂРѕРіРѕ РёС‰РµРј РґРµС‚РµР№.</param>
         public List<Member> GetHalfMembers(Member cur)
         {
             return GetRelatedMembers(cur, Relationship.ToHalf);
         }
         /// <summary>
-        /// Возвращает список членов семейного дерева, связанных с указанным членом семьи через заданный тип связи.
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‡Р»РµРЅРѕРІ СЃРµРјРµР№РЅРѕРіРѕ РґРµСЂРµРІР°, СЃРІСЏР·Р°РЅРЅС‹С… СЃ СѓРєР°Р·Р°РЅРЅС‹Рј С‡Р»РµРЅРѕРј СЃРµРјСЊРё С‡РµСЂРµР· Р·Р°РґР°РЅРЅС‹Р№ С‚РёРї СЃРІСЏР·Рё.
         /// </summary>
-        /// <param name="from">Член семьи, для которого ищутся связанные участники.</param>
-        /// <param name="relationship">Тип связи, например, родитель или ребенок.</param>
-        /// <returns>Список связанных членов семьи.</returns>
+        /// <param name="from">Р§Р»РµРЅ СЃРµРјСЊРё, РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ РёС‰СѓС‚СЃСЏ СЃРІСЏР·Р°РЅРЅС‹Рµ СѓС‡Р°СЃС‚РЅРёРєРё.</param>
+        /// <param name="relationship">РўРёРї СЃРІСЏР·Рё, РЅР°РїСЂРёРјРµСЂ, СЂРѕРґРёС‚РµР»СЊ РёР»Рё СЂРµР±РµРЅРѕРє.</param>
+        /// <returns>РЎРїРёСЃРѕРє СЃРІСЏР·Р°РЅРЅС‹С… С‡Р»РµРЅРѕРІ СЃРµРјСЊРё.</returns>
         private List<Member> GetRelatedMembers(Member from, Relationship relationship)
         {
             return familyData.relationships
@@ -278,7 +308,7 @@ namespace PrYFam
 
 
         #region simplified interaction
-        public void DebugRelationships()    // функция отладки
+        public void DebugRelationships()    // С„СѓРЅРєС†РёСЏ РѕС‚Р»Р°РґРєРё
         {
             foreach (var entry in familyData.relationships)
             {
@@ -287,7 +317,7 @@ namespace PrYFam
         }
 
         /// <summary>
-        /// Является ли член семьи крайним в древе.
+        /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё С‡Р»РµРЅ СЃРµРјСЊРё РєСЂР°Р№РЅРёРј РІ РґСЂРµРІРµ.
         /// </summary>
         public bool IsLeaf(Member cur) {
             if (hasParents(cur) && !hasChildren(cur) && !hasHalf(cur))
@@ -297,50 +327,28 @@ namespace PrYFam
             if (!hasParents(cur) && hasChildren(cur) && !hasHalf(cur) && GetChildMembers(cur).Count <= 1)
                 return true;
 
-            Debug.Log("Невозможно удалить без последствий целостности древа!!!");
+            Debug.Log("РќРµРІРѕР·РјРѕР¶РЅРѕ СѓРґР°Р»РёС‚СЊ Р±РµР· РїРѕСЃР»РµРґСЃС‚РІРёР№ С†РµР»РѕСЃС‚РЅРѕСЃС‚Рё РґСЂРµРІР°!!!");
             return false;
         }
 
         public bool hasChildren(Member current)
         {
-            return GetRelatedMembers(current, Relationship.ToChild).Count == 0 ? false : true;
+            return GetChildMembers(current).Count == 0 ? false : true;
         }
         public bool hasParents(Member current)
         {
-            return GetRelatedMembers(current, Relationship.ToParent).Count == 0 ? false : true;
-        }
-        public bool hasAllParents(Member current)
-        {
-            return GetRelatedMembers(current, Relationship.ToParent).Count == 2 ? true : false;
+            return GetParentMembers(current).Count == 0 ? false : true;
         }
         public bool hasHalf(Member current)
         {
-            return GetRelatedMembers(current, Relationship.ToHalf).Count > 0 ? true : false;
+            return GetHalfMembers(current).Count > 0 ? true : false;
         }
-
-
-        /// <summary> Проверяет можно ли добавить взаимосвязь. </summary>
-        private bool CanAddConnection(Member from, Relationship relationship)
-        {
-            switch (relationship) {
-                case Relationship.ToHalf:
-                    // теперь можно добавлять сколько угодно half.
-                    break;
-                case Relationship.ToParent:
-                    if (!CanAddParent(from)) return false;
-                    break;
-                case Relationship.ToChild:
-                    break;
-            }
-            return true;
-        }
-        
-        /// <summary> Проверяет можно ли добавить ещё родителя. </summary>
+        /// <summary> РџСЂРѕРІРµСЂСЏРµС‚ РјРѕР¶РЅРѕ Р»Рё РґРѕР±Р°РІРёС‚СЊ РµС‰С‘ СЂРѕРґРёС‚РµР»СЏ. </summary>
         private bool CanAddParent(Member from)
         {
             if (GetRelatedMembers(from, Relationship.ToParent).Count >= 2)
             {
-                Debug.Log("Нельзя добавлять больше двух родителей.");
+                Debug.Log("РќРµР»СЊР·СЏ РґРѕР±Р°РІР»СЏС‚СЊ Р±РѕР»СЊС€Рµ РґРІСѓС… СЂРѕРґРёС‚РµР»РµР№.");
                 return false;
             }
             return true;
