@@ -44,15 +44,15 @@ namespace PrYFam
                 HandleTreeRedraw();
             });
             addParent.onClick.AddListener(() => {
-                familyService.CreateMemberWithConnection(transform.gameObject, Relationship.ToParent);
+                familyService.AddNewMember(transform.gameObject, Relationship.ToParent);
                 HandleTreeRedraw();
             });
             addChild.onClick.AddListener(() => {
-                familyService.CreateMemberWithConnection(transform.gameObject, Relationship.ToChild);
+                familyService.AddNewMember(transform.gameObject, Relationship.ToChild);
                 HandleTreeRedraw();
             });
             addHalf.onClick.AddListener(() => {
-                familyService.CreateMemberWithConnection(transform.gameObject, Relationship.ToHalf);
+                familyService.AddNewMember(transform.gameObject, Relationship.ToHalf);
                 HandleTreeRedraw();
             });
 

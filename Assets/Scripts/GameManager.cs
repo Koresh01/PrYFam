@@ -14,8 +14,8 @@ namespace PrYFam
 
         public void CreateFamilyTree()
         {
-            GameObject go1 = familyService.createMemberGameObject();
-            GameObject go2 = familyService.createMemberGameObject();
+            GameObject go1 = familyService.CreateCard();
+            GameObject go2 = familyService.CreateCard();
 
             Member from = go1.GetComponent<Member>();
             Member to = go2.GetComponent<Member>();

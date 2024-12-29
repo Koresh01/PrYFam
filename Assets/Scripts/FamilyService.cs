@@ -32,12 +32,12 @@ namespace PrYFam
         /// <summary>
         /// Добавляет нового человека в семью и добавляет SMART-связь к нему.
         /// </summary>
-        public void CreateMemberWithConnection(GameObject From, Relationship relationship)
+        public void AddNewMember(GameObject From, Relationship relationship)
         {
             Member from = From.GetComponent<Member>();
             if (!CanAddConnection(from, relationship)) return;
             
-            GameObject newMemberObj = createMemberGameObject();
+            GameObject newMemberObj = CreateCard();
             Member to = newMemberObj.GetComponent<Member>();
 
             AddConnection(from, to, relationship);
@@ -45,14 +45,14 @@ namespace PrYFam
         /// <summary>
         /// Создаёт карточку префаба человека.
         /// </summary>
-        public GameObject createMemberGameObject()
+        public GameObject CreateCard()
         {
             var go = Instantiate(personCardPrefab, cardsPlaceHolder);
             go.SetActive(false);    // Отображаться они начнут после отрисовки.
             return go;
         }
         /// <summary>
-        /// Добавляет связь между игровыми объектами prefab-ами: [PersonCard] в семейное древо.
+        /// Добавляет новую связь в FamilyData.
         /// </summary>
         public void AddConnection(Member from, Member to, Relationship relationship = Relationship.None)
         {
