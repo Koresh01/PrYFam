@@ -100,16 +100,16 @@ namespace PrYFam
         /// Если у члена семьи уже есть два родителя, то добавление не выполняется. 
         /// Также устанавливает связь между новым родителем и уже существующим вторым родителем как "супруги".
         /// </summary>
-        private void HandleToParent(Member from, Member to)
+        private void HandleToParent(Member from, Member newParent)
         {
-            AddBidirectionalRelationship(from, to, Relationship.ToParent);    // прямую связь 100% добавляем
+            AddBidirectionalRelationship(from, newParent, Relationship.ToParent);    // прямую связь 100% добавляем
 
             // нюансы:
             foreach (var parent in GetParentMembers(from))
             {
-                if (parent != to)
+                if (parent != newParent)
                 {
-                    AddBidirectionalRelationship(parent, to, Relationship.ToHalf);
+                    AddBidirectionalRelationship(parent, newParent, Relationship.ToHalf);
                 }
             }
         }
@@ -117,14 +117,14 @@ namespace PrYFam
         /// Обрабатывает добавление ребёнка для указанного члена семьи. 
         /// Устанавливает связь между добавляемым ребёнком и супругом члена семьи.
         /// </summary>
-        private void HandleToChild(Member from, Member to)
+        private void HandleToChild(Member from, Member child)
         {
-            AddBidirectionalRelationship(from, to, Relationship.ToChild);    // прямую связь 100% добавляем
+            AddBidirectionalRelationship(from, child, Relationship.ToChild);    // прямую связь 100% добавляем
 
             // нюансы:
             foreach (var half in GetHalfMembers(from))
             {
-                AddBidirectionalRelationship(half, to, Relationship.ToChild);
+                AddBidirectionalRelationship(half, child, Relationship.ToChild);
             }
         }
         #endregion
