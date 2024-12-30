@@ -86,14 +86,6 @@ namespace PrYFam
         {
             // Добавим двунаправленную связь в граф смежных вершин к "текущему члену" и его "второй половинке":
             AddBidirectionalRelationship(from, half, Relationship.ToHalf);
-
-
-            // Разберемся с уже имеющимися детьми:
-            foreach (var child in GetChildMembers(from))
-            {
-                AddBidirectionalRelationship(child, half, Relationship.ToParent);
-            }
-            Debug.Log("Теперь дети знают про своего второго родителя");
         }
         /// <summary>
         /// Обрабатывает добавление родителя для указанного члена семьи. 
