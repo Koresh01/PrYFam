@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2383648957394399020}
   - component: {fileID: 8844235613919088770}
+  - component: {fileID: 7548225343826953551}
   - component: {fileID: 3646899339574367868}
   m_Layer: 5
   m_Name: PersonCard v2
@@ -63,6 +64,18 @@ MonoBehaviour:
   showDetailedPanel: {fileID: 8000927063529266692}
   DefaultBoundImage: {fileID: 1404939286030660982}
   ActiveBoundImage: {fileID: 1399626693929171829}
+--- !u!114 &7548225343826953551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453356105399204820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e97329d8ff19fc845a72ded746398375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3646899339574367868
 MonoBehaviour:
   m_ObjectHideFlags: 0

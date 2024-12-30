@@ -85,7 +85,7 @@ namespace PrYFam
                 case Relationship.ToChild:
                     Member child = to;
                     List<Member> mothers = GetHalfMembers(from);
-                    Member selectedMum = mothers.FirstOrDefault();
+                    Member selectedMum = GetSelectedHalf(from);
 
                     AddBidirectionalRelationship(from, child, Relationship.ToChild);
                     AddBidirectionalRelationship(selectedMum, child, Relationship.ToChild);
@@ -160,7 +160,6 @@ namespace PrYFam
         private bool CanAddChild(Member cur)
         {
             List<Member> mothers = GetHalfMembers(cur);
-            Member selectedMum = mothers.FirstOrDefault();
 
             if (mothers.Count >= 1)
             {
@@ -291,6 +290,20 @@ namespace PrYFam
         public List<Member> GetHalfMembers(Member cur)
         {
             return GetRelatedMembers(cur, Relationship.ToHalf);
+        }
+        /// <summary>
+        /// Получаем выбранную на данный момент жену.
+        /// </summary>
+        public Member GetSelectedHalf(Member cur)
+        {
+            List<Member> mothers = GetHalfMembers(cur);
+
+            // Обращаемся к карточке на сцене, чтобы получить индекс выбранной на данный момент жены.
+            GameObject personCard = cur.gameObject;
+            SelectedWifeController wifeController = personCard.GetComponent<SelectedWifeController>();
+            int inx = wifeController.GetInx();
+
+            return mothers[inx];
         }
         /// <summary>
         /// Работает непосредственно с FamilyData для получения списка необходимых членов семьи.

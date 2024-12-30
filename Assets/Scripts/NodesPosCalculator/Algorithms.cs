@@ -73,7 +73,7 @@ namespace PrYFam
         private void Calculate()
         {
             bool hasHalf = familyService.hasHalf(root); // Проверяем есть ли жена. [Подразумевается, что жена максимум одна]
-            Member half = hasHalf ? familyService.GetHalfMembers(root).FirstOrDefault() : null;
+            Member half = hasHalf ? familyService.GetSelectedHalf(root) : null;
 
             
 
@@ -121,6 +121,10 @@ namespace PrYFam
         }
 
 
+
+
+
+
         /// <summary>
         /// Рекурсивно назначает координаты узлам дерева, идя в заданном направлении: вверх или вниз. 
         /// </summary>
@@ -144,13 +148,13 @@ namespace PrYFam
                     if (traversalStrategy.IsLeftToRight)
                     {
                         coordinates[current]    = branchMidpoint - new Vector2(offset, 0);
-                        Member half = familyService.GetHalfMembers(current).FirstOrDefault();
+                        Member half = familyService.GetSelectedHalf(current);
                         coordinates[half]       = branchMidpoint + new Vector2(offset, 0);
                     }
                     if (!traversalStrategy.IsLeftToRight)
                     {
                         coordinates[current]    = branchMidpoint + new Vector2(offset, 0);
-                        Member half = familyService.GetHalfMembers(current).FirstOrDefault();
+                        Member half = familyService.GetSelectedHalf(current);
                         coordinates[half]       = branchMidpoint - new Vector2(offset, 0);
                     }
                 }
@@ -160,12 +164,12 @@ namespace PrYFam
                 coordinates[current] = branchMidpoint;
             }
 
+
+            // Получение связанных членов в зависимости от направления обхода
+            List<Member> relatedMembers = GetRelatedMembers(current, direction);
             // Используем паттерн "стратегия" для порядка обхода. На самом деле порядок всегда один и тот же... Мы там в обычом порядке возвращаем relatedMembers.
-            var relatedMembers = traversalStrategy.Traverse(
-                direction == Direction.Down
-                    ? familyService.GetChildMembers(current)
-                    : familyService.GetParentMembers(current)
-            ).ToList();
+            relatedMembers = traversalStrategy.Traverse(relatedMembers).ToList();
+
 
             List<int> subtreeWidths = new List<int>();
             foreach (var member in relatedMembers)
@@ -201,8 +205,6 @@ namespace PrYFam
                 CalculateNodeCoordinatesDirectionatly(related, nextMidPoint, direction);
             }
         }
-
-
         /// <summary>
         /// Вычисляет условную ширину подветви относительно указанного корня, идя вверх/вниз.
         /// </summary>
@@ -210,14 +212,12 @@ namespace PrYFam
         /// <param name="direction">Направление обхода: вверх (к родителям) или вниз (к детям).</param>
         /// <param name="visited">Множество посещённых узлов для предотвращения зацикливания.</param>
         /// <returns>Условная ширина подветви.</returns>
-        private int CalculateMnimWidth(Member root, Direction direction)
+        private int CalculateMnimWidth(Member cur, Direction direction)
         {
             int width = 0;
 
             // Получение связанных членов в зависимости от направления обхода
-            var relatedMembers = direction == Direction.Down
-                ? familyService.GetChildMembers(root)
-                : familyService.GetParentMembers(root);
+            List<Member> relatedMembers = GetRelatedMembers(cur, direction);
 
             // обход всех "детей".
             foreach (var relatedMember in relatedMembers)
@@ -226,7 +226,7 @@ namespace PrYFam
 
             if (direction == Direction.Down)
             {
-                bool spoon = familyService.hasHalf(root);
+                bool spoon = familyService.hasHalf(cur);
                 return Math.Max(spoon ? 2 : 1, width);
             }
             if (direction == Direction.Up)
@@ -237,6 +237,36 @@ namespace PrYFam
             // Обработка остальных случаев (например, неизвестного направления)
             throw new ArgumentException($"Unknown direction: {direction}");
         }
+
+
+        /// <summary>
+        /// Возвращает членов семьи в зависимости от направления обхода.
+        /// При движении вверх возвращает родителей, вниз — детей.
+        /// Если у члена семьи есть жена, возвращает только общих детей с ней.
+        /// </summary>
+        private List<Member> GetRelatedMembers(Member cur, Direction direction)
+        {
+            List<Member> relatedMembers = new List<Member>();
+            if (direction == Direction.Down)
+            {
+                // Нужно не всех детей нашего cur выдавать, а только общих, с selected-женой, если такая имеется.
+                if (familyService.hasHalf(cur))
+                {
+                    Member selectedHalf = familyService.GetSelectedHalf(cur);
+                    relatedMembers = familyService.GetChildMembers(cur, selectedHalf);
+                }
+                else
+                    relatedMembers = familyService.GetChildMembers(cur);
+            }
+            if (direction == Direction.Up)
+            {
+                relatedMembers = familyService.GetParentMembers(cur);
+            }
+
+            return relatedMembers;
+        }
+
+
 
         /// <summary>
         ///  Устанавливает интерфейс для горизонтальной направленности движения при вычислении координат карточек. То есть если было осуществлено нажатие на ПРАВУЮ карточку, то делаем отрисовку справа-налево, а если нажали на ЛЕВУЮ то отрисовываем слева-направо.
