@@ -27,6 +27,7 @@ namespace PrYFam
 
 
         [Header("Текстовые поля ввода:")]
+
         [Tooltip("Поле ввода имени.")]
         [SerializeField] private TMP_InputField firstNameInputField;
 
@@ -136,6 +137,10 @@ namespace PrYFam
                 Transform faceSpriteTransform = root.transform.Find("Environment").Find("Image (Face Sprite)"); // вот тут надо что то вроде FindChildByName
                 Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
                 faceSpriteImage.sprite = root.ProfilePicture;
+
+                // А также меняем ФИО на лицевой стороне карточке
+                CardView cardView = root.GetComponent<CardView>();
+                cardView.FIO.text = root.LastName + " " + root.FirstName + " " + root.MiddleName;
 
                 // Закрываем панель
                 OnCloseButtonClick();

@@ -761,7 +761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572257bbd4246ed4292716338b58eae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  personCardPrefab: {fileID: 453356105399204820, guid: 33475eb646b562b4aab9067d0a29b739, type: 3}
+  personCardPrefab: {fileID: 453356105399204820, guid: b48fec711078e7247a46a322b69b0243, type: 3}
   cardsPlaceHolder: {fileID: 1622611498}
   familyData: {fileID: 364671340}
 --- !u!114 &364671339
@@ -7008,7 +7008,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 190.79997, y: 262.0003}
+  m_AnchoredPosition: {x: -114.999985, y: 262.0003}
   m_SizeDelta: {x: 270, y: 62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &920691186928833907
@@ -7620,7 +7620,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -122.9, y: 257.30014}
+  m_AnchoredPosition: {x: 199.10007, y: 259.30017}
   m_SizeDelta: {x: 270, y: 62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2565784765170017895
@@ -9708,7 +9708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -204, y: 309}
+  m_AnchoredPosition: {x: 118, y: 311}
   m_SizeDelta: {x: 67.04004, y: 33.599976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &6617496726283548017
@@ -9768,7 +9768,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 155.79999, y: 313.00015}
+  m_AnchoredPosition: {x: -150, y: 313.00015}
   m_SizeDelta: {x: 154.44995, y: 30.450012}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6735684647082750334

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +17,10 @@ namespace PrYFam
         [SerializeField] FamilyService familyService;
         [SerializeField] TreeTraversal treeTraversal;
         [SerializeField] CanvasView canvasView;
-        
+
+        [Header("Поле ФИО на лицевой стороне карточки.")]
+        public TextMeshProUGUI FIO;
+
         [Header("Кнопки:")]
         [SerializeField] Button enter;
         [SerializeField] Button addParent;

@@ -339,12 +339,12 @@ namespace PrYFam
         public bool IsLeaf(Member cur) {
             if (hasParents(cur) && !hasChildren(cur) && !hasHalf(cur))
                 return true;
-            if (!hasParents(cur) && hasChildren(cur) && hasHalf(cur))
+            if (!hasParents(cur) && !hasChildren(cur) && hasHalf(cur))
                 return true;
             if (!hasParents(cur) && hasChildren(cur) && !hasHalf(cur) && GetChildMembers(cur).Count <= 1)
                 return true;
 
-            Debug.Log("Невозможно удалить без последствий целостности древа!!!");
+            Debug.LogError("Невозможно удалить без последствий целостности древа!!!");
             return false;
         }
         public bool hasChildren(Member current)
