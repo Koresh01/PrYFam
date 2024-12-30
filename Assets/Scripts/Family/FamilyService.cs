@@ -119,13 +119,17 @@ namespace PrYFam
         /// </summary>
         private void HandleToChild(Member from, Member child)
         {
-            AddBidirectionalRelationship(from, child, Relationship.ToChild);    // прямую связь 100% добавляем
+            List<Member> mothers = GetHalfMembers(from);
+            Member selectedMum = mothers.FirstOrDefault();
 
-            // нюансы:
-            foreach (var half in GetHalfMembers(from))
+            if (mothers.Count >= 1)
             {
-                AddBidirectionalRelationship(half, child, Relationship.ToChild);
+                AddBidirectionalRelationship(from, child, Relationship.ToChild);
+                AddBidirectionalRelationship(selectedMum, child, Relationship.ToChild);
             }
+                
+            else
+                Debug.LogError("Сначала добавьте родителя!!!");
         }
         #endregion
 
