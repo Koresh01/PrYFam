@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +24,8 @@ namespace PrYFam
         [SerializeField] Button addHalf;
         [Tooltip("Кнопка удаления члена семьи.")]
         [SerializeField] Button delete;
+        [Tooltip("Кнопка смены жены.")]
+        [SerializeField] Button changeWife;
 
         [Tooltip("Кнопка включения панели детальной информации члена семьи.")]
         [SerializeField] Button showDetailedPanel;
@@ -75,11 +79,22 @@ namespace PrYFam
                     Destroy(gameObject);
                 }
             });
+
+            // Смена жены
+            changeWife.onClick.AddListener(() =>
+            {
+                SelectedWifeController wifeController = transform.GetComponent<SelectedWifeController>();   // чтоюы вытащить индекс нужной жены
+                Member current = transform.GetComponent<Member>();              // член семь на котором произошло нажатие
+                List<Member> wifes = familyService.GetHalfMembers(current);     // список всех его жён
+                wifeController.NextWife(wifes);     // Смещаем индекс
+
+                HandleTreeRedraw();
+            });
         }
 
         private void OnDisable()
         {
-            RemoveAllListeners(enter, addChild, addParent, addHalf, delete, showDetailedPanel);
+            RemoveAllListeners(enter, addChild, addParent, addHalf, delete, showDetailedPanel, changeWife);
         }
 
         // Вспомогательный метод для обновления дерева
