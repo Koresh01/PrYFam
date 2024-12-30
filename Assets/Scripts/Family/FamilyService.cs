@@ -3,6 +3,7 @@ using System.Linq;  // для доступа к .Where в List<>
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Unity.VisualScripting;
 
 namespace PrYFam
 {
@@ -41,9 +42,7 @@ namespace PrYFam
             Member to = newMemberObj.GetComponent<Member>();
 
             AddConnection(from, to, relationship);
-        }
-        
-        
+        }     
         /// <summary>
         /// Создаёт карточку префаба человека.
         /// </summary>
@@ -62,66 +61,42 @@ namespace PrYFam
             switch (relationship)
             {
                 case Relationship.ToHalf:
-                    HandleToHalf(from, to);     // внутри и создание карточки происходит
+                    Member newHalf = to;
+                    AddBidirectionalRelationship(from, newHalf, Relationship.ToHalf);
                     break;
+
+
+
                 case Relationship.ToParent:
-                    HandleToParent(from, to);   // внутри и создание карточки происходит
+                    Member newParent = to;
+                    AddBidirectionalRelationship(from, newParent, Relationship.ToParent);
+
+                    foreach (var parent in GetParentMembers(from))
+                    {
+                        if (parent != newParent)
+                        {
+                            AddBidirectionalRelationship(parent, newParent, Relationship.ToHalf);
+                        }
+                    }
                     break;
+
+
+
                 case Relationship.ToChild:
-                    HandleToChild(from, to);    // внутри и создание карточки происходит
+                    Member child = to;
+                    List<Member> mothers = GetHalfMembers(from);
+                    Member selectedMum = mothers.FirstOrDefault();
+
+                    AddBidirectionalRelationship(from, child, Relationship.ToChild);
+                    AddBidirectionalRelationship(selectedMum, child, Relationship.ToChild);
                     break;
+
+
+
                 default:
                     Debug.LogWarning("Неизвестное отношение: " + relationship);
                     break;
             }
-
-
-        }
-        /// <summary>
-        /// Обрабатывает добавление супруга (жены или мужа) для указанного члена семьи. 
-        /// Если у члена семьи уже есть супруг, то добавление не выполняется. 
-        /// Также обновляет связи между супругом и детьми.
-        /// </summary>
-        private void HandleToHalf(Member from, Member half)
-        {
-            // Добавим двунаправленную связь в граф смежных вершин к "текущему члену" и его "второй половинке":
-            AddBidirectionalRelationship(from, half, Relationship.ToHalf);
-        }
-        /// <summary>
-        /// Обрабатывает добавление родителя для указанного члена семьи. 
-        /// Если у члена семьи уже есть два родителя, то добавление не выполняется. 
-        /// Также устанавливает связь между новым родителем и уже существующим вторым родителем как "супруги".
-        /// </summary>
-        private void HandleToParent(Member from, Member newParent)
-        {
-            AddBidirectionalRelationship(from, newParent, Relationship.ToParent);    // прямую связь 100% добавляем
-
-            // нюансы:
-            foreach (var parent in GetParentMembers(from))
-            {
-                if (parent != newParent)
-                {
-                    AddBidirectionalRelationship(parent, newParent, Relationship.ToHalf);
-                }
-            }
-        }
-        /// <summary>
-        /// Обрабатывает добавление ребёнка для указанного члена семьи. 
-        /// Устанавливает связь между добавляемым ребёнком и супругом члена семьи.
-        /// </summary>
-        private void HandleToChild(Member from, Member child)
-        {
-            List<Member> mothers = GetHalfMembers(from);
-            Member selectedMum = mothers.FirstOrDefault();
-
-            if (mothers.Count >= 1)
-            {
-                AddBidirectionalRelationship(from, child, Relationship.ToChild);
-                AddBidirectionalRelationship(selectedMum, child, Relationship.ToChild);
-            }
-                
-            else
-                Debug.LogError("Сначала добавьте родителя!!!");
         }
         #endregion
 
@@ -150,6 +125,7 @@ namespace PrYFam
                     if (!CanAddParent(from)) return false;
                     break;
                 case Relationship.ToChild:
+                    if (!CanAddChild(from)) return false;
                     break;
             }
             return true;
@@ -159,11 +135,11 @@ namespace PrYFam
         /// </summary>
         private bool CanAddHalf(Member from)
         {
-            if (hasHalf(from))
+            /*if (hasHalf(from))
             {
                 Debug.Log("Вторую жену добавить нельзя!");
                 return false;
-            }
+            }*/
             return true;
         }
         /// <summary>
@@ -177,6 +153,24 @@ namespace PrYFam
                 return false;
             }
             return true;
+        }
+        /// <summary>
+        /// Проверяет можно ли добавить ребёнка
+        /// </summary>
+        private bool CanAddChild(Member cur)
+        {
+            List<Member> mothers = GetHalfMembers(cur);
+            Member selectedMum = mothers.FirstOrDefault();
+
+            if (mothers.Count >= 1)
+            {
+                return true;
+            }
+            else
+            {
+                Debug.LogError("Прежде чем создавать детей, добавьте хоть одну жену.");
+                return false;
+            } 
         }
         #endregion
 
@@ -226,19 +220,6 @@ namespace PrYFam
         {
             return familyData.relationships.Exists(entry => entry.From == from && entry.To == to);
         }
-        public Relationship? GetRelationship(Member from, Member to)
-        {
-            // Используем метод Find, чтобы найти первый элемент в списке `relationships`,
-            // который соответствует условию: поле From равно from, а поле To равно to.
-            // Если элемент найден, он будет сохранён в переменной entry.
-            // Если элемент не найден, entry будет равен null.
-            var entry = familyData.relationships.Find(e => e.From == from && e.To == to);
-
-            // Используем оператор null-условной обработки (?.) для безопасного доступа.
-            // Если entry не равен null, возвращаем поле Relationship из найденного элемента.
-            // Если entry равен null, возвращаем null.
-            return entry?.Relationship;
-        }
         /// <summary>
         /// Удаляет все вхождения переданного Member из FamilyData.
         /// </summary>
@@ -249,17 +230,6 @@ namespace PrYFam
             familyData.relationships.RemoveAll(entry => entry.From == person);
             // Удаляем связь К PERSON
             familyData.relationships.RemoveAll(entry => entry.To == person);
-        }
-        /// <summary>
-        /// Удаляет взаимосвязь из FamilyData.
-        /// </summary>
-        private void RemoveRelationship(Member from, Member to)
-        {
-            // Удаляем прямую связь
-            familyData.relationships.RemoveAll(entry => entry.From == from && entry.To == to);
-
-            // Удаляем обратную связь
-            familyData.relationships.RemoveAll(entry => entry.From == to && entry.To == from);
         }
         /// <summary>
         /// Получает обратную связь между членами
@@ -292,6 +262,21 @@ namespace PrYFam
             return GetRelatedMembers(cur, Relationship.ToChild);
         }
         /// <summary>
+        /// Возвращает список детей, которые принадлежат указанным родителям.
+        /// Учитываются только общие дети, игнорируются дети от других партнёров.
+        /// </summary>
+        public List<Member> GetChildMembers(Member father, Member mother)
+        {
+            // Получаем списки детей отца и матери
+            List<Member> fatherChildren = GetRelatedMembers(father, Relationship.ToChild);
+            List<Member> motherChildren = GetRelatedMembers(mother, Relationship.ToChild);
+
+            // Берём только общих детей
+            List<Member> children = fatherChildren.Intersect(motherChildren).ToList();
+
+            return children;
+        }
+        /// <summary>
         /// Возвращает список родителей.
         /// </summary>
         /// <param name="cur">Член семьи, у которого ищем детей.</param>
@@ -308,11 +293,8 @@ namespace PrYFam
             return GetRelatedMembers(cur, Relationship.ToHalf);
         }
         /// <summary>
-        /// Возвращает список членов семейного дерева, связанных с указанным членом семьи через заданный тип связи.
+        /// Работает непосредственно с FamilyData для получения списка необходимых членов семьи.
         /// </summary>
-        /// <param name="from">Член семьи, для которого ищутся связанные участники.</param>
-        /// <param name="relationship">Тип связи, например, родитель или ребенок.</param>
-        /// <returns>Список связанных членов семьи.</returns>
         private List<Member> GetRelatedMembers(Member from, Relationship relationship)
         {
             return familyData.relationships

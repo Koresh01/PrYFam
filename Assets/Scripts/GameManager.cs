@@ -15,13 +15,13 @@ namespace PrYFam
         public void CreateFamilyTree()
         {
             GameObject go1 = familyService.CreateCard();
-            GameObject go2 = familyService.CreateCard();
+            //GameObject go2 = familyService.CreateCard();
 
             Member from = go1.GetComponent<Member>();
-            Member to = go2.GetComponent<Member>();
+            //Member to = go2.GetComponent<Member>();
 
 
-            familyService.AddConnection(from, to, Relationship.ToChild);
+            //familyService.AddConnection(from, to, Relationship.ToChild);
             treeTraversal.ReDrawTree(from, new Vector2(0,0));
 
 
