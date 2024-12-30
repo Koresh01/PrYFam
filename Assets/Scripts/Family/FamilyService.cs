@@ -42,36 +42,8 @@ namespace PrYFam
 
             AddConnection(from, to, relationship);
         }
-        /// <summary>
-        /// Проверяет можно ли добавить взаимосвязь.
-        /// </summary>
-        private bool CanAddConnection(Member from, Relationship relationship)
-        {
-            switch (relationship)
-            {
-                case Relationship.ToHalf:
-                    if (!CanAddHalf(from)) return false; // теперь можно добавлять сколько угодно half.
-                    break;
-                case Relationship.ToParent:
-                    if (!CanAddParent(from)) return false;
-                    break;
-                case Relationship.ToChild:
-                    break;
-            }
-            return true;
-        }
-        /// <summary>
-        /// Проверяет можно ли добавить жену.
-        /// </summary>
-        private bool CanAddHalf(Member from)
-        {
-            if (hasHalf(from))
-            {
-                Debug.Log("Вторую жену добавить нельзя!");
-                return false;
-            }
-            return true;
-        }
+        
+        
         /// <summary>
         /// Создаёт карточку префаба человека.
         /// </summary>
@@ -110,16 +82,16 @@ namespace PrYFam
         /// Если у члена семьи уже есть супруг, то добавление не выполняется. 
         /// Также обновляет связи между супругом и детьми.
         /// </summary>
-        private void HandleToHalf(Member from, Member to)
+        private void HandleToHalf(Member from, Member half)
         {
             // Добавим двунаправленную связь в граф смежных вершин к "текущему члену" и его "второй половинке":
-            AddBidirectionalRelationship(from, to, Relationship.ToHalf);
+            AddBidirectionalRelationship(from, half, Relationship.ToHalf);
 
 
             // Разберемся с уже имеющимися детьми:
             foreach (var child in GetChildMembers(from))
             {
-                AddBidirectionalRelationship(child, to, Relationship.ToParent);
+                AddBidirectionalRelationship(child, half, Relationship.ToParent);
             }
             Debug.Log("Теперь дети знают про своего второго родителя");
         }
@@ -154,6 +126,61 @@ namespace PrYFam
             {
                 AddBidirectionalRelationship(half, to, Relationship.ToChild);
             }
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+        #region Дополнительные проверки при создании персоны
+        /// <summary>
+        /// Проверяет можно ли добавить взаимосвязь.
+        /// </summary>
+        private bool CanAddConnection(Member from, Relationship relationship)
+        {
+            switch (relationship)
+            {
+                case Relationship.ToHalf:
+                    if (!CanAddHalf(from)) return false; // теперь можно добавлять сколько угодно half.
+                    break;
+                case Relationship.ToParent:
+                    if (!CanAddParent(from)) return false;
+                    break;
+                case Relationship.ToChild:
+                    break;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Проверяет можно ли добавить жену.
+        /// </summary>
+        private bool CanAddHalf(Member from)
+        {
+            if (hasHalf(from))
+            {
+                Debug.Log("Вторую жену добавить нельзя!");
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Проверяет можно ли добавить ещё родителя.
+        /// </summary>
+        private bool CanAddParent(Member from)
+        {
+            if (GetRelatedMembers(from, Relationship.ToParent).Count >= 2)
+            {
+                Debug.Log("Нельзя добавлять больше двух родителей.");
+                return false;
+            }
+            return true;
         }
         #endregion
 
@@ -307,7 +334,7 @@ namespace PrYFam
 
 
 
-        #region simplified interaction
+        #region дополнительные проверки
         public void DebugRelationships()    // функция отладки
         {
             foreach (var entry in familyData.relationships)
@@ -315,7 +342,6 @@ namespace PrYFam
                 Debug.Log($"{entry.From?.name} -> {entry.To?.name}: {entry.Relationship}");
             }
         }
-
         /// <summary>
         /// Является ли член семьи крайним в древе.
         /// </summary>
@@ -330,7 +356,6 @@ namespace PrYFam
             Debug.Log("Невозможно удалить без последствий целостности древа!!!");
             return false;
         }
-
         public bool hasChildren(Member current)
         {
             return GetChildMembers(current).Count == 0 ? false : true;
@@ -343,19 +368,6 @@ namespace PrYFam
         {
             return GetHalfMembers(current).Count > 0 ? true : false;
         }
-        /// <summary> Проверяет можно ли добавить ещё родителя. </summary>
-        private bool CanAddParent(Member from)
-        {
-            if (GetRelatedMembers(from, Relationship.ToParent).Count >= 2)
-            {
-                Debug.Log("Нельзя добавлять больше двух родителей.");
-                return false;
-            }
-            return true;
-        }
-
-
-
         #endregion
     }
 }
