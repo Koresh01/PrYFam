@@ -725,7 +725,6 @@ GameObject:
   - component: {fileID: 364671339}
   - component: {fileID: 364671338}
   - component: {fileID: 364671341}
-  - component: {fileID: 364671337}
   - component: {fileID: 364671340}
   - component: {fileID: 364671342}
   m_Layer: 0
@@ -750,18 +749,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &364671337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364671334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e43a1cc02930974b8ae0d347d0dd7fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &364671338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -771,7 +758,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 364671334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d5334c28b70e3f489177f09847214b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 572257bbd4246ed4292716338b58eae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   personCardPrefab: {fileID: 453356105399204820, guid: 33475eb646b562b4aab9067d0a29b739, type: 3}
@@ -800,7 +787,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 364671334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f13c9f6a0857584d9b2b0e18ff90d82, type: 3}
+  m_Script: {fileID: 11500000, guid: a2351e36bc0e577498b7c6eab07508f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   relationships: []
