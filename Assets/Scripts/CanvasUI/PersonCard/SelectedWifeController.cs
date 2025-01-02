@@ -22,8 +22,9 @@ namespace PrYFam
         /// <summary>
         /// Возвращает актуальный индекс выбранной жены.
         /// </summary>
-        public int GetInx()
+        public int GetInx(List<Member> wifes)
         {
+            inx = inx % wifes.Count;
             return inx;
         }
     }

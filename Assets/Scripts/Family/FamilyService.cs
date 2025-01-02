@@ -296,14 +296,14 @@ namespace PrYFam
         /// </summary>
         public Member GetSelectedHalf(Member cur)
         {
-            List<Member> mothers = GetHalfMembers(cur);
+            List<Member> halfs = GetHalfMembers(cur);
 
             // Обращаемся к карточке на сцене, чтобы получить индекс выбранной на данный момент жены.
             GameObject personCard = cur.gameObject;
             SelectedWifeController wifeController = personCard.GetComponent<SelectedWifeController>();
-            int inx = wifeController.GetInx();
+            int inx = wifeController.GetInx(halfs);
 
-            return mothers[inx];
+            return halfs[inx];
         }
         /// <summary>
         /// Работает непосредственно с FamilyData для получения списка необходимых членов семьи.
