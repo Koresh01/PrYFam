@@ -21,6 +21,10 @@ namespace PrYFam
         [Header("Поле ФИО на лицевой стороне карточки.")]
         public TextMeshProUGUI FIO;
 
+        [Header("Круговое меню:")]
+        [SerializeField] GameObject roundMenu;
+        private ActivePersonStatus activePersonStatus = ActivePersonStatus.Disabled;
+
         [Header("Кнопки:")]
         [SerializeField] Button enter;
         [SerializeField] Button addParent;
@@ -49,6 +53,24 @@ namespace PrYFam
         private void OnEnable()
         {
             enter.onClick.AddListener(() => {
+                if (activePersonStatus == ActivePersonStatus.Disabled)
+                {
+                    activePersonStatus = ActivePersonStatus.DisabledRoundMenu;
+                    roundMenu.SetActive(false);
+                }
+
+                else if (activePersonStatus == ActivePersonStatus.DisabledRoundMenu)
+                {
+                    activePersonStatus = ActivePersonStatus.ShowRoundMenu;
+                    roundMenu.SetActive(true);
+                }
+
+                else if (activePersonStatus == ActivePersonStatus.ShowRoundMenu)
+                {
+                    activePersonStatus = ActivePersonStatus.Disabled;
+                    roundMenu.SetActive(false);
+                }
+
                 HandleTreeRedraw();
             });
             addParent.onClick.AddListener(() => {
@@ -69,6 +91,8 @@ namespace PrYFam
             {
                 HandleTreeRedraw();
                 canvasView.ShowDetailedPersonPanel();
+
+                roundMenu.SetActive(false);
             });
 
             // Удаление члена семьи:
@@ -101,8 +125,10 @@ namespace PrYFam
             RemoveAllListeners(enter, addChild, addParent, addHalf, delete, showDetailedPanel, changeWife);
         }
 
-        // Вспомогательный метод для обновления дерева
-        private void HandleTreeRedraw()
+        /// <summary>
+        /// Вспомогательный метод для обновления дерева
+        /// </summary>
+        public void HandleTreeRedraw()
         {
             Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
             Member cur = transform.GetComponent<Member>();

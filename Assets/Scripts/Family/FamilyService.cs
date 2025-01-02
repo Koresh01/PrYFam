@@ -298,6 +298,9 @@ namespace PrYFam
         {
             List<Member> halfs = GetHalfMembers(cur);
 
+            if (halfs.Count == 0)
+                return null;
+
             // Обращаемся к карточке на сцене, чтобы получить индекс выбранной на данный момент жены.
             GameObject personCard = cur.gameObject;
             SelectedWifeController wifeController = personCard.GetComponent<SelectedWifeController>();

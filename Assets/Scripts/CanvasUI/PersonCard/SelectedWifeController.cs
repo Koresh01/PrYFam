@@ -24,7 +24,8 @@ namespace PrYFam
         /// </summary>
         public int GetInx(List<Member> wifes)
         {
-            inx = inx % wifes.Count;
+            if (wifes.Count > 0)
+                inx = inx % wifes.Count;
             return inx;
         }
     }

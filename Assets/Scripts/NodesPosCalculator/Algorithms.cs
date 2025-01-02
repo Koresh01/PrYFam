@@ -87,10 +87,11 @@ namespace PrYFam
             if (hasHalf)
             {
                 // ќпределим на кого конкретно нажал пользователь. Ќа левую карточку или правую?
-                Vector2 clickedPos  = root.gameObject.GetComponent<RectTransform>().anchoredPosition;
+                Vector2 clickedPos  = basePosition; // root.gameObject.GetComponent<RectTransform>().anchoredPosition;
                 Vector2 halfPos     = half.gameObject.GetComponent<RectTransform>().anchoredPosition;
 
-                if (clickedPos.x < halfPos.x)   // ¬есьма опасна€ проверка, неизвестно кака€ позици€ присваиваетс€ карточке жены при создании.
+
+                if (clickedPos.x <= halfPos.x)   // ¬есьма опасна€ проверка, неизвестно кака€ позици€ присваиваетс€ карточке жены при создании.
                 {
                     SetTraversalStrategy(new LeftToRightTraversal());
                     // »щем pivot[середины] дл€ карточек супругов:
