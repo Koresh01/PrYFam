@@ -21,19 +21,13 @@ namespace PrYFam
         [Header("Поле ФИО на лицевой стороне карточки.")]
         public TextMeshProUGUI FIO;
 
-        [Header("Круговое меню:")]
-        [SerializeField] GameObject roundMenu;
-        private ActivePersonStatus activePersonStatus = ActivePersonStatus.Disabled;
-
         [Header("Кнопки:")]
         [SerializeField] Button enter;
         [SerializeField] Button addParent;
         [SerializeField] Button addChild;
         [SerializeField] Button addHalf;
-        [Tooltip("Кнопка удаления члена семьи.")]
-        [SerializeField] Button delete;
-        [Tooltip("Кнопка смены жены.")]
-        [SerializeField] Button changeWife;
+        [Tooltip("Кнопка удаления члена семьи.")]   [SerializeField] Button delete;
+        [Tooltip("Кнопка смены жены.")]             [SerializeField] Button changeWife;
 
         [Tooltip("Кнопка включения панели детальной информации члена семьи.")]
         [SerializeField] Button showDetailedPanel;
@@ -53,24 +47,6 @@ namespace PrYFam
         private void OnEnable()
         {
             enter.onClick.AddListener(() => {
-                if (activePersonStatus == ActivePersonStatus.Disabled)
-                {
-                    activePersonStatus = ActivePersonStatus.DisabledRoundMenu;
-                    roundMenu.SetActive(false);
-                }
-
-                else if (activePersonStatus == ActivePersonStatus.DisabledRoundMenu)
-                {
-                    activePersonStatus = ActivePersonStatus.ShowRoundMenu;
-                    roundMenu.SetActive(true);
-                }
-
-                else if (activePersonStatus == ActivePersonStatus.ShowRoundMenu)
-                {
-                    activePersonStatus = ActivePersonStatus.Disabled;
-                    roundMenu.SetActive(false);
-                }
-
                 HandleTreeRedraw();
             });
             addParent.onClick.AddListener(() => {
@@ -91,8 +67,6 @@ namespace PrYFam
             {
                 HandleTreeRedraw();
                 canvasView.ShowDetailedPersonPanel();
-
-                roundMenu.SetActive(false);
             });
 
             // Удаление члена семьи:
