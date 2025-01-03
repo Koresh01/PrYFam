@@ -18,10 +18,30 @@ namespace PrYFam
         [Tooltip("Скрипт, который обрабатывает компьютерный ввод.")]
         ComputerInput computerInput;
 
-        [Header("Панель детальной информации о человеке:")]
-        [SerializeField]
-        [Tooltip("Панель детальной информации о человеке.")]
-        GameObject detailedPanel;
+        [Header("Кнопки:")]
+        [SerializeField] Button fileBtn;
+
+        [Header("Панели:")]
+        [Tooltip("Панель детальной информации о человеке.")]    [SerializeField] GameObject detailedPanel;
+        [Tooltip("Панель кнопки файл.")]                        [SerializeField] GameObject filePanel;
+
+        void OnEnable()
+        {
+            fileBtn.onClick.AddListener(() =>
+            {
+                ToggleFilePanel();
+            });
+        }
+        void OnDisable()
+        {
+            fileBtn.onClick.RemoveAllListeners();
+        }
+
+
+
+
+
+
 
         /// <summary>
         /// Включает панель
@@ -36,7 +56,6 @@ namespace PrYFam
             // Показываем панель детальной информации
             detailedPanel.SetActive(true);
         }
-
         /// <summary>
         /// Выключает панель
         /// детальной информации о человке.
@@ -50,7 +69,25 @@ namespace PrYFam
             // Выключаем панель детальной информации
             detailedPanel.SetActive(false);
         }
-    
-        // public void CollectInfoFromDetailedPanel() собирает информацию из панели детализации.
+
+
+
+
+
+        /// <summary>
+        /// Переключает видимость filePanel.
+        /// </summary>
+        public void ToggleFilePanel()
+        {
+            if (filePanel != null)
+            {
+                // Переключаем видимость панели
+                filePanel.SetActive(!filePanel.activeSelf);
+            }
+            else
+            {
+                Debug.LogWarning("filePanel не назначен в инспекторе!");
+            }
+        }
     }
 }

@@ -133,9 +133,10 @@ namespace PrYFam
 
             if (root != null)
             {
-                root.FirstName = string.IsNullOrEmpty(firstNameInputField.text) ? "И" : firstNameInputField.text;
-                root.LastName = string.IsNullOrEmpty(lastNameInputField.text) ? "Ф" : lastNameInputField.text;
-                root.MiddleName = string.IsNullOrEmpty(middleNameInputField.text) ? "О" : middleNameInputField.text;
+                bool everythingEmpty = string.IsNullOrEmpty(firstNameInputField.text) && string.IsNullOrEmpty(lastNameInputField.text) && string.IsNullOrEmpty(middleNameInputField.text);
+                root.FirstName = everythingEmpty ? "И" : firstNameInputField.text;
+                root.LastName = everythingEmpty ? "Ф" : lastNameInputField.text;
+                root.MiddleName = everythingEmpty ? "О" : middleNameInputField.text;
 
 
                 root.Biography = biographyInputField.text;
