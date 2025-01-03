@@ -200,6 +200,7 @@ namespace PrYFam
                     familyData.relationships.Add(new MembersConnection
                     {
                         From = from,
+
                         To = to,
                         Relationship = relationship
                     });
