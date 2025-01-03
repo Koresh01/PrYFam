@@ -112,9 +112,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8fc4873c74f704689926e13e8ad3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  familyService: {fileID: 0}
   enter: {fileID: 2924972506165243902}
+  showDetailedPanel: {fileID: 8000927063529266692}
   roundMenu: {fileID: 8070141565092358564}
-  activePersonStatus: 0
+  CardStatus: 0
 --- !u!1 &813250010764696194
 GameObject:
   m_ObjectHideFlags: 0

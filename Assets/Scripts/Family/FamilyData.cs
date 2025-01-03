@@ -33,10 +33,16 @@ namespace PrYFam
         /// <returns>Список GameObject, представляющих всех членов семьи.</returns>
         public List<GameObject> GetAllPersonCards()
         {
-            return relationships
-                .SelectMany(entry => new[] { entry.From.gameObject, entry.To.gameObject })
-                .Distinct()
-                .ToList();
+            // Возвращаем список всех уникальных игровых объектов, связанных с записями в коллекции relationships
+            return relationships // Начинаем с коллекции relationships, которая содержит записи о связях между объектами
+                .SelectMany(entry => new[]
+                {
+                    // Для каждой записи в relationships создаем массив из двух объектов:
+                    entry.From.gameObject, // Добавляем игровой объект, связанный с From
+                    entry.To.gameObject    // Добавляем игровой объект, связанный с To
+                })
+                .Distinct() // Удаляем дубликаты из объединенной коллекции объектов
+                .ToList();  // Преобразуем результирующую коллекцию в список и возвращаем
         }
     }
 }

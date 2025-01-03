@@ -189,7 +189,7 @@ namespace PrYFam
         /// </summary>
         private void AddBidirectionalRelationship(Member from, Member to, Relationship relationship)
         {
-            Debug.LogFormat("Пытаемся от {0} добавить связь к {1}", from.name, to.name);
+            Debug.LogFormat("Пытаемся от {0} добавить связь к {1}", from.FirstName, to.FirstName);
 
             // Проверяем, есть ли уже такая связь
             if (!RelationshipExists(from, to))
