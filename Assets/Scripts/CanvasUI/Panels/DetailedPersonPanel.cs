@@ -49,8 +49,12 @@ namespace PrYFam
 
 
         [Header("Изображения:")]
-        [Tooltip("Аватар члена семьи.")]
-        [SerializeField] Image image;
+        [Tooltip("Фотография члена семьи, на панели детальной информации.")] [SerializeField] Image image;
+        /*Defaul-ная аватрка в панели детальной информации не соответствует 
+         Defaul-ноая аватрке на самой CardPrefab. Так что прийдётся отслеживать,
+        произошло ли изменение фотографии, прежде чем будем сохранять.*/
+        // Переменная для хранения исходного спрайта
+        private Sprite initialSprite;
 
         private void OnEnable()
         {
@@ -90,6 +94,9 @@ namespace PrYFam
                 placeOfBirthInputField.text = root.PlaceOfBirth;
 
                 image.sprite = root.ProfilePicture;
+
+                // Сохраняем текущую фотографию как исходную
+                initialSprite = root.ProfilePicture;
             }
             else
             {
@@ -126,10 +133,10 @@ namespace PrYFam
 
             if (root != null)
             {
-                // Сохраняем новые значения
-                root.FirstName = firstNameInputField.text;
-                root.LastName = lastNameInputField.text;
-                root.MiddleName = middleNameInputField.text;
+                root.FirstName = string.IsNullOrEmpty(firstNameInputField.text) ? "И" : firstNameInputField.text;
+                root.LastName = string.IsNullOrEmpty(lastNameInputField.text) ? "Ф" : lastNameInputField.text;
+                root.MiddleName = string.IsNullOrEmpty(middleNameInputField.text) ? "О" : middleNameInputField.text;
+
 
                 root.Biography = biographyInputField.text;
                 root.DateOfBirth = dateOfBirthInputField.text;
@@ -138,10 +145,24 @@ namespace PrYFam
                 root.ProfilePicture = image.sprite;
 
 
-                // Находим карточку и обновляем спрайт
-                Transform faceSpriteTransform = root.transform.Find("Environment").Find("Image (Face Sprite)"); // вот тут надо что то вроде FindChildByName
-                Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
-                faceSpriteImage.sprite = root.ProfilePicture;
+                // Проверяем, изменилась ли фотография
+                if (image.sprite != initialSprite)
+                {
+                    Debug.Log("Фотография была изменена.");
+                    root.ProfilePicture = image.sprite;
+
+                    // Обновляем изображение на карточке
+                    Transform faceSpriteTransform = root.transform.Find("Environment/Image (Face Sprite)");
+                    if (faceSpriteTransform != null)
+                    {
+                        Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
+                        faceSpriteImage.sprite = root.ProfilePicture;
+                    }
+                    else
+                    {
+                        Debug.LogError("Не удалось установить изображение. Неправильно получаем путь к аватарке на CardPrefab.");
+                    }
+                }
 
                 // А также меняем ФИО на лицевой стороне карточке
                 CardView cardView = root.GetComponent<CardView>();

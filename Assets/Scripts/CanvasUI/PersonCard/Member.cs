@@ -22,7 +22,7 @@ namespace PrYFam
 
         [Space]
 
-        [Tooltip("Фотография человека на панели детальной информации.")]
+        [Tooltip("Сохранённая в системе фотография члена семьи.")]
         public Sprite ProfilePicture;
 
         [Header("Дата и место рождения")]
