@@ -805,6 +805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   familyService: {fileID: 364671338}
   linesController: {fileID: 364671342}
+  deltailedPersonPanel: {fileID: 2376781367961507504}
   CardHeight: 0
   CardWidth: 0
   GlobalTreeOffset: 120
@@ -2719,7 +2720,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mobileInput: {fileID: 585675905}
   computerInput: {fileID: 585675907}
+  fileBtn: {fileID: 1135197326}
   detailedPanel: {fileID: 8693159793365511557}
+  filePanel: {fileID: 1401908921}
 --- !u!1 &912276354
 GameObject:
   m_ObjectHideFlags: 0
@@ -4057,6 +4060,7 @@ GameObject:
   - component: {fileID: 1401908922}
   - component: {fileID: 1401908924}
   - component: {fileID: 1401908923}
+  - component: {fileID: 1401908925}
   m_Layer: 5
   m_Name: Panel (file btn functionality)
   m_TagString: Untagged
@@ -4125,6 +4129,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401908921}
   m_CullTransparentMesh: 1
+--- !u!114 &1401908925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401908921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14d15693487426a4e9d5fb3e8939a7b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  familyService: {fileID: 364671338}
+  treeTraversal: {fileID: 364671341}
+  exportButton: {fileID: 491157002}
+  importButton: {fileID: 1294642909}
 --- !u!1 &1407276947
 GameObject:
   m_ObjectHideFlags: 0
@@ -7485,6 +7505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasView: {fileID: 906414254}
+  treeTraversal: {fileID: 364671341}
   closeButton: {fileID: 433168348109488328}
   saveButton: {fileID: 592444669908967564}
   firstNameInputField: {fileID: 7259173200525006827}
@@ -7494,6 +7515,7 @@ MonoBehaviour:
   dateOfBirthInputField: {fileID: 189791648118037038}
   placeOfBirthInputField: {fileID: 814163047437638024}
   image: {fileID: 4672376483722367617}
+  initialSprite: {fileID: 21300000, guid: 6d26b0f5d1f4af243a4eee5273d314a3, type: 3}
 --- !u!114 &2437321425308575270
 MonoBehaviour:
   m_ObjectHideFlags: 0

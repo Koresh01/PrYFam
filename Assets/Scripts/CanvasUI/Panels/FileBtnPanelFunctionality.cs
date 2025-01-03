@@ -1,90 +1,172 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using SFB; // Для использования Standalone File Browser
 
 namespace PrYFam
 {
     /// <summary>
-    /// Скрпит висит на панели кнопки "файл", и реализует логику импорта экспорта древа из файла в файл.
+    /// Скрипт висит на панели кнопки "Файл" и реализует логику импорта и экспорта древа из файла.
     /// </summary>
-    class FileBtnPanelFunctionality : MonoBehaviour
+    public class FileBtnPanelFunctionality : MonoBehaviour
     {
         [Header("Зависимости:")]
-        [SerializeField] FamilyService familyService;
-        [SerializeField] TreeTraversal treeTraversal;
-        [SerializeField] CanvasView canvasView;
+        [SerializeField] private FamilyService familyService;
+        [SerializeField] private TreeTraversal treeTraversal;
 
         [Header("Кнопки:")]
-        [SerializeField] Button export;
-        [SerializeField] Button import;
+        [SerializeField] private Button exportButton;
+        [SerializeField] private Button importButton;
 
-
-        void Awake()
+        private void Awake()
         {
-            // Префабам нельзя прокидывать сущьности со сцены.
             familyService = GameObject.FindAnyObjectByType<FamilyService>();
             treeTraversal = GameObject.FindAnyObjectByType<TreeTraversal>();
-            canvasView = GameObject.FindAnyObjectByType<CanvasView>();
         }
-        void OnEnable()
+
+        private void OnEnable()
         {
-            export.onClick.AddListener(() =>
-            {
-                Import();
-            });
-            import.onClick.AddListener(() =>
-            {
-                Export();
-            });
+            exportButton.onClick.AddListener(ExportFamilyTree);
+            importButton.onClick.AddListener(ImportFamilyTree);
         }
-        void OnDisable()
+
+        private void OnDisable()
         {
-            export.onClick.RemoveAllListeners();
-            import.onClick.RemoveAllListeners();
+            exportButton.onClick.RemoveAllListeners();
+            importButton.onClick.RemoveAllListeners();
         }
 
         /// <summary>
-        /// Экспортирует древо в .json
+        /// Экспортирует семейное древо в JSON.
         /// </summary>
-        void Export()
+        private void ExportFamilyTree()
         {
+            // Получаем данные семейного древа
             FamilyData familyData = familyService.familyData;
-            List<MembersConnection> relationships = familyData.relationships;
 
-            foreach (var relationship in relationships)
+            // Формируем объект для сериализации
+            var serializedTree = new FamilyTreeData
             {
-                Member from = relationship.From;
-                Member to = relationship.To;
-                Relationship r = relationship.Relationship;
+                // Сначала сохраним всех членов семейного древа.
+                Members = familyData.GetAllMembers().Select(member => new MemberData
+                {
+                    UniqueId = member.UniqueId,
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    MiddleName = member.MiddleName,
+                    ProfilePicture = SpriteConverter.SpriteToString(member.ProfilePicture),
+                    DateOfBirth = member.DateOfBirth,
+                    PlaceOfBirth = member.PlaceOfBirth,
+                    Biography = member.Biography
+                }).ToList(),
+                
+                // Теперь сохраним все их типы взаимодействий.
+                Relationships = familyData.relationships.Select(rel => new RelationshipData
+                {
+                    FromId = rel.From.UniqueId,
+                    ToId = rel.To.UniqueId,
+                    RelationshipType = rel.Relationship.ToString()
+                }).ToList()
+            };
 
-                string FirstName1 = from.FirstName;
-                string LastName1 = from.LastName;
-                string MiddleName1 = from.MiddleName;
-                string ProfilePicture1 = SpriteConverter.SpriteToString(from.ProfilePicture);
-                string DateOfBirth1 = from.DateOfBirth;
-                string PlaceOfBirth1 = from.PlaceOfBirth;
-                string Biography1 = from.Biography;
+            // Открываем диалог сохранения файла
+            string path = StandaloneFileBrowser.SaveFilePanel("Save Family Data", "", "Семейное древо", "json");
+            if (string.IsNullOrEmpty(path)) return;
 
-                string FirstName2 = to.FirstName;
-                string LastName2 = to.LastName;
-                string MiddleName2 = to.MiddleName;
-                string ProfilePicture2 = SpriteConverter.SpriteToString(to.ProfilePicture);
-                string DateOfBirth2 = to.DateOfBirth;
-                string PlaceOfBirth2 = to.PlaceOfBirth;
-                string Biography2 = to.Biography;
+            // Сериализуем данные в JSON и сохраняем в файл
+            string json = JsonUtility.ToJson(serializedTree, true);
+            File.WriteAllText(path, json);
 
-                // как то записать в файл json надо.
-            }
+            Debug.Log($"Family tree exported to {path}");
         }
 
-
         /// <summary>
-        /// Импортирует древо из .json
+        /// Импортирует семейное древо из JSON.
         /// </summary>
-        void Import()
+        private void ImportFamilyTree()
         {
+            string path = StandaloneFileBrowser.OpenFilePanel("Open Family Data", "", "json", false).FirstOrDefault();
+            if (string.IsNullOrEmpty(path)) return;
+
+            string json = File.ReadAllText(path);
+            var serializedTree = JsonUtility.FromJson<FamilyTreeData>(json);
+
+            // if (serializedTree == null || serializedTree.Members == null || serializedTree.Relationships == null) return;
+
+
+
+            // Избавимся от старого древа.
+            familyService.familyData.DestroyTree();
             
+            // Сюда будем запоминать, кого уже добавили.
+            var createdMembers = new Dictionary<string, Member>();
+
+            // Сначала создаём всех членов семьи():
+            foreach (var memberData in serializedTree.Members)
+            {
+                var member = familyService.CreateCard().GetComponent<Member>();
+                member.UniqueId = memberData.UniqueId;
+                member.FirstName = memberData.FirstName;
+                member.LastName = memberData.LastName;
+                member.MiddleName = memberData.MiddleName;
+                member.ProfilePicture = SpriteConverter.StringToSprite(memberData.ProfilePicture);
+                member.DateOfBirth = memberData.DateOfBirth;
+                member.PlaceOfBirth = memberData.PlaceOfBirth;
+                member.Biography = memberData.Biography;
+
+                createdMembers[memberData.UniqueId] = member;
+            }
+
+            // Теперь устанавливаем им виды связи:
+            foreach (var relationshipData in serializedTree.Relationships)
+            {
+                if (createdMembers.TryGetValue(relationshipData.FromId, out var from) &&
+                    createdMembers.TryGetValue(relationshipData.ToId, out var to))
+                {
+                    var relationship = (Relationship)System.Enum.Parse(typeof(Relationship), relationshipData.RelationshipType);
+                    familyService.AddConnection(from, to, relationship);
+                }
+            }
+
+            // Отрисовка дерева
+            var root = createdMembers.Values.FirstOrDefault();
+            if (root != null) treeTraversal.ReDrawTree(root, Vector2.zero);
         }
     }
-}
+
+
+
+
+    /// <summary>
+    /// Класс для сериализации семейного древа.
+    /// </summary>
+    [System.Serializable]
+    public class FamilyTreeData
+    {
+        public List<MemberData> Members;
+        public List<RelationshipData> Relationships;
+    }
+
+    [System.Serializable]
+    public class MemberData
+    {
+        public string UniqueId;
+        public string FirstName;
+        public string LastName;
+        public string MiddleName;
+        public string ProfilePicture;
+        public string DateOfBirth;
+        public string PlaceOfBirth;
+        public string Biography;
+    }
+
+    [System.Serializable]
+    public class RelationshipData
+    {
+        public string FromId;
+        public string ToId;
+        public string RelationshipType;
+    }
 }

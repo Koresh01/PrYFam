@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 using System.Linq;
-using System.ComponentModel;
 
 namespace PrYFam
 {
@@ -15,6 +14,7 @@ namespace PrYFam
         [Header("Зависимости:")]
         [SerializeField] private FamilyService familyService;
         [SerializeField] private LinesController linesController;
+        [SerializeField] private DetailedPersonPanel deltailedPersonPanel;
 
         [Header("Отступы:")]
         public float CardHeight;
@@ -119,9 +119,9 @@ namespace PrYFam
                 
         }
 
-        /// <summary> Применяем позиции к RectTransform каждого члена </summary>
-        private void hardRepositionCards() {
-            foreach (var member in coordinates.Keys)
+        /// <summary> Применяем позиции к RectTransform каждого члена семьи. </summary>
+        public void hardRepositionCards() {
+            foreach (Member member in coordinates.Keys)
             {
                 var memberGO = member.gameObject;
                 
@@ -132,6 +132,25 @@ namespace PrYFam
                 {
                     rectTransform.anchoredPosition = coordinates[member];
                 }
+            }
+
+            // Обновляем внешние данные карточки, полагаясь на данные из Member.cs:
+            foreach (Member member in coordinates.Keys)
+            {
+                if (member.ProfilePicture != deltailedPersonPanel.initialSprite)
+                {
+                    // Обновляем изображение на карточке
+                    Transform faceSpriteTransform = member.transform.Find("Environment/Image (Face Sprite)");
+                    Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
+                    faceSpriteImage.sprite = member.ProfilePicture;
+                }
+                // А также меняем ФИО на лицевой стороне карточке
+                CardView cardView = member.GetComponent<CardView>();
+                string FIO = member.LastName + " " + member.FirstName + " " + member.MiddleName;
+                if (FIO == "  ")
+                    cardView.FIO.text = "ФИО";
+                else
+                    cardView.FIO.text = FIO;
             }
         }
     }

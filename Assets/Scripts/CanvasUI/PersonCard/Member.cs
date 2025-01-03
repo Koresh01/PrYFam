@@ -10,6 +10,7 @@ namespace PrYFam
     /// </summary>
     public class Member : MonoBehaviour
     {
+        public string UniqueId;
         [Header("Основная информация")]
         [Tooltip("Имя человека")]
         public string FirstName;

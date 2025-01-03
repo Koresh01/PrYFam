@@ -44,5 +44,32 @@ namespace PrYFam
                 .Distinct() // Удаляем дубликаты из объединенной коллекции объектов
                 .ToList();  // Преобразуем результирующую коллекцию в список и возвращаем
         }
+
+        /// <summary>
+        /// Возвращает список всех уникальных членов семьи.
+        /// </summary>
+        /// <returns>Список объектов Member, представляющих всех членов семьи.</returns>
+        public List<Member> GetAllMembers()
+        {
+            // Собираем всех уникальных членов семьи из связей
+            return relationships
+                .SelectMany(entry => new[] { entry.From, entry.To })
+                .Distinct()
+                .ToList();
+        }
+
+        /// <summary>
+        /// Удаляет все карточки и отчищает список смежности.
+        /// </summary>
+        public void DestroyTree()
+        {
+            foreach (var entry in relationships)
+            {
+                try { Destroy(entry.From.gameObject);  } catch { Debug.Log("Уже удаляли его"); }
+                try { Destroy(entry.To.gameObject); } catch { Debug.Log("Уже удаляли его"); }
+            }
+
+            relationships.Clear();
+        }
     }
 }

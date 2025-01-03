@@ -12,8 +12,8 @@ namespace PrYFam
     public class DetailedPersonPanel : MonoBehaviour
     {
         [Header("Ссылки на внешние компоненты")]
-        [Tooltip("Основной объект управления CanvasView.")]
-        [SerializeField] private CanvasView canvasView;
+        [Tooltip("Основной объект управления CanvasView.")] [SerializeField] private CanvasView canvasView;
+        [SerializeField] private TreeTraversal treeTraversal;
 
 
 
@@ -54,7 +54,8 @@ namespace PrYFam
          Defaul-ноая аватрке на самой CardPrefab. Так что прийдётся отслеживать,
         произошло ли изменение фотографии, прежде чем будем сохранять.*/
         // Переменная для хранения исходного спрайта
-        private Sprite initialSprite;
+        [Tooltip("Дефолтный аватар")] public Sprite initialSprite;
+
 
         private void OnEnable()
         {
@@ -94,9 +95,6 @@ namespace PrYFam
                 placeOfBirthInputField.text = root.PlaceOfBirth;
 
                 image.sprite = root.ProfilePicture;
-
-                // Сохраняем текущую фотографию как исходную
-                initialSprite = root.ProfilePicture;
             }
             else
             {
@@ -133,10 +131,9 @@ namespace PrYFam
 
             if (root != null)
             {
-                bool everythingEmpty = string.IsNullOrEmpty(firstNameInputField.text) && string.IsNullOrEmpty(lastNameInputField.text) && string.IsNullOrEmpty(middleNameInputField.text);
-                root.FirstName = everythingEmpty ? "И" : firstNameInputField.text;
-                root.LastName = everythingEmpty ? "Ф" : lastNameInputField.text;
-                root.MiddleName = everythingEmpty ? "О" : middleNameInputField.text;
+                root.FirstName = firstNameInputField.text;
+                root.LastName = lastNameInputField.text;
+                root.MiddleName = middleNameInputField.text;
 
 
                 root.Biography = biographyInputField.text;
@@ -145,29 +142,8 @@ namespace PrYFam
 
                 root.ProfilePicture = image.sprite;
 
-
-                // Проверяем, изменилась ли фотография
-                if (image.sprite != initialSprite)
-                {
-                    Debug.Log("Фотография была изменена.");
-                    root.ProfilePicture = image.sprite;
-
-                    // Обновляем изображение на карточке
-                    Transform faceSpriteTransform = root.transform.Find("Environment/Image (Face Sprite)");
-                    if (faceSpriteTransform != null)
-                    {
-                        Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
-                        faceSpriteImage.sprite = root.ProfilePicture;
-                    }
-                    else
-                    {
-                        Debug.LogError("Не удалось установить изображение. Неправильно получаем путь к аватарке на CardPrefab.");
-                    }
-                }
-
-                // А также меняем ФИО на лицевой стороне карточке
-                CardView cardView = root.GetComponent<CardView>();
-                cardView.FIO.text = root.LastName + " " + root.FirstName + " " + root.MiddleName;
+                // Отрисуем древо, чтоб увидеть как изменились карточки.
+                treeTraversal.hardRepositionCards();
 
                 // Закрываем панель
                 OnCloseButtonClick();

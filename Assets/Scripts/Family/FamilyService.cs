@@ -50,6 +50,12 @@ namespace PrYFam
         {
             var go = Instantiate(personCardPrefab, cardsPlaceHolder);
             go.SetActive(false);    // Отображаться они начнут после отрисовки.
+            
+            // Чтоб импорт работал, нужно чтоб у каждой карточки был уникальный ID.
+            Member member = go.GetComponent<Member>();
+            member.UniqueId = UniqueIdGenerator.GenerateId();
+
+
             return go;
         }
         /// <summary>
