@@ -105,6 +105,11 @@ namespace PrYFam
             if (canvasView != null)
             {
                 canvasView.HideDetailedPersonPanel();
+
+                // Переводим статус кругового меню в закрытое состояние
+                Member root = Algorithms.Singleton.root;
+                RoundMenuController roundMenuController = root.transform.GetComponent<RoundMenuController>();
+                roundMenuController.CardStatus = RoundMenuStatus.FirstPressed;
             }
             else
             {

@@ -22,7 +22,7 @@ namespace PrYFam
 
         [Header("Круговое меню:")]
         [SerializeField] GameObject roundMenu;
-        [SerializeField] RoundMenuStatus CardStatus = RoundMenuStatus.NotPressedYet;
+        public RoundMenuStatus CardStatus = RoundMenuStatus.NotPressedYet;
 
         private void Awake()
         {
