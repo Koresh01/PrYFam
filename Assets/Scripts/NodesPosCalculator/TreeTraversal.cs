@@ -71,7 +71,7 @@ namespace PrYFam
                 if (relationship == Relationship.ToChild) {
                     if (familyService.hasHalf(from))
                     {
-                        Member half = familyService.GetHalfMembers(from).FirstOrDefault();
+                        Member half = familyService.GetSelectedHalf(from);
                         linesController.DrawMergedLine(from.gameObject, half.gameObject, to.gameObject);
                     }
                     if (!familyService.hasHalf(from))
