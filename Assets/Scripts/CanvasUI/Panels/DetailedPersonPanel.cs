@@ -143,7 +143,7 @@ namespace PrYFam
                 root.ProfilePicture = image.sprite;
 
                 // Отрисуем древо, чтоб увидеть как изменились карточки.
-                treeTraversal.hardRepositionCards();
+                treeTraversal.ReDrawTree(root, root.GetComponent<RectTransform>().anchoredPosition);
 
                 // Закрываем панель
                 OnCloseButtonClick();
