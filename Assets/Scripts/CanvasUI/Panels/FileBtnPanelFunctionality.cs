@@ -126,7 +126,7 @@ namespace PrYFam
                     createdMembers.TryGetValue(relationshipData.ToId, out var to))
                 {
                     var relationship = (Relationship)System.Enum.Parse(typeof(Relationship), relationshipData.RelationshipType);
-                    familyService.AddConnection(from, to, relationship);
+                    familyService.AddBidirectionalRelationship(from, to, relationship);
                 }
             }
 

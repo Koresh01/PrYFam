@@ -193,7 +193,7 @@ namespace PrYFam
         /// <summary>
         /// Добавляет двунаправленную связь между членами.
         /// </summary>
-        private void AddBidirectionalRelationship(Member from, Member to, Relationship relationship)
+        public void AddBidirectionalRelationship(Member from, Member to, Relationship relationship)
         {
             Debug.LogFormat("Пытаемся от {0} добавить связь к {1}", from.FirstName, to.FirstName);
 
