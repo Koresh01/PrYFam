@@ -174,6 +174,7 @@ namespace PrYFam
             else
             {
                 Debug.LogError("Прежде чем создавать детей, добавьте хоть одну жену.");
+                WarningPanelsController.ShowPanel("Невозможность добавить жену");
                 return false;
             } 
         }
