@@ -21,6 +21,9 @@ namespace PrYFam
         [Header("Скрпит отвечающий за приближение/отдажение:")]
         [SerializeField] private ZoomController zoomController;
 
+        [Tooltip("Основная камера, которой управляет скрипт")]
+        [SerializeField] private SensetivityChart sensetivityChart;
+
         /// <summary>
         /// Камера, которой управляет скрипт.
         /// </summary>
@@ -51,6 +54,10 @@ namespace PrYFam
 
             // Вычисляем смещение и перемещаем камеру
             Vector3 movement = new Vector3(horizontalInput, verticalInput, 0f) * movementSpeed * Time.deltaTime;
+
+            float multiplier = sensetivityChart.GetZoomMultiplier(mainCamera.transform.position.z) / 10f;
+
+            movement *= multiplier;
             mainCamera.transform.Translate(movement);
         }
 

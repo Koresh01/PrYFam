@@ -1445,6 +1445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
   zoomController: {fileID: 585675908}
+  sensetivityChart: {fileID: 585675909}
   mainCamera: {fileID: 963194227}
   movementSpeed: 5
 --- !u!114 &585675908
