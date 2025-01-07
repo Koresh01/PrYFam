@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using SFB; // Для Standalone File Browser (Windows) -> проводник windows
-using NativeFilePickerNamespace; // Для UnityNativeFilePicker (Android) -> проводник android
+//using NativeFilePickerNamespace; // Для UnityNativeFilePicker (Android) -> проводник android
 
 namespace PrYFam
 {
