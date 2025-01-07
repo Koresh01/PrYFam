@@ -156,6 +156,7 @@ namespace PrYFam
             if (GetRelatedMembers(from, Relationship.ToParent).Count >= 2)
             {
                 Debug.Log("Нельзя добавлять больше двух родителей.");
+                WarningPanelsController.ShowPanel("Ограничение на двух родителей");
                 return false;
             }
             return true;
