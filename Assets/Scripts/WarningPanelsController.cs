@@ -58,6 +58,21 @@ namespace PrYFam
         {
             panel.SetActive(false);
         }
+        /// <summary>
+        /// Закрывает панель.
+        /// </summary>
+        /// <param name="name">Название панели.</param>
+        public static void ClosePanel(string name)
+        {
+            if (Instance == null)
+            {
+                Debug.LogError("WarningPanelsController не инициализирован!");
+                return;
+            }
+
+            GameObject panel = Instance.GetPanel(name);
+            panel.SetActive(false);
+        }
 
         /// <summary>
         /// Показывает панель с указанным именем.

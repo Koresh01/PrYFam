@@ -55,7 +55,7 @@ namespace PrYFam
             // ¬ычисл€ем смещение и перемещаем камеру
             Vector3 movement = new Vector3(horizontalInput, verticalInput, 0f) * movementSpeed * Time.deltaTime;
 
-            float multiplier = sensetivityChart.GetZoomMultiplier(mainCamera.transform.position.z) / 10f;
+            float multiplier = sensetivityChart.GetZoomMultiplier(mainCamera.transform.position.z) / 17f;
 
             movement *= multiplier;
             mainCamera.transform.Translate(movement);

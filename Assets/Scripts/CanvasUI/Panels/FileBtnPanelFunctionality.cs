@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using SFB; // Для Standalone File Browser (Windows) -> проводник windows
+using System.Threading.Tasks;
 //using NativeFilePickerNamespace; // Для UnityNativeFilePicker (Android) -> проводник android
 
 namespace PrYFam
@@ -29,7 +30,7 @@ namespace PrYFam
 
         private void OnEnable()
         {
-            exportButton.onClick.AddListener(ExportFamilyTree);
+            exportButton.onClick.AddListener(() => StartExport());
             importButton.onClick.AddListener(ImportFamilyTree);
         }
 
@@ -39,51 +40,54 @@ namespace PrYFam
             importButton.onClick.RemoveAllListeners();
         }
 
-        /// <summary>
-        /// Экспортирует семейное древо в JSON и предлагает сохранить или поделиться файлом.
-        /// </summary>
-        private void ExportFamilyTree()
+        private async void StartExport()
         {
-            // Получаем данные семейного древа
-            FamilyData familyData = familyService.familyData;
+            WarningPanelsController.ShowPanel("Загрузка");
 
-            // Формируем объект для сериализации
-            var serializedTree = new FamilyTreeData
+            // Запускаем экспорт в отдельном потоке, но диалог выбора файла будет в основном потоке
+            await ExportFamilyTreeAsync();
+
+            WarningPanelsController.ClosePanel("Загрузка"); // Отключаем панель после завершения экспорта
+            Debug.Log("Export finished!");
+        }
+
+        private async Task ExportFamilyTreeAsync()
+        {
+            // Получаем данные семейного древа (ТОЛЬКО в главном потоке!)
+            List<MemberData> members = familyService.familyData.GetAllMembers().Select(member => new MemberData
             {
-                Members = familyData.GetAllMembers().Select(member => new MemberData
-                {
-                    UniqueId = member.UniqueId,
-                    FirstName = member.FirstName,
-                    LastName = member.LastName,
-                    MiddleName = member.MiddleName,
-                    ProfilePicture = SpriteConverter.SpriteToString(member.ProfilePicture),
-                    DateOfBirth = member.DateOfBirth,
-                    PlaceOfBirth = member.PlaceOfBirth,
-                    Biography = member.Biography
-                }).ToList(),
-                Relationships = familyData.relationships.Select(rel => new RelationshipData
-                {
-                    FromId = rel.From.UniqueId,
-                    ToId = rel.To.UniqueId,
-                    RelationshipType = rel.Relationship.ToString()
-                }).ToList()
-            };
+                UniqueId = member.UniqueId,
+                FirstName = member.FirstName,
+                LastName = member.LastName,
+                MiddleName = member.MiddleName,
+                ProfilePicture = SpriteConverter.SpriteToString(member.ProfilePicture), // Теперь выполняется в главном потоке
+                DateOfBirth = member.DateOfBirth,
+                PlaceOfBirth = member.PlaceOfBirth,
+                Biography = member.Biography
+            }).ToList();
 
-            // Сериализуем данные в JSON
-            string json = JsonUtility.ToJson(serializedTree, true);
+            List<RelationshipData> relationships = familyService.familyData.relationships.Select(rel => new RelationshipData
+            {
+                FromId = rel.From.UniqueId,
+                ToId = rel.To.UniqueId,
+                RelationshipType = rel.Relationship.ToString()
+            }).ToList();
 
+            // Запускаем сериализацию в фоновом потоке
+            string json = await Task.Run(() => JsonUtility.ToJson(new FamilyTreeData { Members = members, Relationships = relationships }, true));
+
+            // Сохранение файла (Unity API использовать нельзя, но можно писать в файл)
 #if UNITY_ANDROID
-            // На Android создаем временный файл и предлагаем его поделиться
             string path = Path.Combine(Application.persistentDataPath, "FamilyTree.json");
-            File.WriteAllText(path, json);
+            await File.WriteAllTextAsync(path, json);
             NativeFilePicker.ExportFile(path);
             Debug.Log($"Family tree exported and shared: {path}");
 #else
-            // На Windows используем SFB для выбора пути сохранения
+            await Task.Yield();  // Вернуться в главный поток для диалога сохранения
             string path = StandaloneFileBrowser.SaveFilePanel("Save Family Data", "", "FamilyTree", "json");
             if (!string.IsNullOrEmpty(path))
             {
-                File.WriteAllText(path, json);
+                await File.WriteAllTextAsync(path, json);
                 Debug.Log($"Family tree exported to {path}");
             }
 #endif
@@ -176,6 +180,13 @@ namespace PrYFam
             if (root != null) treeTraversal.ReDrawTree(root, Vector2.zero);
         }
     }
+
+
+
+
+
+
+
 
     /// <summary>
     /// Класс для сериализации семейного древа.
