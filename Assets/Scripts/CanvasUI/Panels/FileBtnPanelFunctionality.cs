@@ -53,14 +53,14 @@ namespace PrYFam
 
         private async Task ExportFamilyTreeAsync()
         {
-            // Получаем данные семейного древа (ТОЛЬКО в главном потоке!)
+            // Шаг 1: Получаем данные семейного древа (БЕЗ ProfilePicture) 
             List<MemberData> members = familyService.familyData.GetAllMembers().Select(member => new MemberData
             {
                 UniqueId = member.UniqueId,
                 FirstName = member.FirstName,
                 LastName = member.LastName,
                 MiddleName = member.MiddleName,
-                ProfilePicture = SpriteConverter.SpriteToString(member.ProfilePicture), // Теперь выполняется в главном потоке
+                ProfilePicture = null, // Пока оставляем пустым, обработаем позже
                 DateOfBirth = member.DateOfBirth,
                 PlaceOfBirth = member.PlaceOfBirth,
                 Biography = member.Biography
@@ -73,17 +73,31 @@ namespace PrYFam
                 RelationshipType = rel.Relationship.ToString()
             }).ToList();
 
-            // Запускаем сериализацию в фоновом потоке
+            // Даем Unity время отобразить панель загрузки
+            await Task.Yield();
+
+            // Шаг 2: Обрабатываем ProfilePicture в главном потоке
+            foreach (var member in members)
+            {
+                var originalMember = familyService.familyData.GetAllMembers().FirstOrDefault(m => m.UniqueId == member.UniqueId);
+                if (originalMember != null)
+                {
+                    member.ProfilePicture = SpriteConverter.SpriteToString(originalMember.ProfilePicture);
+                }
+                await Task.Yield(); // Позволяем UI не зависать
+            }
+
+            // Шаг 3: Сериализация в фоновом потоке
             string json = await Task.Run(() => JsonUtility.ToJson(new FamilyTreeData { Members = members, Relationships = relationships }, true));
 
-            // Сохранение файла (Unity API использовать нельзя, но можно писать в файл)
+            // Шаг 4: Диалог сохранения (в главном потоке)
 #if UNITY_ANDROID
             string path = Path.Combine(Application.persistentDataPath, "FamilyTree.json");
             await File.WriteAllTextAsync(path, json);
             NativeFilePicker.ExportFile(path);
             Debug.Log($"Family tree exported and shared: {path}");
 #else
-            await Task.Yield();  // Вернуться в главный поток для диалога сохранения
+            await Task.Yield();  
             string path = StandaloneFileBrowser.SaveFilePanel("Save Family Data", "", "FamilyTree", "json");
             if (!string.IsNullOrEmpty(path))
             {
@@ -92,6 +106,7 @@ namespace PrYFam
             }
 #endif
         }
+
 
         /// <summary>
         /// Импортирует семейное древо из JSON.
