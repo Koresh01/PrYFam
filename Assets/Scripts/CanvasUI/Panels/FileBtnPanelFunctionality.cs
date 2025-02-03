@@ -31,7 +31,7 @@ namespace PrYFam
         private void OnEnable()
         {
             exportButton.onClick.AddListener(() => StartExport());
-            importButton.onClick.AddListener(ImportFamilyTree);
+            importButton.onClick.AddListener(() => StartImport());
         }
 
         private void OnDisable()
@@ -40,9 +40,14 @@ namespace PrYFam
             importButton.onClick.RemoveAllListeners();
         }
 
+
+        #region АСИНХРОННЫЙ ЭКСПОРТ
         private async void StartExport()
         {
             WarningPanelsController.ShowPanel("Загрузка");
+
+            // Ждем хотя бы 100мс(несколько кадров) перед вызовом блокирующего диалога
+            await Task.Delay(100);
 
             // Запускаем экспорт в отдельном потоке, но диалог выбора файла будет в основном потоке
             await ExportFamilyTreeAsync();
@@ -50,7 +55,6 @@ namespace PrYFam
             WarningPanelsController.ClosePanel("Загрузка"); // Отключаем панель после завершения экспорта
             Debug.Log("Export finished!");
         }
-
         private async Task ExportFamilyTreeAsync()
         {
             // Шаг 1: Получаем данные семейного древа (БЕЗ ProfilePicture) 
@@ -73,9 +77,6 @@ namespace PrYFam
                 RelationshipType = rel.Relationship.ToString()
             }).ToList();
 
-            // Даем Unity время отобразить панель загрузки
-            await Task.Yield();
-
             // Шаг 2: Обрабатываем ProfilePicture в главном потоке
             foreach (var member in members)
             {
@@ -96,8 +97,7 @@ namespace PrYFam
             await File.WriteAllTextAsync(path, json);
             NativeFilePicker.ExportFile(path);
             Debug.Log($"Family tree exported and shared: {path}");
-#else
-            await Task.Yield();  
+#else 
             string path = StandaloneFileBrowser.SaveFilePanel("Save Family Data", "", "FamilyTree", "json");
             if (!string.IsNullOrEmpty(path))
             {
@@ -106,49 +106,53 @@ namespace PrYFam
             }
 #endif
         }
+        #endregion
 
-
-        /// <summary>
-        /// Импортирует семейное древо из JSON.
-        /// </summary>
-        private void ImportFamilyTree()
+        #region АСИНХРОННЫЙ ИМПОРТ
+        private async void StartImport()
         {
-#if UNITY_ANDROID
-            // Используем UnityNativeFilePicker для выбора файла на Android
-            NativeFilePicker.PickFile(
-                (path) => // Передаём в метод колбэк-функцию, которая будет вызвана после выбора файла
-                {
-                    // Проверяем, выбрал ли пользователь файл
-                    if (string.IsNullOrEmpty(path)) // Если путь пустой, значит файл не был выбран
-                    {
-                        Debug.LogWarning("No file selected."); // Выводим предупреждение в консоль
-                        return; // Завершаем выполнение функции
-                    }
+            WarningPanelsController.ShowPanel("Загрузка");
 
-                    // Если файл выбран, выводим его путь в консоль
-                    Debug.Log($"Selected file: {path}");
+            // Ждем хотя бы 100мс(несколько кадров) перед вызовом блокирующего диалога
+            await Task.Delay(100);
 
-                    // Передаём путь к выбранному файлу в метод для обработки
-                    ProcessImportedFile(path);
-                },
-                new[] { "application/json" } // Указываем фильтр MIME-типов, чтобы показывались только файлы формата JSON
-            );
-#else
-            // На Windows используем SFB для выбора файла
-            string path = StandaloneFileBrowser.OpenFilePanel("Open Family Data", "", "json", false).FirstOrDefault();
-            if (!string.IsNullOrEmpty(path))
-            {
-                Debug.Log($"Selected file: {path}");
-                ProcessImportedFile(path);
-            }
-#endif
+            await ImportFamilyTreeAsync();
+            WarningPanelsController.ClosePanel("Загрузка");
+            Debug.Log("Import finished!");
         }
 
-        /// <summary>
-        /// Обрабатывает импортированный файл.
-        /// </summary>
-        /// <param name="path">Путь к JSON файлу.</param>
-        private void ProcessImportedFile(string path)
+        private async Task ImportFamilyTreeAsync()
+        {
+            string path = "";
+#if UNITY_ANDROID
+            path = await PickFileAsync();
+#else
+            // Обновление UI
+            path = StandaloneFileBrowser.OpenFilePanel("Open Family Data", "", "json", false).FirstOrDefault();
+#endif
+            if (!string.IsNullOrEmpty(path))
+            {
+                await ProcessImportedFile(path);
+            }
+            else
+            {
+                Debug.LogWarning("No file selected.");
+            }
+        }
+
+        private Task<string> PickFileAsync()
+        {
+            var tcs = new TaskCompletionSource<string>();
+
+            NativeFilePicker.PickFile((path) =>
+            {
+                tcs.SetResult(path);
+            }, new[] { "application/json" });
+
+            return tcs.Task;
+        }
+
+        private async Task ProcessImportedFile(string path)
         {
             if (!File.Exists(path))
             {
@@ -156,13 +160,11 @@ namespace PrYFam
                 return;
             }
 
-            string json = File.ReadAllText(path);
+            string json = await File.ReadAllTextAsync(path);
             var serializedTree = JsonUtility.FromJson<FamilyTreeData>(json);
 
-            // Удаляем старое древо
             familyService.familyData.DestroyTree();
 
-            // Создаём членов семьи
             var createdMembers = new Dictionary<string, Member>();
             foreach (var memberData in serializedTree.Members)
             {
@@ -175,11 +177,12 @@ namespace PrYFam
                 member.DateOfBirth = memberData.DateOfBirth;
                 member.PlaceOfBirth = memberData.PlaceOfBirth;
                 member.Biography = memberData.Biography;
-
                 createdMembers[memberData.UniqueId] = member;
+                
+                
+                await Task.Yield(); // говорит Unity: "Подожди один кадр перед выполнением следующей строки кода."
             }
 
-            // Устанавливаем отношения
             foreach (var relationshipData in serializedTree.Relationships)
             {
                 if (createdMembers.TryGetValue(relationshipData.FromId, out var from) &&
@@ -187,13 +190,21 @@ namespace PrYFam
                 {
                     var relationship = (Relationship)System.Enum.Parse(typeof(Relationship), relationshipData.RelationshipType);
                     familyService.AddBidirectionalRelationship(from, to, relationship);
+
+
+                    await Task.Yield(); // говорит Unity: "Подожди один кадр перед выполнением следующей строки кода."
                 }
             }
 
-            // Отрисовываем дерево
             var root = createdMembers.Values.FirstOrDefault();
-            if (root != null) treeTraversal.ReDrawTree(root, Vector2.zero);
+            if (root != null)
+            {
+                // Рисование дерева после загрузки данных
+                treeTraversal.ReDrawTree(root, Vector2.zero);
+            }
+            Debug.Log("Конец переотрисовки древа");
         }
+        #endregion
     }
 
 
