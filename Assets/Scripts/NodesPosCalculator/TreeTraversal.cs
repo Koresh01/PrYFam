@@ -137,13 +137,11 @@ namespace PrYFam
             // Обновляем внешние данные карточки, полагаясь на данные из Member.cs:
             foreach (Member member in coordinates.Keys)
             {
-                if (member.ProfilePicture != deltailedPersonPanel.initialSprite)
-                {
-                    // Обновляем изображение на карточке
-                    Transform faceSpriteTransform = member.transform.Find("Environment/Image (Face Sprite)");
-                    Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
-                    faceSpriteImage.sprite = member.ProfilePicture;
-                }
+                // Обновляем изображение на карточке
+                Transform faceSpriteTransform = member.transform.Find("Environment/Image (Face Sprite)");
+                Image faceSpriteImage = faceSpriteTransform.GetComponent<Image>();
+                faceSpriteImage.sprite = member.ProfilePicture;
+
                 // А также меняем ФИО на лицевой стороне карточке
                 CardView cardView = member.GetComponent<CardView>();
                 string FIO = member.LastName + " " + member.FirstName + " " + member.MiddleName;

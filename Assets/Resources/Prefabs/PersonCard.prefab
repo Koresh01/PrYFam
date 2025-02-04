@@ -93,10 +93,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd130105a199f05488ac26e0916a51c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UniqueId: 
   FirstName: 
   LastName: 
   MiddleName: 
-  ProfilePicture: {fileID: 21300000, guid: 6d26b0f5d1f4af243a4eee5273d314a3, type: 3}
+  ProfilePicture: {fileID: 21300000, guid: 7228d0e516062a6408daa16229ee0cfc, type: 3}
   DateOfBirth: 
   PlaceOfBirth: 
   Biography: 

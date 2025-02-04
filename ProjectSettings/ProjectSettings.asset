@@ -164,7 +164,7 @@ PlayerSettings:
   androidMinAspectRatio: 1
   applicationIdentifier:
     Android: com.com.mygame.FamilyTree.FamilyTree
-    Standalone: com.DefaultCompany.PrYFam
+    Standalone: com.com.mygame.FamilyTree.FamilyTree
   buildNumber:
     Standalone: 0
     VisionOS: 0
