@@ -83,7 +83,17 @@ namespace PrYFam
             Texture2D texture = new Texture2D(2, 2);
             if (texture.LoadImage(imageData))
             {
-                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+                if (texture.width != texture.height)
+                {
+                    WarningPanelsController.ShowPanel("Квадратные изображения");
+                    ShowError("Изображение должно быть квадратным!");   // в данном случае проверка texture.width != texture.height имеет смысл, потому что:
+                                                                        // 1. Texture2D(2, 2) — это только начальные размеры, но при вызове LoadImage(imageData) Unity автоматически переопределяет размер текстуры, основываясь на загруженном изображении.
+                                                                        // 2. Если пользователь загружает не квадратное изображение, Unity создаст текстуру с оригинальными размерами(например, 1920x1080).
+                                                                        // 3. Проверка texture.width != texture.height нужна, чтобы не допустить загрузку неквадратного изображения.
+                    yield break;
+                }
+
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);  
                 targetButton.image.sprite = sprite;
                 targetButton.image.color = Color.white;
             }
