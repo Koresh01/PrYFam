@@ -17,9 +17,6 @@ namespace PrYFam
         [Tooltip("Кнопка, на которую будет устанавливаться изображение.")]
         [SerializeField] private Button targetButton;
 
-        [Tooltip("UI элемент для отображения ошибки.")]
-        [SerializeField] private TMP_Text errorMessage;
-
         /// <summary>
         /// Запускает выбор изображения в зависимости от платформы.
         /// </summary>
@@ -51,7 +48,7 @@ namespace PrYFam
             }
             else
             {
-                ShowError("Файл не выбран.");
+                Debug.LogError("Файл не выбран.");
             }
         }
 
@@ -70,7 +67,7 @@ namespace PrYFam
 
             if (permission != NativeGallery.Permission.Granted)
             {
-                ShowError("Доступ к галерее запрещён!");
+                Debug.LogError("Доступ к галерее запрещён!");
             }
         }
 
@@ -86,7 +83,7 @@ namespace PrYFam
                 if (texture.width != texture.height)
                 {
                     WarningPanelsController.ShowPanel("Квадратные изображения");
-                    ShowError("Изображение должно быть квадратным!");   // в данном случае проверка texture.width != texture.height имеет смысл, потому что:
+                    Debug.LogError("Изображение должно быть квадратным!");   // в данном случае проверка texture.width != texture.height имеет смысл, потому что:
                                                                         // 1. Texture2D(2, 2) — это только начальные размеры, но при вызове LoadImage(imageData) Unity автоматически переопределяет размер текстуры, основываясь на загруженном изображении.
                                                                         // 2. Если пользователь загружает не квадратное изображение, Unity создаст текстуру с оригинальными размерами(например, 1920x1080).
                                                                         // 3. Проверка texture.width != texture.height нужна, чтобы не допустить загрузку неквадратного изображения.
@@ -99,23 +96,10 @@ namespace PrYFam
             }
             else
             {
-                ShowError("Не удалось загрузить изображение.");
+                Debug.LogError("Не удалось загрузить изображение.");
             }
 
             yield return null;
-        }
-
-        /// <summary>
-        /// Отображает сообщение об ошибке.
-        /// </summary>
-        private void ShowError(string message)
-        {
-            if (errorMessage != null)
-            {
-                errorMessage.text = message;
-                errorMessage.gameObject.SetActive(true);
-            }
-            Debug.LogError(message);
         }
     }
 }

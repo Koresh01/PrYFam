@@ -1,10 +1,21 @@
-﻿using System;
+﻿using PrYFam;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+
+/*
+ В Unity начало отсчета пикселей на текстуре действительно расположено в левом нижнем углу, если говорить о координатах пикселей текстуры. То есть:
+
+Ось X растет вправо, от 0 до ширины текстуры.
+Ось Y растет вверх, от 0 до высоты текстуры.
+Это отличается от привычной системы координат, где ось Y обычно растет вниз (как в обычных 2D-координатах на экране). В Unity, для текстур и изображений, точка (0, 0) находится в левом нижнем углу текстуры.
+
+Это важно учитывать при работе с методами, такими как GetPixel и SetPixel, а также при выполнении операций поворота, как в вашем случае. В вашей функции поворота, когда вы изменяете координаты пикселей, это учитывается: ось Y инвертируется в width - x - 1, чтобы правильно отображать результат поворота на экране Unity.
+ */
 
 /// <summary>
 /// Вращает изображение на кнопке по часовой стрелке.
@@ -46,6 +57,12 @@ public class RotateImage : MonoBehaviour
         int width = originalTexture.width;
         int height = originalTexture.height;
         Texture2D rotatedTexture = new Texture2D(width, height);
+
+        if (width != height)
+        {
+            WarningPanelsController.ShowPanel("Квадратные изображения");
+            Debug.LogError("Изображение должно быть квадратным!");
+        }
 
         for (int x = 0; x < width; x++)
         {
