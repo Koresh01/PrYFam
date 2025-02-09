@@ -85,8 +85,8 @@ namespace PrYFam
             RectTransform toRectTransform = to.GetComponent<RectTransform>();
 
             // Вычисляем среднюю точку между двумя исходными объектами
-            Vector3 middle = (from1.GetComponent<RectTransform>().position + from2.GetComponent<RectTransform>().position) / 2;
-
+            //Vector3 middle = (from1.GetComponent<RectTransform>().position + from2.GetComponent<RectTransform>().position) / 2;
+            Vector3 middle = new Vector3(to.GetComponent<RectTransform>().position.x, from1.GetComponent<RectTransform>().position.y, 0);
             // Линия будет состоять из 6 точек
             lr.positionCount = 6;
 
