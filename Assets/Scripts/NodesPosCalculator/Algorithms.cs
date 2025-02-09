@@ -192,13 +192,36 @@ namespace PrYFam
 
                 float newY = branchMidpoint.y + offsetY;
                 float newX = 0;
+
+
+
+                float c = 0;
+                if (direction == Direction.Up && subtreeWidths.Count == 2)
+                {
+                    c = Math.Abs(subtreeWidths[0] - subtreeWidths[1]) / 4f;
+
+                    int rightBranch = subtreeWidths[1];
+                    int leftBranch = subtreeWidths[0];
+
+                    if (rightBranch > leftBranch)
+                    {
+                        c = traversalStrategy.IsLeftToRight ? +c : -c;
+                    }
+                    else if (rightBranch < leftBranch)
+                    {
+                        c = traversalStrategy.IsLeftToRight ? -c : +c;
+                    }
+                }    
+                    
+
+
                 if (traversalStrategy.IsLeftToRight)    // «начит было нажатие на левую карточку супругов.
                 {
-                    newX = branchMidpoint.x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + cumulativeWidth + subtreeWidths[i] / 2f);
+                    newX = branchMidpoint.x + CardWidthWithOffset * (-subtreeWidths.Sum() / 2f + c + cumulativeWidth + subtreeWidths[i] / 2f);
                 }
                 if (!traversalStrategy.IsLeftToRight)   // «начит было нажатие на правую карточку супругов.
-                {  
-                    newX = branchMidpoint.x + CardWidthWithOffset * (subtreeWidths.Sum() / 2f - cumulativeWidth - subtreeWidths[i] / 2f);
+                {
+                    newX = branchMidpoint.x + CardWidthWithOffset * (subtreeWidths.Sum() / 2f + c - cumulativeWidth - subtreeWidths[i] / 2f);
                 }
 
 
