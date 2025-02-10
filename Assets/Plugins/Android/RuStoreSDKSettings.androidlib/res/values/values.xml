@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="rustore_BillingClientSettings_consoleApplicationId" translatable="false">consoleApplicationId</string>
-    <string name="rustore_BillingClientSettings_deeplinkScheme" translatable="false">deeplinkScheme</string>
+    <string name="rustore_BillingClientSettings_consoleApplicationId" translatable="false">2063599373</string>
+    <string name="rustore_BillingClientSettings_deeplinkScheme" translatable="false">yourappscheme</string>
     <string name="rustore_BillingClientSettings_allowNativeErrorHandling" translatable="false">True</string>
     <string name="rustore_BillingClientSettings_enableLogs" translatable="false">True</string>
 

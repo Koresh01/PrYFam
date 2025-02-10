@@ -3,12 +3,20 @@ using UnityEngine;
 using RuStore.Example.UI;
 using RuStore.BillingClient;
 
-namespace RuStore.Example {
+namespace RuStore.Example
+{
 
-    public class ExampleController : MonoBehaviour {
+    /// <summary>
+    /// Этот класс управляет UI и функциональностью, связанной с покупками продуктов,
+    /// изменением темы, потреблением покупок и обработкой ошибок для интеграции с RuStore.
+    /// </summary>
+    public class ExampleController : MonoBehaviour
+    {
 
+        // Версия примера.
         public const string ExampleVersion = "6.1.1";
 
+        // Сериализованные поля для ID продуктов, UI компонентов и окна сообщений.
         [SerializeField]
         private string[] _productIds;
 
@@ -20,53 +28,83 @@ namespace RuStore.Example {
 
         [SerializeField]
         private MessageBox _messageBox;
+
         [SerializeField]
         private LoadingIndicator _loadingIndicator;
 
-        private void Awake() {
+        /// <summary>
+        /// Вызывается при инициализации объекта. Инициализирует RuStoreBillingClient.
+        /// </summary>
+        private void Awake()
+        {
             RuStoreBillingClient.Instance.Init();
         }
 
-        private void Start() {
+        /// <summary>
+        /// Регистрирует обработчики событий для покупки продуктов, подтверждения покупок и т.д.
+        /// </summary>
+        private void Start()
+        {
+            // Регистрируем события для покупки продуктов, подтверждения покупок и т.д.
             ProductCardView.OnBuyProduct += ProductCardView_OnBuyProduct;
-
             PurchaseCardView.OnConfirmPurchase += PurchaseCardView_OnConfirmPurchase;
             PurchaseCardView.OnDeletePurchase += PurchaseCardView_OnDeletePurchase;
             PurchaseCardView.OnGetPurchaseInfo += PurchaseCardView_OnGetPurchaseInfo;
         }
 
-        private void ProductCardView_OnBuyProduct(object sender, EventArgs e) {
+        // Обработчик события покупки продукта.
+        private void ProductCardView_OnBuyProduct(object sender, EventArgs e)
+        {
             var product = (sender as ICardView<Product>).GetData();
             BuyProduct(product.productId);
         }
 
-        private void PurchaseCardView_OnConfirmPurchase(object sender, EventArgs e) {
+        // Обработчик события подтверждения покупки.
+        private void PurchaseCardView_OnConfirmPurchase(object sender, EventArgs e)
+        {
             var purchase = (sender as ICardView<Purchase>).GetData();
             ConsumePurchase(purchase.purchaseId);
         }
 
-        private void PurchaseCardView_OnDeletePurchase(object sender, EventArgs e) {
+        // Обработчик события удаления покупки.
+        private void PurchaseCardView_OnDeletePurchase(object sender, EventArgs e)
+        {
             var purchase = (sender as ICardView<Purchase>).GetData();
             DeletePurchase(purchase.purchaseId);
         }
 
-        private void PurchaseCardView_OnGetPurchaseInfo(object sender, EventArgs e) {
+        // Обработчик события получения информации о покупке.
+        private void PurchaseCardView_OnGetPurchaseInfo(object sender, EventArgs e)
+        {
             var purchase = (sender as ICardView<Purchase>).GetData();
             GetPurchaseInfo(purchase.purchaseId);
         }
 
-        private void Update() {
-            if (Input.GetKeyDown(KeyCode.Escape)) {
+        /// <summary>
+        /// Проверка нажатия клавиши Escape для выхода из приложения.
+        /// </summary>
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
                 Application.Quit();
             }
         }
 
-        public void CheckTheme(bool value) {
+        /// <summary>
+        /// Изменяет тему на темную или светлую в зависимости от переданного значения.
+        /// </summary>
+        public void CheckTheme(bool value)
+        {
             var theme = value ? BillingClientTheme.Dark : BillingClientTheme.Light;
             RuStoreBillingClient.Instance.SetTheme(theme);
         }
 
-        public void CheckPurchasesAvailability() {
+        /// <summary>
+        /// Проверяет доступность покупок с помощью RuStoreBillingClient.
+        /// </summary>
+        public void CheckPurchasesAvailability()
+        {
             _loadingIndicator.Show();
 
             RuStoreBillingClient.Instance.CheckPurchasesAvailability(
@@ -77,15 +115,22 @@ namespace RuStore.Example {
                 onSuccess: (result) => {
                     _loadingIndicator.Hide();
 
-                    if (result.isAvailable) {
+                    if (result.isAvailable)
+                    {
                         _messageBox.Show("Availability", "True");
-                    } else {
+                    }
+                    else
+                    {
                         OnError(result.cause);
                     }
                 });
         }
 
-        public void LoadProducts() {
+        /// <summary>
+        /// Загружает продукты из RuStore и отображает их на UI.
+        /// </summary>
+        public void LoadProducts()
+        {
             _loadingIndicator.Show();
 
             productsView.gameObject.SetActive(true);
@@ -103,7 +148,11 @@ namespace RuStore.Example {
                 });
         }
 
-        public void LoadPurchases() {
+        /// <summary>
+        /// Загружает список покупок и отображает их на UI.
+        /// </summary>
+        public void LoadPurchases()
+        {
             _loadingIndicator.Show();
 
             productsView.gameObject.SetActive(false);
@@ -120,7 +169,11 @@ namespace RuStore.Example {
                 });
         }
 
-        public void BuyProduct(string productId) {
+        /// <summary>
+        /// Покупка продукта через RuStoreBillingClient.
+        /// </summary>
+        public void BuyProduct(string productId)
+        {
             _loadingIndicator.Show();
             RuStoreBillingClient.Instance.PurchaseProduct(
                 productId: productId,
@@ -134,7 +187,8 @@ namespace RuStore.Example {
                     _loadingIndicator.Hide();
 
                     bool isSandbox = false;
-                    switch (result) {
+                    switch (result)
+                    {
                         case PaymentSuccess paymentSuccess:
                             isSandbox = paymentSuccess.sandbox;
                             break;
@@ -146,21 +200,31 @@ namespace RuStore.Example {
                             break;
                     }
 
-                    if (isSandbox) {
+                    if (isSandbox)
+                    {
                         ShowToast(string.Format("isSandbox: {0}", isSandbox.ToString()));
                     }
                 });
         }
 
-        public void ShowToast(string message) {
+        /// <summary>
+        /// Показывает сообщение в виде тоста на Android устройстве.
+        /// </summary>
+        public void ShowToast(string message)
+        {
             using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
             using (AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
-            using (AndroidJavaObject utils = new AndroidJavaObject("com.plugins.billingexample.AndroidUtils")) {
+            using (AndroidJavaObject utils = new AndroidJavaObject("com.plugins.billingexample.AndroidUtils"))
+            {
                 utils.Call("showToast", currentActivity, message);
             }
         }
 
-        public void ConsumePurchase(string purchaseId) {
+        /// <summary>
+        /// Подтверждение потребления покупки.
+        /// </summary>
+        public void ConsumePurchase(string purchaseId)
+        {
             _loadingIndicator.Show();
             RuStoreBillingClient.Instance.ConfirmPurchase(
                 purchaseId: purchaseId,
@@ -174,6 +238,9 @@ namespace RuStore.Example {
                 });
         }
 
+        /// <summary>
+        /// Удаляет покупку.
+        /// </summary>
         public void DeletePurchase(string purchaseId)
         {
             _loadingIndicator.Show();
@@ -189,6 +256,9 @@ namespace RuStore.Example {
                 });
         }
 
+        /// <summary>
+        /// Получает информацию о покупке.
+        /// </summary>
         public void GetPurchaseInfo(string purchaseId)
         {
             _loadingIndicator.Show();
@@ -204,7 +274,11 @@ namespace RuStore.Example {
                 });
         }
 
-        private void OnError(RuStoreError error) {
+        /// <summary>
+        /// Обработчик ошибок, показывающий сообщение об ошибке и логирующий её.
+        /// </summary>
+        private void OnError(RuStoreError error)
+        {
             _messageBox.Show("Error", error.description);
 
             Debug.LogErrorFormat("{0} : {1}", error.name, error.description);
