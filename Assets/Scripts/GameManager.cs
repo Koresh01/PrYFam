@@ -25,7 +25,7 @@ namespace PrYFam
             treeTraversal.ReDrawTree(from, new Vector2(0, 0));
 
 
-            Debug.Log("Family tree was created.");
+            // Debug.Log("Family tree was created.");
         }
 
         /*

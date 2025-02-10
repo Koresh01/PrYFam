@@ -27,7 +27,7 @@ namespace PrYFam
 
         private void Start()
         {
-            Debug.Log(zoomSlider == null ? "Zoom Slider не привязан в инспекторе!" : "Zoom Slider привязан корректно.");
+            // Debug.Log(zoomSlider == null ? "Zoom Slider не привязан в инспекторе!" : "Zoom Slider привязан корректно.");
         }
 
         /// <summary>
