@@ -349,6 +349,14 @@ namespace PrYFam
         /// Является ли член семьи крайним в древе.
         /// </summary>
         public bool IsLeaf(Member cur) {
+            if (familyData.relationships.Count == 2)
+            {
+                WarningPanelsController.ShowPanel("Невозможность удалить члена если древо состоит из двух человек");
+                return false;
+            }
+
+
+
             if (!hasParents(cur))
                 return true;
             if (hasParents(cur) && !hasChildren(cur) && !hasHalf(cur))
@@ -357,6 +365,8 @@ namespace PrYFam
                 return true;
             if (!hasParents(cur) && hasChildren(cur) && !hasHalf(cur) && GetChildMembers(cur).Count <= 1)
                 return true;
+
+            
 
             Debug.LogError("Невозможно удалить без последствий целостности древа!!!");
             return false;
