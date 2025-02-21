@@ -349,6 +349,8 @@ namespace PrYFam
         /// Является ли член семьи крайним в древе.
         /// </summary>
         public bool IsLeaf(Member cur) {
+            if (!hasParents(cur))
+                return true;
             if (hasParents(cur) && !hasChildren(cur) && !hasHalf(cur))
                 return true;
             if (!hasParents(cur) && !hasChildren(cur) && hasHalf(cur))

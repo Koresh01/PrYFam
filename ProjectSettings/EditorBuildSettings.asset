@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 0
-    path: Assets/RuStoreBillingClientExample/Scenes/BillingClientSampleScene.unity
+    path: Assets/Scripts/RuStoreSDK/RuStoreBillingClientExample/Scenes/BillingClientSampleScene.unity
     guid: b4f8b70cc5855854f9b128ff3807ec6f
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
