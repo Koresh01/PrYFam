@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace PrYFam
 {
     /// <summary>
-    /// Скрипт для импорта и экспорта семейного древа.
+    /// Скрипт отвечает за панель, появляющуюся при нажатии на кнопку "ФАЙЛ"
     /// </summary>
     public class FileBtnPanelFunctionality : MonoBehaviour
     {

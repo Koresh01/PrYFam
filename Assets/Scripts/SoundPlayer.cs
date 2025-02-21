@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class SoundPlayer : MonoBehaviour
 {
-    public AudioSource cameraAudioSource;   // Ссылка на AudioSource на камере
-    public AudioClip soundClip;            // Ссылка на аудиофайл
-    [Range(0f, 1f)] public float volume = 1f;   // Громкость (ползунок в инспекторе)
-    public bool loop = false;              // Зацикливание звука
-    public float pitch = 1f;               // Скорость воспроизведения
+    [Tooltip("Объект, издающий звук.")]    public AudioSource cameraAudioSource;
+    [Tooltip(".mp3 дорожна звука.")]        public AudioClip soundClip;
+    [Tooltip("Громкость.")]                 [Range(0f, 1f)] public float volume = 1f;
+    [Tooltip("Зацикливание звука.")]        public bool loop = false;
+    [Tooltip("Скорость воспроизведения.")]  public float pitch = 1f;
 
 
     void OnEnable()

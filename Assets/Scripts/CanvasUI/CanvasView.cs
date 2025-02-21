@@ -20,21 +20,28 @@ namespace PrYFam
 
         [Header("Кнопки:")]
         [SerializeField] Button fileBtn;
+        [SerializeField] Button editBtn;
 
         [Header("Панели:")]
         [Tooltip("Панель детальной информации о человеке.")]    [SerializeField] GameObject detailedPanel;
         [Tooltip("Панель кнопки файл.")]                        [SerializeField] GameObject filePanel;
+        [Tooltip("Панель кнопки правка.")]                      [SerializeField] GameObject editPanel;
 
         void OnEnable()
         {
             fileBtn.onClick.AddListener(() =>
             {
-                ToggleFilePanel();
+                TogglePanel(filePanel);
+            });
+            editBtn.onClick.AddListener(() =>
+            {
+                TogglePanel(editPanel);
             });
         }
         void OnDisable()
         {
             fileBtn.onClick.RemoveAllListeners();
+            editBtn.onClick.RemoveAllListeners();
         }
 
 
@@ -75,14 +82,15 @@ namespace PrYFam
 
 
         /// <summary>
-        /// Переключает видимость filePanel.
+        /// Переключает видимость панели.
         /// </summary>
-        public void ToggleFilePanel()
+        /// <param name="panel">Панель, видимость которой надо переключить на противоположную.</param>
+        public void TogglePanel(GameObject panel)
         {
-            if (filePanel != null)
+            if (panel != null)
             {
                 // Переключаем видимость панели
-                filePanel.SetActive(!filePanel.activeSelf);
+                panel.SetActive(!panel.activeSelf);
             }
             else
             {

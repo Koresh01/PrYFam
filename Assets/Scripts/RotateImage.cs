@@ -22,8 +22,7 @@ using UnityEngine.UI;
 /// </summary>
 public class RotateImage : MonoBehaviour
 {
-    [Tooltip("Кнопка, изображение на которой будет вращаться.")]
-    [SerializeField] private Button targetButton;
+    [Tooltip("Кнопка, изображение на которой будет вращаться.")]    [SerializeField] private Button targetButton;
 
     /// <summary>
     /// Метод для поворота изображения.

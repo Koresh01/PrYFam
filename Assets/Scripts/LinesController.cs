@@ -6,13 +6,11 @@ namespace PrYFam
 {
     public class LinesController : MonoBehaviour
     {
-        [SerializeField] Transform placeHolder;
-        [Tooltip("Цвет линий")]
-        [SerializeField] private Color lineColor = Color.white; // Цвет линии, настраивается в инспекторе
-        [Tooltip("Толщина линий (от 0.1 до 1.0)")]
-        [SerializeField, Range(0.1f, 1.0f)] private float lineThickness = 0.1f; // Толщина линии
-        public List<GameObject> lines;
-        public float offset = 2.4f;
+        [Tooltip("Игровой объект, в котором спавнятся линии")]  [SerializeField] Transform placeHolder;
+        [Tooltip("Линии, которые отображаются на сцене.")]      [SerializeField] public List<GameObject> lines;
+        [Tooltip("Цвет линий")]                                 [SerializeField] private Color lineColor = Color.white; // Цвет линии, настраивается в инспекторе
+        [Tooltip("Толщина линий")]                              [SerializeField, Range(0.1f, 1.0f)] private float lineThickness = 0.1f; // Толщина линии
+        [Tooltip("П-образный вертикальный отступ")]             public           float offset = 2.4f;
 
         public LinesController()
         {
