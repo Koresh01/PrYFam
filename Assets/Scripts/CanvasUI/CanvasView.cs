@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace PrYFam
@@ -87,6 +89,15 @@ namespace PrYFam
         /// <param name="panel">Панель, видимость которой надо переключить на противоположную.</param>
         public void TogglePanel(GameObject panel)
         {
+            // Тушим предыдущую панель:
+            List<GameObject> AllPanels = new List<GameObject>() { filePanel, editPanel };
+            foreach (GameObject p in AllPanels)
+            {
+                if (p != panel)
+                    p.SetActive(false);
+            }
+
+            // Отображаем/тушим текущую:
             if (panel != null)
             {
                 // Переключаем видимость панели
