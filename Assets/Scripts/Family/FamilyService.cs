@@ -368,7 +368,8 @@ namespace PrYFam
 
             
 
-            Debug.LogError("Невозможно удалить без последствий целостности древа!!!");
+            //Debug.LogError("Невозможно удалить без последствий целостности древа!!!");
+            WarningPanelsController.ShowPanel("Запрет на удаление члена семьи");
             return false;
         }
         public bool hasChildren(Member current)
