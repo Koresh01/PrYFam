@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace PrYFam
@@ -11,9 +8,25 @@ namespace PrYFam
     /// </summary>
     public class EditBtnPanelFunctionality : MonoBehaviour
     {
+        [Header("Зависимости:")]
+        [SerializeField] private FamilyService familyService;
+        [SerializeField] private TreeTraversal treeTraversal;
+
         [Header("Кнопки:")]
         [Tooltip("Кнопка поиска члена семьи по имени.")]    [SerializeField] Button findBtn;
         [Tooltip("Кнопка обзора древа целиком.")]           [SerializeField] Button showTreeBtn;
-    }
+
+
+        void OnEnable()
+        {
+            
+        }
+
+        void OnDisable()
+        {
+
+        }
+
         
+    }
 }

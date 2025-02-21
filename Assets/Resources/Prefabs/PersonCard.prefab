@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1143574058419197010}
+      - m_Target: {fileID: 6435041672854510118}
         m_TargetAssemblyTypeName: SoundPlayer, Assembly-CSharp
         m_MethodName: PlaySound
         m_Mode: 1
@@ -1084,7 +1084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 0}
-  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
+  soundClip: {fileID: 8300000, guid: d735008fcc9336946addb4678defc08f, type: 3}
   volume: 1
   loop: 0
   pitch: 1

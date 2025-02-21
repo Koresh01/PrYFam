@@ -1288,7 +1288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -1507,6 +1507,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1401908921}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &491157003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1558,7 +1570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: d735008fcc9336946addb4678defc08f, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -2071,7 +2083,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 9a7dac07bfeb83340bc9c791e196a3c4, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -2451,6 +2463,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b27fa10f363787f4db427dae990a0d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  familyService: {fileID: 0}
+  treeTraversal: {fileID: 0}
   findBtn: {fileID: 674298250}
   showTreeBtn: {fileID: 692157898}
 --- !u!1 &674298248
@@ -2721,7 +2735,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -4137,6 +4151,7 @@ GameObject:
   - component: {fileID: 912276357}
   - component: {fileID: 912276356}
   - component: {fileID: 912276355}
+  - component: {fileID: 912276359}
   m_Layer: 5
   m_Name: Button (hard delete tree)
   m_TagString: Untagged
@@ -4187,7 +4202,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 912276356}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 491157005}
+        m_TargetAssemblyTypeName: SoundPlayer, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &912276356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4247,6 +4274,23 @@ RectTransform:
   m_AnchoredPosition: {x: 96, y: -107.4}
   m_SizeDelta: {x: 185, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &912276359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912276354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c191b8bd7f2855449bbfe35e860fda8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraAudioSource: {fileID: 963194229}
+  soundClip: {fileID: 8300000, guid: d735008fcc9336946addb4678defc08f, type: 3}
+  volume: 1
+  loop: 0
+  pitch: 1
 --- !u!1 &919643650
 GameObject:
   m_ObjectHideFlags: 0
@@ -5296,7 +5340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -5709,6 +5753,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1401908921}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1294642910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5760,7 +5816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -6220,6 +6276,7 @@ MonoBehaviour:
   treeTraversal: {fileID: 364671341}
   exportButton: {fileID: 491157002}
   importButton: {fileID: 1294642909}
+  deleteTreeButton: {fileID: 912276355}
 --- !u!1 &1407276947
 GameObject:
   m_ObjectHideFlags: 0
@@ -6538,7 +6595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -6765,7 +6822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -7213,7 +7270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -7363,7 +7420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -7666,7 +7723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -7986,7 +8043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -8273,7 +8330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -13488,7 +13545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -13699,7 +13756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 0}
-  soundClip: {fileID: 8300000, guid: 7b9b157674bc866448480e3b028eb901, type: 3}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
   volume: 1
   loop: 0
   pitch: 1
@@ -13918,7 +13975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraAudioSource: {fileID: 963194229}
-  soundClip: {fileID: 8300000, guid: 89b8bea4a2f3a784f8a3e470d8cb54c2, type: 3}
+  soundClip: {fileID: 8300000, guid: a9268c9a4b01c554aa3bf09b052e3843, type: 3}
   volume: 1
   loop: 0
   pitch: 1

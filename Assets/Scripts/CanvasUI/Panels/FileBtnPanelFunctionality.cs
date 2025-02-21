@@ -19,8 +19,9 @@ namespace PrYFam
         [SerializeField] private TreeTraversal treeTraversal;
 
         [Header("Кнопки:")]
-        [SerializeField] private Button exportButton;
-        [SerializeField] private Button importButton;
+        [Tooltip("Кнопка экспорта древа в .json")]                  [SerializeField] private Button exportButton;
+        [Tooltip("Кнопка импорта древа из .json")]                  [SerializeField] private Button importButton;
+        [Tooltip("Кнопка сброса древа до начального состояния.")]   [SerializeField] private Button deleteTreeButton;
 
         private void Awake()
         {
@@ -32,12 +33,14 @@ namespace PrYFam
         {
             exportButton.onClick.AddListener(() => StartExport());
             importButton.onClick.AddListener(() => StartImport());
+            deleteTreeButton.onClick.AddListener(() => RefreshTree());
         }
 
         private void OnDisable()
         {
             exportButton.onClick.RemoveAllListeners();
             importButton.onClick.RemoveAllListeners();
+            deleteTreeButton.onClick.RemoveAllListeners();
         }
 
 
@@ -203,6 +206,37 @@ namespace PrYFam
                 treeTraversal.ReDrawTree(root, Vector2.zero);
             }
             Debug.Log("Конец переотрисовки древа");
+        }
+        #endregion
+
+        #region Сброс древа до первоначального состояния
+        /// <summary>
+        /// Сбрасывает древо до первоначального состояния.
+        /// </summary>
+        void RefreshTree()
+        {
+            familyService.familyData.DestroyTree();
+            CreateNewFamilyTree();
+
+        }
+
+        /// <summary>
+        /// Создает новое семейное древо. (как при старте прогрммы)
+        /// </summary>
+        private void CreateNewFamilyTree()
+        {
+            GameObject go1 = familyService.CreateCard();
+            GameObject go2 = familyService.CreateCard();
+
+            Member from = go1.GetComponent<Member>();
+            Member to = go2.GetComponent<Member>();
+
+
+            familyService.AddConnection(from, to, Relationship.ToHalf);
+            treeTraversal.ReDrawTree(from, new Vector2(0, 0));
+
+
+            // Debug.Log("Family tree was created.");
         }
         #endregion
     }
