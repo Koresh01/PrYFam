@@ -93,6 +93,5 @@ namespace PrYFam
             else
                 Debug.LogError("Zoom Slider не привязан в инспекторе!");
         }
-
     }
 }

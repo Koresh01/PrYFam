@@ -2751,6 +2751,8 @@ GameObject:
   - component: {fileID: 692157900}
   - component: {fileID: 692157899}
   - component: {fileID: 692157898}
+  - component: {fileID: 692157901}
+  - component: {fileID: 692157902}
   m_Layer: 5
   m_Name: "Button (\u043E\u0442\u043E\u0431\u0440\u0430\u0437\u0438\u0442\u044C \u0434\u0440\u0435\u0432\u043E
     \u0446\u0435\u043B\u0438\u043A\u043E\u043C)"
@@ -2823,7 +2825,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 692157899}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 671731471}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 692157902}
+        m_TargetAssemblyTypeName: SoundPlayer, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &692157899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2862,6 +2888,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 692157896}
   m_CullTransparentMesh: 1
+--- !u!114 &692157901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692157896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85bbb44ab7faa7e4a9118b43507f8fb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  btn: {fileID: 692157898}
+  zoomSlider: {fileID: 7652833}
+  commonInputSettings: {fileID: 11400000, guid: 66fee5fa22661f14aac5aeb8b41ebfcd, type: 2}
+  mainCamera: {fileID: 963194227}
+  cardsPlaceholder: {fileID: 1622611497}
+  familyCards: []
+  fixedPadding: 11
+--- !u!114 &692157902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692157896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c191b8bd7f2855449bbfe35e860fda8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraAudioSource: {fileID: 963194229}
+  soundClip: {fileID: 8300000, guid: 8fe0b843ca789324790e2cb71e04a485, type: 3}
+  volume: 1
+  loop: 0
+  pitch: 1
 --- !u!1 &695736491
 GameObject:
   m_ObjectHideFlags: 0
@@ -7121,7 +7183,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -88.156494, y: -63.19983}
+  m_AnchoredPosition: {x: -88.156494, y: -63.19989}
   m_SizeDelta: {x: -176.31299, y: -126.39993}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1592575744

@@ -18,8 +18,8 @@ namespace PrYFam.Assets.Scripts.AdditionalExtensions
             EditorGUI.BeginChangeCheck();
 
             // Отображаем ползунки
-            float maxZoom = EditorGUILayout.Slider("maxZoom (ближе к карточкам)", settings.maxZoom, 2f, 120f);  // Значение позиции камеры по оси Z (ближе к карточкам)
-            float minZoom = EditorGUILayout.Slider("minZoom (дальше от карточек)", settings.minZoom, 2f, 120f);  // Значение позиции камеры по оси Z (дальше от карточек)
+            float maxZoom = EditorGUILayout.Slider("maxZoom (ближе к карточкам)", settings.maxZoom, 2f, 240f);  // Значение позиции камеры по оси Z (ближе к карточкам)
+            float minZoom = EditorGUILayout.Slider("minZoom (дальше от карточек)", settings.minZoom, 2f, 240f);  // Значение позиции камеры по оси Z (дальше от карточек)
 
             // Логика ограничения
             if (minZoom < maxZoom)
