@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace PrYFam
@@ -10,8 +11,16 @@ namespace PrYFam
     /// </summary>
     class PersonFinder : MonoBehaviour
     {
-        [Tooltip("Объект на сцене, хранящий все карточки.")]
-        [SerializeField] private GameObject cardsPlaceholder;
+        [SerializeField]
+        [Tooltip("Скрипт, который обрабатывает свайпы/touches.")]
+        MobileInput mobileInput;
+
+        [SerializeField]
+        [Tooltip("Скрипт, который обрабатывает компьютерный ввод.")]
+        ComputerInput computerInput;
+
+        [Tooltip("Класс хранящий все карточки.")]
+        [SerializeField] private FamilyData familyData;
 
         [Tooltip("Ключевое слово, по которому ищем.")]
         [SerializeField] private TMP_InputField word;
@@ -21,6 +30,22 @@ namespace PrYFam
 
         [Tooltip("Префаб -> FoundedPerson(найденный член семьи).")]
         [SerializeField] private GameObject prefab;
+
+        void OnEnable()
+        {
+            // выключаем обработку свайпов и тачей
+            mobileInput.enabled = false;
+            computerInput.enabled = false;
+
+            FindByWord();    
+        }
+
+        void OnDisable()
+        {
+            // включаем обработку свайпов и тачей
+            mobileInput.enabled = true;
+            computerInput.enabled = true;
+        }
 
         /// <summary>
         /// Находит и выводит нужные карточки.
@@ -56,9 +81,7 @@ namespace PrYFam
         /// </summary>
         private List<Member> GetCardsInfos()
         {
-            // Получаем все компоненты Member из дочерних объектов
-            Member[] members = cardsPlaceholder.GetComponentsInChildren<Member>();
-            return new List<Member>(members);
+            return familyData.GetAllMembers();
         }
 
         /// <summary>

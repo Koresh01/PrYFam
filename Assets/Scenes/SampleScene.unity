@@ -7960,7 +7960,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233cfd9b207eb5f4cbc004f56fffcf33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardsPlaceholder: {fileID: 1622611497}
+  mobileInput: {fileID: 585675905}
+  computerInput: {fileID: 585675907}
+  familyData: {fileID: 364671340}
   word: {fileID: 2060214402}
   container: {fileID: 538361786}
   prefab: {fileID: 5234882562749817754, guid: c6d26bc02b6360344a95e56f9ec6a4f2, type: 3}
