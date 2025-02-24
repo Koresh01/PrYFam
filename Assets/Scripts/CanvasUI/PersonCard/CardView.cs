@@ -18,6 +18,8 @@ namespace PrYFam
         [SerializeField] TreeTraversal treeTraversal;
         [SerializeField] CanvasView canvasView;
 
+        [SerializeField] Camera mainCamera;
+
         [Header("Поле ФИО на лицевой стороне карточки.")]
         public TextMeshProUGUI FIO;
 
@@ -42,6 +44,8 @@ namespace PrYFam
             familyService = GameObject.FindAnyObjectByType<FamilyService>();
             treeTraversal = GameObject.FindAnyObjectByType<TreeTraversal>();
             canvasView = GameObject.FindAnyObjectByType<CanvasView>();
+
+            mainCamera = GameObject.FindAnyObjectByType<Camera>();
         }
 
         private void OnEnable()
@@ -100,7 +104,7 @@ namespace PrYFam
         }
 
         /// <summary>
-        /// Вспомогательный метод для обновления дерева
+        /// Отрисовывет древо относительно текущего Member.
         /// </summary>
         public void HandleTreeRedraw()
         {
@@ -119,6 +123,21 @@ namespace PrYFam
                     button.onClick.RemoveAllListeners();
                 }
             }
+        }
+
+        /// <summary>
+        /// Отрисовывет древо относительно текущего Member
+        /// И ПЕРЕМЕЩАЕТ КАМЕРУ К ЭТОМУ ОБЪЕКТУ.
+        /// </summary>
+        public void HandleTreeRedrawWithCameraMove()
+        {
+            Vector2 curPos = transform.GetComponent<RectTransform>().anchoredPosition;
+            Member cur = transform.GetComponent<Member>();
+            treeTraversal.ReDrawTree(cur, curPos);
+
+            // Устанавливаем положение камеры, сохраняя глубину
+            Vector3 worldPos = transform.position;
+            mainCamera.transform.position = new Vector3(worldPos.x, worldPos.y, -16f);
         }
     }
 }

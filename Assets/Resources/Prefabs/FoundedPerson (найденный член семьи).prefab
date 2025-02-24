@@ -636,6 +636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d114e22e3a5e0504fbeedc098d80d17d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goTo: {fileID: 8342082188577532259}
   lastName: {fileID: 2204081880639466579}
   name: {fileID: 6450576897208788604}
   middleName: {fileID: 5912625040869448709}
