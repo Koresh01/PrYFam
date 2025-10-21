@@ -1546,6 +1546,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1208452359}
+        m_TargetAssemblyTypeName: InterstitialAdController, Assembly-CSharp
+        m_MethodName: ShowInterstitialAd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &491157003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5368,8 +5380,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1208452358}
+  - component: {fileID: 1208452359}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: "\u041C\u0435\u0436\u0441\u0442\u0440\u0430\u043D\u0438\u0447\u043D\u0430\u044F
+    \u0440\u0435\u043A\u043B\u0430\u043C\u0430"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5390,6 +5404,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1208452359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208452357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0856ad141ea3b2428292a2afe87fd13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _adUnitId: R-M-17540856-1
 --- !u!1 &1220324627
 GameObject:
   m_ObjectHideFlags: 0
@@ -14757,7 +14784,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 362817419}
   - {fileID: 1208452358}
-  - {fileID: 963194228}
   - {fileID: 1701703883}
   - {fileID: 585675906}
   - {fileID: 364671336}
@@ -14765,4 +14791,5 @@ SceneRoots:
   - {fileID: 906414253}
   - {fileID: 873619046}
   - {fileID: 1550852447}
+  - {fileID: 963194228}
   - {fileID: 741918832}
